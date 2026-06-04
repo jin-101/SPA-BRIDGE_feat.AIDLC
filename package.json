@@ -1,0 +1,12 @@
+{
+  "name": "spa-bridge",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @spa-bridge/core-model",
+    "test": "npm run test --workspace @spa-bridge/core-model"
+  }
+}
