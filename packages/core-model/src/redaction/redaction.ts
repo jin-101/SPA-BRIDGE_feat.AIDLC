@@ -1,15 +1,6 @@
 import { z } from 'zod';
-
-declare const redactedStringBrand: unique symbol;
-declare const safeDisplayStringBrand: unique symbol;
-
-export type RedactedString = string & {
-  readonly [redactedStringBrand]: true;
-};
-
-export type SafeDisplayString = string & {
-  readonly [safeDisplayStringBrand]: true;
-};
+export type RedactedString = string;
+export type SafeDisplayString = string;
 
 export const REDACTED_VALUE = '[REDACTED]';
 

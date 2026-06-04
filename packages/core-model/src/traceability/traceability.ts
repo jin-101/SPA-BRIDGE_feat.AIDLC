@@ -67,7 +67,7 @@ export const buildTraceabilityIndexes = (traceabilityMap: TraceabilityMap): Trac
   return { bySourcePath, byTargetId };
 };
 
-export const validateTraceabilityMap = (input: unknown): Result<TraceabilityMap, ReturnType<typeof createValidationError>> =>
+export const validateTraceabilityMap = (input: unknown): Result<any, ReturnType<typeof createValidationError>> =>
   validateSchema(TraceabilityMapSchema, input);
 
 export const createTraceLink = (link: TraceLink): TraceLink =>

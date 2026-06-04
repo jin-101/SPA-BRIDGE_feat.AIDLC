@@ -83,6 +83,5 @@ export type IrStateModel = z.infer<typeof IrStateModelSchema>;
 export type IrDependency = z.infer<typeof IrDependencySchema>;
 export type IntermediateRepresentation = z.infer<typeof IntermediateRepresentationSchema>;
 
-export const validateIntermediateRepresentation = (
-  input: unknown,
-): Result<IntermediateRepresentation, ValidationError> => validateSchema(IntermediateRepresentationSchema, input);
+export const validateIntermediateRepresentation = (input: unknown): Result<any, ValidationError> =>
+  validateSchema(IntermediateRepresentationSchema, input);

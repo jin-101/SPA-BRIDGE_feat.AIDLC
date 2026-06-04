@@ -58,6 +58,178 @@
 
 ---
 
+## UOW-02 Functional Design Answers
+**Timestamp**: 2026-06-04T05:41:58Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- requirements.md: requirements.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-01-core-model-and-ports-foundation-nfr-design-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-design-plan.md
+
+## My request for Codex:
+답변 완료"
+**AI Response**: "Read the UOW-02 functional design plan, validated all answers, found no contradictions or ambiguities, generated functional design artifacts, and prepared the review prompt."
+**Context**: CONSTRUCTION - UOW-02 Functional Design answer validation and artifact generation
+
+---
+
+## UOW-02 Functional Design Approval Prompt
+**Timestamp**: 2026-06-04T05:44:36Z
+**User Input**: "답변 완료"
+**AI Response**: "Presented UOW-02 Functional Design completion message and requested explicit approval before proceeding to NFR Requirements."
+**Context**: CONSTRUCTION - UOW-02 Functional Design approval gate
+
+---
+
+## UOW-02 Functional Design Approval
+**Timestamp**: 2026-06-04T05:45:24Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-02 Functional Design, updated AI-DLC state, loaded NFR Requirements rules, and created the UOW-02 NFR Requirements plan with questions."
+**Context**: CONSTRUCTION - UOW-02 Functional Design approval gate
+
+---
+
+## UOW-02 NFR Requirements Answers
+**Timestamp**: 2026-06-04T05:49:22Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- requirements.md: requirements.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+
+## My request for Codex:
+답변 완료"
+**AI Response**: "Read the UOW-02 NFR Requirements plan, validated all answers, found no contradictions or ambiguities, generated NFR requirements artifacts, and prepared the review prompt."
+**Context**: CONSTRUCTION - UOW-02 NFR Requirements answer validation and artifact generation
+
+---
+
+## UOW-02 NFR Requirements Approval Prompt
+**Timestamp**: 2026-06-04T05:51:08Z
+**User Input**: "답변 완료"
+**AI Response**: "Presented UOW-02 NFR Requirements completion message and requested explicit approval before proceeding to NFR Design."
+**Context**: CONSTRUCTION - UOW-02 NFR Requirements approval gate
+
+---
+
+## UOW-02 NFR Requirements Approval
+**Timestamp**: 2026-06-04T05:51:48Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-02 NFR Requirements, updated AI-DLC state, loaded NFR Design rules, and created the UOW-02 NFR Design plan with questions."
+**Context**: CONSTRUCTION - UOW-02 NFR Requirements approval gate
+
+---
+
+## UOW-02 NFR Design Answers
+**Timestamp**: 2026-06-04T05:54:34Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- requirements.md: requirements.md
+
+## My request for Codex:
+답변 완료"
+**AI Response**: "Read the UOW-02 NFR Design plan, validated all answers, found no contradictions or ambiguities, generated NFR design artifacts, and prepared the review prompt."
+**Context**: CONSTRUCTION - UOW-02 NFR Design answer validation and artifact generation
+
+---
+
+## UOW-02 NFR Design Approval Prompt
+**Timestamp**: 2026-06-04T05:56:23Z
+**User Input**: "답변 완료"
+**AI Response**: "Presented UOW-02 NFR Design completion message and requested explicit approval before proceeding to Code Generation."
+**Context**: CONSTRUCTION - UOW-02 NFR Design approval gate
+
+---
+
+## UOW-02 NFR Design Approval
+**Timestamp**: 2026-06-04T05:58:11Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- requirements.md: requirements.md
+
+## My request for Codex:
+Continue to Next Stage "
+**AI Response**: "Recorded explicit approval of UOW-02 NFR Design, updated AI-DLC state, and created the UOW-02 Code Generation plan for review."
+**Context**: CONSTRUCTION - UOW-02 NFR Design approval gate
+
+---
+
+## UOW-02 Code Generation Approval Prompt
+**Timestamp**: 2026-06-04T05:59:27Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Presented the UOW-02 Code Generation plan at `aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md` and requested explicit approval before generating code."
+**Context**: CONSTRUCTION - UOW-02 Code Generation planning gate
+
+---
+
+## UOW-02 Code Generation Complete
+**Timestamp**: 2026-06-04T06:17:31Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Generated the UOW-02 core-application package scaffold, application service, config, workspace, run, workflow, policy, report, events, resume, test support, and unit tests; verified the workspace build and test suite passed; and created the code summary and artifact index documents."
+**Context**: CONSTRUCTION - UOW-02 Code Generation completion review
+
+---
+
+## UOW-02 Code Generation Approval
+**Timestamp**: 2026-06-04T06:20:49Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- requirements.md: requirements.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-02 generated code, updated AI-DLC state, and created the UOW-02 Build and Test verification package."
+**Context**: CONSTRUCTION - UOW-02 code generation review gate
+
+---
+
+## UOW-02 Build and Test Approval Prompt
+**Timestamp**: 2026-06-04T06:20:49Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Presented the UOW-02 build and test instruction set at `aidlc-docs/construction/build-and-test/` and requested explicit approval before moving to Operations."
+**Context**: CONSTRUCTION - UOW-02 Build and Test review gate
+
+---
+
+## UOW-02 Build and Test Approval
+**Timestamp**: 2026-06-04T06:24:07Z
+**User Input**: "yes"
+**AI Response**: "Recorded explicit approval of the UOW-02 build and test instructions, updated AI-DLC state, and transitioned the workflow to the Operations placeholder."
+**Context**: CONSTRUCTION - UOW-02 Build and Test review gate
+
+---
+
 ## UOW-01 NFR Design Answers
 **Timestamp**: 2026-06-04T05:07:12Z
 **User Input**: "# Context from my IDE setup:

@@ -38,10 +38,10 @@ import {
   type SchemaVersioned,
   type MigrationStep,
   type PortErrorCode,
-} from '../src/index.js';
-import { FileSystemPort, type AuditPort, type ClockPort, type LlmProviderPort, type LoggerPort, type RandomnessPort, type ReportExporterPort, type ToolRunnerPort } from '../src/ports/ports.js';
-import { ok as resultOk } from '../src/result/result.js';
-import { createSafeDisplayString as safeString } from '../src/redaction/redaction.js';
+} from '@spa-bridge/core-model';
+import { FileSystemPort, type AuditPort, type ClockPort, type LlmProviderPort, type LoggerPort, type RandomnessPort, type ReportExporterPort, type ToolRunnerPort } from '@spa-bridge/core-model';
+import { ok as resultOk } from '@spa-bridge/core-model';
+import { createSafeDisplayString as safeString } from '@spa-bridge/core-model';
 
 describe('core model schemas', () => {
   test('IR schema round-trips through JSON', () => {

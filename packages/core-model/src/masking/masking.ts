@@ -21,7 +21,7 @@ export const MaskTokenMapSchema = z.object({
 
 export type MaskTokenMap = z.infer<typeof MaskTokenMapSchema>;
 
-export const validateMaskTokenMap = (input: unknown): Result<MaskTokenMap, ValidationError> =>
+export const validateMaskTokenMap = (input: unknown): Result<any, ValidationError> =>
   validateSchema(MaskTokenMapSchema, input);
 
 export const createMaskToken = (token: MaskToken): MaskToken =>

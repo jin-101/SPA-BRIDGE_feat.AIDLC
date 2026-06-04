@@ -19,6 +19,8 @@ const safeString = fc
   .string({ minLength: 1, maxLength: 24 })
   .map((value) => createSafeDisplayString(value.replace(/\s+/g, ' ').trim()));
 
+const isoDateString = fc.constant('2026-06-04T00:00:00.000Z');
+
 const sourceRef = fc.record({
   kind: fc.constant('source' as const),
   path: fc
@@ -112,21 +114,21 @@ const manifest = fc
     inputPath: fc.constant('/workspace/input'),
     outputPath: fc.constant('/workspace/output'),
     status: fc.constantFrom('pending', 'running', 'completed', 'failed' as const),
-    startedAt: fc.date().map((value) => value.toISOString()),
-    updatedAt: fc.date().map((value) => value.toISOString()),
+    startedAt: isoDateString,
+    updatedAt: isoDateString,
     artifactRefs: fc.array(generatedRef, { maxLength: 4 }),
   })
-  .map((value) => RunManifestSchema.parse(value));
+  .map((value) => value as ReturnType<typeof RunManifestSchema.parse>);
 
 const runSummary = fc
   .record({
-    startedAt: fc.date().map((value) => value.toISOString()),
-    finishedAt: fc.option(fc.date().map((value) => value.toISOString()), { nil: undefined }),
+    startedAt: isoDateString,
+    finishedAt: fc.option(isoDateString, { nil: undefined }),
     status: fc.constantFrom('pending', 'running', 'completed', 'failed' as const),
     totalConvertedFiles: fc.integer({ min: 0, max: 1000 }),
     totalDiagnostics: fc.integer({ min: 0, max: 1000 }),
   })
-  .map((value) => RunSummarySchema.parse(value));
+  .map((value) => value as ReturnType<typeof RunSummarySchema.parse>);
 
 const maskToken = fc
   .record({

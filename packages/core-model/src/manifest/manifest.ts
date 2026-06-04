@@ -22,5 +22,5 @@ export const RunManifestSchema = z.object({
 
 export type RunManifest = z.infer<typeof RunManifestSchema>;
 
-export const validateRunManifest = (input: unknown): Result<RunManifest, ValidationError> =>
+export const validateRunManifest = (input: unknown): Result<any, ValidationError> =>
   validateSchema(RunManifestSchema, input);

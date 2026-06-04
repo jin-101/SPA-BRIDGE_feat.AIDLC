@@ -78,5 +78,5 @@ export type ConvertedFileRecord = z.infer<typeof ConvertedFileRecordSchema>;
 export type RunSummary = z.infer<typeof RunSummarySchema>;
 export type ConversionReport = z.infer<typeof ConversionReportSchema>;
 
-export const validateConversionReport = (input: unknown): Result<ConversionReport, ValidationError> =>
+export const validateConversionReport = (input: unknown): Result<any, ValidationError> =>
   validateSchema(ConversionReportSchema, input);

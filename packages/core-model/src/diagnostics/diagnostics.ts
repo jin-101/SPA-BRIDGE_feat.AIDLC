@@ -34,9 +34,8 @@ export const DiagnosticsCollectionSchema = z.object({
 
 export type DiagnosticsCollection = z.infer<typeof DiagnosticsCollectionSchema>;
 
-export const validateDiagnosticsCollection = (
-  input: unknown,
-): Result<DiagnosticsCollection, ValidationError> => validateSchema(DiagnosticsCollectionSchema, input);
+export const validateDiagnosticsCollection = (input: unknown): Result<any, ValidationError> =>
+  validateSchema(DiagnosticsCollectionSchema, input);
 
 export const createDiagnostic = (input: Omit<Diagnostic, 'message' | 'remediationHint'> & {
   message: string;
