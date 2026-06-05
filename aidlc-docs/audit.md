@@ -1527,3 +1527,354 @@ Continue to Next Stage"
 **Context**: CONSTRUCTION - UOW-05 Build and Test approval gate
 
 ---
+
+## UOW-06 Functional Design Start
+**Timestamp**: 2026-06-05T04:28:47Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+
+## My request for Codex:
+이어서 다음 단계(UOW-06)를 시작해줘."
+**AI Response**: "Started UOW-06 AI Provider Adapters and Refinement Functional Design, updated AI-DLC state, and created the UOW-06 functional design question plan."
+**Context**: CONSTRUCTION - UOW-06 Functional Design planning
+
+---
+
+## UOW-06 Functional Design Recommendation Request
+**Timestamp**: 2026-06-05T04:30:43Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item UOW-06 Functional Design answer recommendations with rationale."
+**Context**: CONSTRUCTION - UOW-06 Functional Design question guidance
+
+---
+
+## UOW-06 Functional Design Answers
+**Timestamp**: 2026-06-05T04:32:11Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-06 Functional Design plan, validated there were no ambiguities, generated business logic, business rules, and domain entity artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-06 Functional Design answer validation and artifact generation
+
+---
+
+## UOW-06 Functional Design Approval
+**Timestamp**: 2026-06-05T05:15:38Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-06 Functional Design and prepared to start UOW-06 NFR Requirements."
+**Context**: CONSTRUCTION - UOW-06 Functional Design approval gate
+
+---
+
+## UOW-06 NFR Requirements Start
+**Timestamp**: 2026-06-05T05:15:38Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Started UOW-06 NFR Requirements, updated AI-DLC state, and created the UOW-06 NFR Requirements question plan."
+**Context**: CONSTRUCTION - UOW-06 NFR Requirements planning
+
+---
+
+## UOW-06 NFR Requirements Recommendation Request
+**Timestamp**: 2026-06-05T05:18:43Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item UOW-06 NFR Requirements answer recommendations with rationale."
+**Context**: CONSTRUCTION - UOW-06 NFR Requirements question guidance
+
+---
+
+## UOW-06 NFR Requirements Answers
+**Timestamp**: 2026-06-05T05:19:34Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+- requirements.md: requirements.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-06 NFR Requirements plan, validated that there were no ambiguous answers, generated NFR requirements and tech stack decision artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-06 NFR Requirements answer validation and artifact generation
+
+---
+
+## UOW-06 NFR Requirements Approval
+**Timestamp**: 2026-06-05T05:22:19Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/summary.md
+
+## Open tabs:
+- summary.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/summary.md
+- artifact-index.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/artifact-index.md
+- domain-entities.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/domain-entities.md
+- business-rules.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/business-rules.md
+- business-logic-model.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/business-logic-model.md
+
+## My request for Codex:
+Continue to Next Stage "
+**AI Response**: "Recorded explicit approval of UOW-06 NFR Requirements and started UOW-06 NFR Design planning."
+**Context**: CONSTRUCTION - UOW-06 NFR Requirements approval gate
+
+---
+
+## UOW-06 NFR Design Start
+**Timestamp**: 2026-06-05T05:22:19Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/summary.md
+
+## Open tabs:
+- summary.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/summary.md
+- artifact-index.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/code/artifact-index.md
+- domain-entities.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/domain-entities.md
+- business-rules.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/business-rules.md
+- business-logic-model.md: aidlc-docs/construction/uow-05-security-masking-and-provider-policy/functional-design/business-logic-model.md
+
+## My request for Codex:
+Continue to Next Stage "
+**AI Response**: "Created the UOW-06 NFR Design question plan and updated AI-DLC state for user answers."
+**Context**: CONSTRUCTION - UOW-06 NFR Design planning
+
+---
+
+## UOW-06 NFR Design Answers
+**Timestamp**: 2026-06-05T05:26:27Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+
+## Active selection of the file:
+Which resilience pattern should provider invocation use?
+
+A) A fail-closed provider pipeline with explicit policy gate, timeout guard, response validation gate, and manual-review fallback
+B) Best-effort invocation that returns provider output whenever available
+C) Fail-fast behavior that aborts the whole conversion run on provider errors
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 2
+How should retry and timeout design be implemented?
+
+A) Use a `ProviderTimeoutGuard` and retry strategy object where the default strategy is single-attempt/no-retry unless deterministic retry safety is declared
+B) Add automatic exponential backoff retry to all provider adapters
+C) Let each adapter implement timeouts and retries independently
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 3
+What scalability pattern best fits provider registry and selection?
+
+A) Deterministic in-memory registry indexed by provider ID and capability metadata, with stable sorted selection for each request
+B) Runtime discovery that selects providers by registration order
+C) Persist provider registry state in an external database
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 4
+How should context minimization be designed?
+
+A) A schema-first `ProviderContextMinimizer` that constructs allowlisted safe context from provider-neutral requests before adapter selection/invocation
+B) A sanitizer that runs after the adapter receives the full request
+C) Trust UOW-04 drafts as safe provider input
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 5
+How should provider response validation be designed?
+
+A) A dedicated `ProviderResponseValidator` that validates schema, confidence, request traceability, safe rationale, provenance, and unsafe-content rejection
+B) A lightweight parser that accepts raw text and creates TODO comments
+C) Adapter-owned validation with no shared validator
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 6
+What observability pattern should provider events follow?
+
+A) Safe structured audit events with reason codes, correlation IDs, mapping request IDs, provider IDs, counts, and safe refs only
+B) Debug logs containing raw provider prompts and responses
+C) No provider events unless an exception is thrown
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 7
+How should external provider boundaries be represented?
+
+A) A generic disabled-by-default `ExternalProviderAdapter` contract behind explicit opt-in and UOW-05 policy readiness checks
+B) A hardcoded default commercial provider adapter
+C) No external adapter shape in this unit
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 8
+How should target-aware metadata be designed?
+
+A) Additive capability metadata for Angular 15, NgRx, forms, routing, i18n, animation, map, media, QR/barcode, and service-worker categories without raw customer data
+B) Target-specific provider prompts containing concrete page names, route strings, and proprietary identifiers
+C) Exclude all target-aware metadata from provider selection
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 9
+What logical component boundary is most appropriate?
+
+A) Dedicated provider/refinement package with registry, minimizer, policy-aware orchestrator, adapters, validator, diagnostics, audit, and test utilities
+B) Put provider logic inside transformation rules
+C) Put provider logic only in the CLI layer
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+
+### Question 10
+How should PBT design be incorporated?
+
+A) Provide generator families and properties for provider descriptors, requests, policy decisions, contexts, responses, diagnostics, and target metadata
+B) Keep PBT only at package integration level
+C) Skip PBT for provider behavior and rely on examples
+X) Other (please describe after [Answer]: tag below)
+
+[Answer]:
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-06 NFR Design plan, validated that there were no ambiguous answers, generated NFR design patterns and logical component artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-06 NFR Design answer validation and artifact generation
+
+---
+
+## UOW-06 NFR Design Approval
+**Timestamp**: 2026-06-05T05:30:51Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+
+## Open tabs:
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-functional-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-06 NFR Design and started UOW-06 Code Generation planning."
+**Context**: CONSTRUCTION - UOW-06 NFR Design approval gate
+
+---
+
+## UOW-06 Code Generation Plan Prompt
+**Timestamp**: 2026-06-05T05:30:51Z
+**User Input**: ""
+**AI Response**: "Created the UOW-06 Code Generation plan at `aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-code-generation-plan.md` and requested explicit approval before generating application code."
+**Context**: CONSTRUCTION - UOW-06 Code Generation planning approval prompt
+
+---
+
+## UOW-06 Code Generation Approval
+**Timestamp**: 2026-06-05T05:44:48Z
+**User Input**: "진행해줘."
+**AI Response**: "Started UOW-06 code generation execution, created the `packages/adapters-ai` package, updated the workspace scripts and documentation, and verified the workspace build and test suites."
+**Context**: CONSTRUCTION - UOW-06 Code Generation approval gate
+
+---
+
+## UOW-06 Build and Test Review
+**Timestamp**: 2026-06-05T05:49:17Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Refreshed the build and test instruction set, updated the workspace state to the UOW-06 Build and Test review gate, and aligned the verification summary with the new adapters-ai package and 56 passing tests."
+**Context**: CONSTRUCTION - UOW-06 Build and Test review gate
+
+---
+
+## Operations Placeholder
+**Timestamp**: 2026-06-05T05:55:44Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded approval to continue from UOW-06 Build and Test, created the Operations placeholder summary, and updated AI-DLC state to OPERATIONS with the current workflow scope complete."
+**Context**: OPERATIONS - Placeholder
+
+---

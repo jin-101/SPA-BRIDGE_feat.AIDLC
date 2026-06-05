@@ -1,27 +1,27 @@
 # Integration Test Instructions
 
 ## Purpose
-Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, and `@spa-bridge/transform-angular-react` packages work together as a coherent analysis, security, orchestration, and transformation stack.
+Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, `@spa-bridge/adapters-ai`, and `@spa-bridge/transform-angular-react` packages work together as a coherent analysis, security, orchestration, provider, and transformation stack.
 
 ## Test Scenarios
 
 ### Scenario 1: Shared Contract Surface Integration
-- **Description**: Verify that the security, application, and source-analysis packages consume the core-model exports without path drift or contract mismatch
+- **Description**: Verify that the security, application, source-analysis, provider, and transformation packages consume the core-model exports without path drift or contract mismatch
 - **Setup**: Install dependencies and build the workspace
 - **Test Steps**:
   1. Run `npm run build`
-  2. Import `@spa-bridge/core-model`, `@spa-bridge/core-application`, and `@spa-bridge/source-angular` from a local consumer or from the built output
-  3. Confirm the security pipeline, application service, and source-analysis service use the shared schemas, ports, and result contracts
-- **Expected Results**: Imports succeed and the public API exposes the shared contracts used by security, orchestration, and source analysis
+  2. Import `@spa-bridge/core-model`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, and `@spa-bridge/adapters-ai` from a local consumer or from the built output
+  3. Confirm the security pipeline, application service, source-analysis service, and provider refinement service use the shared schemas, ports, and result contracts
+- **Expected Results**: Imports succeed and the public API exposes the shared contracts used by security, orchestration, provider refinement, and source analysis
 - **Cleanup**: None
 
-### Scenario 2: Security, Orchestration, and Workspace Cooperation
-- **Description**: Confirm `SecurityEvaluationPipeline`, `SecurityPolicyCoordinator`, `ConversionApplicationService`, `SourceAngularAnalysisService`, and `TransformationService` can cooperate using the in-memory test doubles
+### Scenario 2: Security, Orchestration, Provider, and Workspace Cooperation
+- **Description**: Confirm `SecurityEvaluationPipeline`, `SecurityPolicyCoordinator`, `ConversionApplicationService`, `SourceAngularAnalysisService`, `RefinementService`, and `TransformationService` can cooperate using the in-memory test doubles
 - **Setup**: No extra services required
 - **Test Steps**:
   1. Run `npm test`
-  2. Observe the security, application, source-analysis, and transformation test coverage for config resolution, masking, policy gating, start, status, resume, scan, graph, draft generation, and export flows
-- **Expected Results**: Security evaluation, run manifest, and resolved config are written; source inventory and graph output are produced; transformation drafts and review items are generated; status lookups succeed; and report export handoff completes
+  2. Observe the security, application, source-analysis, provider, and transformation test coverage for config resolution, masking, policy gating, start, status, resume, scan, graph, provider selection, context minimization, draft generation, and export flows
+- **Expected Results**: Security evaluation, run manifest, and resolved config are written; source inventory and graph output are produced; provider refinement drafts and review items are generated; status lookups succeed; and report export handoff completes
 - **Cleanup**: None
 
 ## Setup Integration Test Environment
@@ -44,8 +44,8 @@ npm test
 ```
 
 ### 2. Verify Service Interactions
-- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, Angular source analysis handoff, and transformation pipeline handoff
-- **Expected Results**: `core-model`, `core-security`, `core-application`, `source-angular`, and `transform-angular-react` compose without circular imports, type drift, or workspace path regressions
+- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, Angular source analysis handoff, provider refinement handoff, and transformation pipeline handoff
+- **Expected Results**: `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, and `transform-angular-react` compose without circular imports, type drift, or workspace path regressions
 - **Logs Location**: Vitest console output
 
 ### 3. Cleanup
