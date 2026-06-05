@@ -1,0 +1,1 @@
+{"version":3,"file":"default-security-rule-packs.d.ts","sourceRoot":"","sources":["../../src/rule-packs/default-security-rule-packs.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,aAAa,CAAC;AAEpD,eAAO,MAAM,6BAA6B,GAAI,mBAAkB,MAAM,EAAO,KAAG,gBAU9E,CAAC;AAEH,eAAO,MAAM,iCAAiC,QAAO,gBAYnD,CAAC;AAEH,eAAO,MAAM,8BAA8B,GAAI,mBAAkB,MAAM,EAAO,KAAG,gBAAgB,EAGhG,CAAC"}

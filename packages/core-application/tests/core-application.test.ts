@@ -18,6 +18,7 @@ import {
   ResumePlanner,
   RunStatusReader,
   RunWorkspaceManager,
+  SecurityPolicyCoordinator,
   StructuredEventPublisher,
   type WorkflowStepDefinition,
   validateRunWorkspaceManifest,
@@ -249,5 +250,36 @@ describe('ConversionApplicationService', () => {
 
     expect(reportExporter.exports).toHaveLength(1);
     expect(exportResult.value.exportedArtifact).toContain('markdown:1');
+  });
+});
+
+describe('SecurityPolicyCoordinator', () => {
+  it('delegates to the security package and returns a safe policy result', () => {
+    const coordinator = new SecurityPolicyCoordinator();
+    const result = coordinator.evaluate({
+      payload: 'email: test@example.com',
+      providerMode: 'local-first',
+      externalProviderRequested: false,
+      rulePacks: [
+        {
+          id: 'generic',
+          version: 1,
+          precedence: 1,
+          target: 'generic',
+          categories: ['email'],
+          redactionMode: 'redacted',
+          tokenizationAllowed: false,
+          allowExternalProviderUse: false,
+          metadata: {},
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+
+    expect(result.value.policyDecision.decision).toMatch(/allow|manual-review|block/);
   });
 });

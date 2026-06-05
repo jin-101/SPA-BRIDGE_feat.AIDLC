@@ -1,11 +1,11 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, config resolution, manifest handling, and status lookup remain efficient for the target fixture sizes defined in UOW-02.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, and status lookup remain efficient for the target fixture sizes defined in UOW-02 and UOW-05.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
-- **Throughput**: Config resolution and manifest updates should remain stable across repeated runs
+- **Throughput**: Security evaluation, config resolution, and manifest updates should remain stable across repeated runs
 - **Concurrent Users**: Multiple runs in the same workspace must remain isolated by runId
 - **Error Rate**: 0% for valid deterministic run/workspace inputs
 - **Transformation Draft Throughput**: UOW-04 draft generation should remain deterministic for benchmark fixtures up to the configured generator size

@@ -2,6 +2,7 @@ export * from './application/application-service.js';
 export * from './config/config.js';
 export * from './events/events.js';
 export * from './policy/policy.js';
+export * from './policy/security-policy-coordinator.js';
 export * from './report/report.js';
 export * from './resume/resume.js';
 export * from './run/run.js';

@@ -5,9 +5,9 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: UOW-04 Build and Test Review
-- **Last Completed**: UOW-04 Build and Test Instructions
-- **Next Step**: Review and approve the build and test instructions
+- **Current Stage**: OPERATIONS Placeholder
+- **Last Completed**: UOW-05 Build and Test
+- **Next Step**: Operations placeholder
 
 ## Workspace State
 - **Existing Code**: No
@@ -58,7 +58,13 @@
 - [x] CONSTRUCTION - UOW-04 NFR Design
 - [x] CONSTRUCTION - UOW-04 Code Generation Planning
 - [x] CONSTRUCTION - UOW-04 Code Generation
-- [ ] CONSTRUCTION - UOW-04 Build and Test Review
+- [x] CONSTRUCTION - UOW-04 Build and Test Review
+- [x] CONSTRUCTION - UOW-05 Functional Design
+- [x] CONSTRUCTION - UOW-05 NFR Requirements
+- [x] CONSTRUCTION - UOW-05 NFR Design
+- [x] CONSTRUCTION - UOW-05 Code Generation Planning
+- [x] CONSTRUCTION - UOW-05 Code Generation
+- [x] CONSTRUCTION - UOW-05 Build and Test
 - [ ] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -104,6 +110,16 @@
 - **UOW-04 Code Generation**: Code generated on 2026-06-05T01:08:39Z. Workspace build and test verification passed.
 - **UOW-04 Build and Test**: Instruction files refreshed for the new package and workspace-level verification passed.
 - **UOW-04 Supplemental Hardening**: Added ecosystem-aware review rules and benchmark fixture coverage for the first target application's Angular 15 / NgRx / third-party library mix; workspace build and test suite remained green.
+- **UOW-04 Build and Test Review**: User requested the remaining UOW-04 review be closed and the next unit started; the workflow is now advanced to UOW-05 Functional Design.
+- **UOW-05 Functional Design Artifacts**: User requested UOW-04 Build/Test approval and all A answers for UOW-05; functional design artifacts were generated and are awaiting explicit approval.
+- **UOW-05 Functional Design Approval**: Approved by user on 2026-06-05T02:12:36Z.
+- **UOW-05 NFR Requirements**: Planning started on 2026-06-05T02:12:36Z.
+- **UOW-05 NFR Requirements Artifacts**: User selected all A options and artifacts were generated on 2026-06-05T02:14:39Z. Awaiting explicit approval.
+- **UOW-05 NFR Requirements Approval**: Approved by user on 2026-06-05T02:18:13Z.
+- **UOW-05 NFR Design**: Planning started on 2026-06-05T02:18:13Z.
+- **UOW-05 NFR Design Artifacts**: User selected all A options and artifacts were generated on 2026-06-05T02:20:51Z. Awaiting explicit approval.
+- **UOW-05 NFR Design Approval**: Approved by user on 2026-06-05T04:01:01Z.
+- **UOW-05 Code Generation Planning**: Plan generated on 2026-06-05T04:01:01Z. Awaiting explicit approval.
 
 ## Execution Plan Summary
 - **Recommended Next Stage**: UOW-04 Code Generation

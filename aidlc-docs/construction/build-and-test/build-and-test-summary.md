@@ -3,21 +3,21 @@
 ## Build Status
 - **Build Tool**: npm workspaces + TypeScript
 - **Build Status**: Success
-- **Build Artifacts**: `packages/core-model/dist/`, `packages/core-application/dist/`, `packages/source-angular/dist/`, `packages/transform-angular-react/dist/`
+- **Build Artifacts**: `packages/core-model/dist/`, `packages/core-security/dist/`, `packages/core-application/dist/`, `packages/source-angular/dist/`, `packages/transform-angular-react/dist/`
 - **Build Time**: Verified in the current session
 
 ## Test Execution Summary
 
 ### Unit Tests
-- **Total Tests**: 38
-- **Passed**: 38
+- **Total Tests**: 48
+- **Passed**: 48
 - **Failed**: 0
 - **Coverage**: Not measured
 - **Status**: Success
 
 ### Integration Tests
-- **Test Scenarios**: 4 package-level smoke scenarios
-- **Passed**: 4
+- **Test Scenarios**: 5 package-level smoke scenarios
+- **Passed**: 5
 - **Failed**: 0
 - **Status**: Success
 
@@ -29,7 +29,7 @@
 
 ### Additional Tests
 - **Contract Tests**: N/A
-- **Security Tests**: Instruction set prepared, including transformation pipeline safety review
+- **Security Tests**: Instruction set prepared, including security policy, masking, token vault, and transformation pipeline safety review
 - **E2E Tests**: N/A
 
 ## Overall Status
