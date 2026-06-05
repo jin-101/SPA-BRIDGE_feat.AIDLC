@@ -148,9 +148,9 @@ export declare const ConversionOverridesSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    outputPath?: string | undefined;
-    targetStrategy?: "custom" | "vite-react-typescript" | "user-selected" | undefined;
+    targetStrategy?: "vite-react-typescript" | "user-selected" | "custom" | undefined;
     providerMode?: "local-first" | "external-only" | "auto" | undefined;
+    outputPath?: string | undefined;
     reportFormats?: ("json" | "markdown" | "html")[] | undefined;
     preservePartialArtifacts?: boolean | undefined;
     manualReviewEnabled?: boolean | undefined;
@@ -163,9 +163,9 @@ export declare const ConversionOverridesSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     } | undefined;
 }, {
-    outputPath?: string | undefined;
-    targetStrategy?: "custom" | "vite-react-typescript" | "user-selected" | undefined;
+    targetStrategy?: "vite-react-typescript" | "user-selected" | "custom" | undefined;
     providerMode?: "local-first" | "external-only" | "auto" | undefined;
+    outputPath?: string | undefined;
     reportFormats?: ("json" | "markdown" | "html")[] | undefined;
     preservePartialArtifacts?: boolean | undefined;
     manualReviewEnabled?: boolean | undefined;

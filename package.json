@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace @spa-bridge/core-model && npm run build --workspace @spa-bridge/core-application",
-    "test": "npm run test --workspace @spa-bridge/core-model && npm run test --workspace @spa-bridge/core-application"
+    "build": "npm run build --workspace @spa-bridge/core-model && npm run build --workspace @spa-bridge/core-application && npm run build --workspace @spa-bridge/source-angular",
+    "test": "npm run test --workspace @spa-bridge/core-model && npm run test --workspace @spa-bridge/core-application && npm run test --workspace @spa-bridge/source-angular"
   }
 }

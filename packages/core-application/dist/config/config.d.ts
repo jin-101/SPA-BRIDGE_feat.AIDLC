@@ -36,12 +36,9 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
-    schemaVersion: 1;
-    projectRoot: string;
-    inputPath: string;
-    outputPath: string;
-    targetStrategy: "custom" | "vite-react-typescript" | "user-selected";
+    targetStrategy: "vite-react-typescript" | "user-selected" | "custom";
     providerMode: "local-first" | "external-only" | "auto";
+    outputPath: string;
     reportFormats: ("json" | "markdown" | "html")[];
     preservePartialArtifacts: boolean;
     manualReviewEnabled: boolean;
@@ -53,13 +50,13 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
         unitTests: boolean;
         propertyTests: boolean;
     };
-}, {
     schemaVersion: 1;
     projectRoot: string;
     inputPath: string;
-    outputPath: string;
-    targetStrategy: "custom" | "vite-react-typescript" | "user-selected";
+}, {
+    targetStrategy: "vite-react-typescript" | "user-selected" | "custom";
     providerMode: "local-first" | "external-only" | "auto";
+    outputPath: string;
     reportFormats: ("json" | "markdown" | "html")[];
     preservePartialArtifacts: boolean;
     manualReviewEnabled: boolean;
@@ -71,6 +68,9 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
         unitTests?: boolean | undefined;
         propertyTests?: boolean | undefined;
     };
+    schemaVersion: 1;
+    projectRoot: string;
+    inputPath: string;
 }>;
 export type ResolvedConfigResult = {
     config: ResolvedConversionConfig;

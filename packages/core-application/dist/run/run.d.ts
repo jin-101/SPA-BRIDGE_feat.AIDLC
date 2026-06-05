@@ -21,8 +21,8 @@ export declare const RunCheckpointSchema: z.ZodObject<{
         segment?: string | undefined;
     }>, "many">>;
 }, "strip", z.ZodTypeAny, {
-    id: string;
     stepId: string;
+    id: string;
     completedAt: string;
     artifactRefs: {
         path: string;
@@ -30,8 +30,8 @@ export declare const RunCheckpointSchema: z.ZodObject<{
         segment?: string | undefined;
     }[];
 }, {
-    id: string;
     stepId: string;
+    id: string;
     completedAt: string;
     artifactRefs?: {
         path: string;
@@ -80,8 +80,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
             segment?: string | undefined;
         }>, "many">>;
     }, "strip", z.ZodTypeAny, {
-        id: string;
         stepId: string;
+        id: string;
         completedAt: string;
         artifactRefs: {
             path: string;
@@ -89,8 +89,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
             segment?: string | undefined;
         }[];
     }, {
-        id: string;
         stepId: string;
+        id: string;
         completedAt: string;
         artifactRefs?: {
             path: string;
@@ -104,13 +104,13 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
         description: z.ZodOptional<z.ZodString>;
         status: z.ZodEnum<["open", "resolved", "deferred"]>;
     }, "strip", z.ZodTypeAny, {
-        id: string;
         status: "open" | "resolved" | "deferred";
+        id: string;
         title: string;
         description?: string | undefined;
     }, {
-        id: string;
         status: "open" | "resolved" | "deferred";
+        id: string;
         title: string;
         description?: string | undefined;
     }>, "many">>;
@@ -120,21 +120,21 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
     lastFailureMessage: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     status: "pending" | "running" | "completed" | "failed";
+    outputPath: string;
+    schemaVersion: 1;
+    projectRoot: string;
+    inputPath: string;
+    runId: string;
     artifactRefs: {
         path: string;
         kind: "generated";
         segment?: string | undefined;
     }[];
-    schemaVersion: 1;
-    runId: string;
-    projectRoot: string;
-    inputPath: string;
-    outputPath: string;
     startedAt: string;
     updatedAt: string;
     checkpoints: {
-        id: string;
         stepId: string;
+        id: string;
         completedAt: string;
         artifactRefs: {
             path: string;
@@ -143,8 +143,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
         }[];
     }[];
     manualReviewItems: {
-        id: string;
         status: "open" | "resolved" | "deferred";
+        id: string;
         title: string;
         description?: string | undefined;
     }[];
@@ -154,11 +154,11 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
     lastFailureMessage?: string | undefined;
 }, {
     status: "pending" | "running" | "completed" | "failed";
+    outputPath: string;
     schemaVersion: 1;
-    runId: string;
     projectRoot: string;
     inputPath: string;
-    outputPath: string;
+    runId: string;
     startedAt: string;
     updatedAt: string;
     artifactRefs?: {
@@ -167,8 +167,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
         segment?: string | undefined;
     }[] | undefined;
     checkpoints?: {
-        id: string;
         stepId: string;
+        id: string;
         completedAt: string;
         artifactRefs?: {
             path: string;
@@ -177,8 +177,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
         }[] | undefined;
     }[] | undefined;
     manualReviewItems?: {
-        id: string;
         status: "open" | "resolved" | "deferred";
+        id: string;
         title: string;
         description?: string | undefined;
     }[] | undefined;
