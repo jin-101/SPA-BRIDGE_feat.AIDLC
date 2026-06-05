@@ -1,0 +1,1 @@
+{"version":3,"file":"pass-summary-collector.d.ts","sourceRoot":"","sources":["../../src/summary/pass-summary-collector.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,WAAW,EAAE,mBAAmB,EAAE,MAAM,aAAa,CAAC;AAEpE,qBAAa,oBAAoB;IAC/B,OAAO,CAAC,aAAa,EAAE,MAAM,EAAE,YAAY,EAAE,MAAM,EAAE,MAAM,EAAE,mBAAmB,GAAG,WAAW;CAkC/F"}

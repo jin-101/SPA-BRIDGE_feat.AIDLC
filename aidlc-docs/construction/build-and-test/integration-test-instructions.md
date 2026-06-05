@@ -1,7 +1,7 @@
 # Integration Test Instructions
 
 ## Purpose
-Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-application`, and `@spa-bridge/source-angular` packages work together as a coherent analysis and orchestration stack.
+Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, and `@spa-bridge/transform-angular-react` packages work together as a coherent analysis, orchestration, and transformation stack.
 
 ## Test Scenarios
 
@@ -16,12 +16,12 @@ Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-application`, and 
 - **Cleanup**: None
 
 ### Scenario 2: Orchestration and Workspace Cooperation
-- **Description**: Confirm `ConversionApplicationService` and `SourceAngularAnalysisService` can cooperate using the in-memory test doubles
+- **Description**: Confirm `ConversionApplicationService`, `SourceAngularAnalysisService`, and `TransformationService` can cooperate using the in-memory test doubles
 - **Setup**: No extra services required
 - **Test Steps**:
   1. Run `npm test`
-  2. Observe the application and source-analysis test coverage for start, status, resume, scan, graph, and export flows
-- **Expected Results**: Run manifest and resolved config are written, source inventory and graph output are produced, status lookups succeed, and report export handoff completes
+  2. Observe the application, source-analysis, and transformation test coverage for start, status, resume, scan, graph, draft generation, and export flows
+- **Expected Results**: Run manifest and resolved config are written, source inventory and graph output are produced, transformation drafts and review items are generated, status lookups succeed, and report export handoff completes
 - **Cleanup**: None
 
 ## Setup Integration Test Environment
@@ -44,8 +44,8 @@ npm test
 ```
 
 ### 2. Verify Service Interactions
-- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, and Angular source analysis handoff
-- **Expected Results**: `core-model`, `core-application`, and `source-angular` compose without circular imports, type drift, or workspace path regressions
+- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, Angular source analysis handoff, and transformation pipeline handoff
+- **Expected Results**: `core-model`, `core-application`, `source-angular`, and `transform-angular-react` compose without circular imports, type drift, or workspace path regressions
 - **Logs Location**: Vitest console output
 
 ### 3. Cleanup

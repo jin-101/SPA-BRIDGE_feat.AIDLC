@@ -8,6 +8,7 @@ Validate that run orchestration, config resolution, manifest handling, and statu
 - **Throughput**: Config resolution and manifest updates should remain stable across repeated runs
 - **Concurrent Users**: Multiple runs in the same workspace must remain isolated by runId
 - **Error Rate**: 0% for valid deterministic run/workspace inputs
+- **Transformation Draft Throughput**: UOW-04 draft generation should remain deterministic for benchmark fixtures up to the configured generator size
 
 ## Setup Performance Test Environment
 
@@ -26,8 +27,10 @@ Validate that run orchestration, config resolution, manifest handling, and statu
 ### 1. Execute Load Tests
 ```bash
 # Performance harness is not yet generated for this workspace.
-# Use the run workspace, config, and resume helpers in:
+# Use the run workspace helpers in:
 # packages/core-application/src/
+# and the benchmark fixture factory in:
+# packages/transform-angular-react/src/testing/
 # to construct a benchmark runner in a later unit.
 ```
 

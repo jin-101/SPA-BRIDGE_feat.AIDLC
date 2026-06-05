@@ -218,6 +218,26 @@ Continue to Next Stage"
 **Timestamp**: 2026-06-04T06:20:49Z
 **User Input**: "Continue to Next Stage"
 **AI Response**: "Presented the UOW-02 build and test instruction set at `aidlc-docs/construction/build-and-test/` and requested explicit approval before moving to Operations."
+
+---
+
+## UOW-04 Supplement Request
+**Timestamp**: 2026-06-05T01:56:58Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: requirements.md
+
+## Open tabs:
+- requirements.md: requirements.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+
+## My request for Codex:
+uow-01 ~ uow-04 중에서 꼭 보강해야 할 부분이 있다면 보완해줘."
+**AI Response**: "Reviewed UOW-01 through UOW-04, identified UOW-04 as the place that benefits most from a target-ecosystem supplement, added package-aware Angular 15 / NgRx / third-party library review rules, expanded the benchmark fixture to reflect the first target application's ecosystem, and verified the workspace build and test suite still pass."
+**Context**: CONSTRUCTION - UOW-04 supplemental hardening for first target ecosystem
 **Context**: CONSTRUCTION - UOW-02 Build and Test review gate
 
 ---
@@ -1161,5 +1181,121 @@ X) Other (please describe after [Answer]: tag below)
 모두 A로 하고 진행해줘."
 **AI Response**: "Applied A to all UOW-04 Functional Design plan answers, validated the answers, generated business logic, business rules, and domain entities artifacts, updated AI-DLC state, and prepared the review prompt."
 **Context**: CONSTRUCTION - UOW-04 Functional Design answer validation and artifact generation
+
+---
+
+## UOW-04 Functional Design Approval
+**Timestamp**: 2026-06-05T00:20:17Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+
+## Open tabs:
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-04 Functional Design, updated AI-DLC state, loaded NFR Requirements rules, and created the UOW-04 NFR Requirements plan with questions."
+**Context**: CONSTRUCTION - UOW-04 Functional Design approval gate
+
+---
+
+## UOW-04 NFR Requirements Answers
+**Timestamp**: 2026-06-05T00:24:00Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+
+## Open tabs:
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+
+## My request for Codex:
+모두 A로 하고 진행해줘."
+**AI Response**: "Applied A to all UOW-04 NFR Requirements plan answers, validated the answers, generated NFR requirements and tech stack decision artifacts, updated AI-DLC state, and prepared the review prompt."
+**Context**: CONSTRUCTION - UOW-04 NFR Requirements answer validation and artifact generation
+
+---
+
+## UOW-04 NFR Requirements Approval
+**Timestamp**: 2026-06-05T00:24:55Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-04 NFR Requirements, updated AI-DLC state, loaded NFR Design rules, and created the UOW-04 NFR Design plan with questions."
+**Context**: CONSTRUCTION - UOW-04 NFR Requirements approval gate
+
+---
+
+## UOW-04 NFR Design Answers
+**Timestamp**: 2026-06-05T00:28:39Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+
+## My request for Codex:
+모두 A로 하고 진행해줘."
+**AI Response**: "Applied A to all UOW-04 NFR Design plan answers, validated the answers, generated NFR design patterns and logical component artifacts, updated AI-DLC state, and prepared the review prompt."
+**Context**: CONSTRUCTION - UOW-04 NFR Design answer validation and artifact generation
+
+---
+
+## UOW-04 NFR Design Approval
+**Timestamp**: 2026-06-05T00:30:30Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-04-angular-to-react-transformation-functional-design-plan.md: aidlc-docs/construction/plans/uow-04-angular-to-react-transformation-functional-design-plan.md
+- uow-03-angular-source-analysis-code-generation-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-code-generation-plan.md
+- uow-03-angular-source-analysis-nfr-design-plan.md: aidlc-docs/construction/plans/uow-03-angular-source-analysis-nfr-design-plan.md
+- uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-01-core-model-and-ports-foundation-nfr-requirements-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of UOW-04 NFR Design, updated AI-DLC state, loaded Code Generation rules, and created the UOW-04 code generation plan for review."
+**Context**: CONSTRUCTION - UOW-04 NFR Design approval gate
+
+---
+
+## UOW-04 Code Generation Approval
+**Timestamp**: 2026-06-05T01:08:39Z
+**User Input**: "승인할게. 실행해줘."
+**AI Response**: "Implemented the UOW-04 transform-angular-react package, added the transformation pipeline, service, converters, generators, tests, workspace scripts, and documentation; verified the workspace build and test suite passed."
+**Context**: CONSTRUCTION - UOW-04 Code Generation approval gate
+
+---
+
+## UOW-04 Build and Test Transition
+**Timestamp**: 2026-06-05T01:43:14Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Refreshed the build and test instruction set for UOW-04, updated the workspace state to Build and Test review, and prepared the review prompt for approval."
+**Context**: CONSTRUCTION - UOW-04 Build and Test transition
 
 ---
