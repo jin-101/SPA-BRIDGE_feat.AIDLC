@@ -1,0 +1,1 @@
+{"version":3,"file":"target-manual-review-factory.d.ts","sourceRoot":"","sources":["../../src/review/target-manual-review-factory.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,wBAAwB,CAAC;AAE/D,qBAAa,yBAAyB;IACpC,MAAM,CAAC,EAAE,EAAE,MAAM,EAAE,KAAK,EAAE,MAAM,EAAE,WAAW,CAAC,EAAE,MAAM,GAAG,gBAAgB;CAQ1E"}

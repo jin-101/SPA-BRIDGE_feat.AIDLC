@@ -1,7 +1,7 @@
 # Integration Test Instructions
 
 ## Purpose
-Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, `@spa-bridge/adapters-ai`, and `@spa-bridge/transform-angular-react` packages work together as a coherent analysis, security, orchestration, provider, and transformation stack.
+Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, `@spa-bridge/adapters-ai`, `@spa-bridge/transform-angular-react`, and `@spa-bridge/target-react` packages work together as a coherent analysis, security, orchestration, provider, transformation, and target-generation stack.
 
 ## Test Scenarios
 
@@ -15,13 +15,13 @@ Validate that the `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-b
 - **Expected Results**: Imports succeed and the public API exposes the shared contracts used by security, orchestration, provider refinement, and source analysis
 - **Cleanup**: None
 
-### Scenario 2: Security, Orchestration, Provider, and Workspace Cooperation
-- **Description**: Confirm `SecurityEvaluationPipeline`, `SecurityPolicyCoordinator`, `ConversionApplicationService`, `SourceAngularAnalysisService`, `RefinementService`, and `TransformationService` can cooperate using the in-memory test doubles
+### Scenario 2: Security, Orchestration, Provider, Transformation, and Target Generation Cooperation
+- **Description**: Confirm `SecurityEvaluationPipeline`, `SecurityPolicyCoordinator`, `ConversionApplicationService`, `SourceAngularAnalysisService`, `RefinementService`, `TransformationService`, and `TargetGenerationService` can cooperate using the in-memory test doubles
 - **Setup**: No extra services required
 - **Test Steps**:
   1. Run `npm test`
-  2. Observe the security, application, source-analysis, provider, and transformation test coverage for config resolution, masking, policy gating, start, status, resume, scan, graph, provider selection, context minimization, draft generation, and export flows
-- **Expected Results**: Security evaluation, run manifest, and resolved config are written; source inventory and graph output are produced; provider refinement drafts and review items are generated; status lookups succeed; and report export handoff completes
+  2. Observe the security, application, source-analysis, provider, transformation, and target-generation test coverage for config resolution, masking, policy gating, start, status, resume, scan, graph, provider selection, context minimization, draft generation, target write-plan generation, and export flows
+- **Expected Results**: Security evaluation, run manifest, and resolved config are written; source inventory and graph output are produced; provider refinement drafts and review items are generated; React target write plans and file specs are generated; status lookups succeed; and report export handoff completes
 - **Cleanup**: None
 
 ## Setup Integration Test Environment
@@ -44,8 +44,8 @@ npm test
 ```
 
 ### 2. Verify Service Interactions
-- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, Angular source analysis handoff, provider refinement handoff, and transformation pipeline handoff
-- **Expected Results**: `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, and `transform-angular-react` compose without circular imports, type drift, or workspace path regressions
+- **Test Scenarios**: Shared contract surface, orchestration/workspace cooperation, Angular source analysis handoff, provider refinement handoff, transformation pipeline handoff, and React target-generation handoff
+- **Expected Results**: `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, `transform-angular-react`, and `target-react` compose without circular imports, type drift, or workspace path regressions
 - **Logs Location**: Vitest console output
 
 ### 3. Cleanup

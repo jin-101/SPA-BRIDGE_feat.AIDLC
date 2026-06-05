@@ -1878,3 +1878,241 @@ Continue to Next Stage"
 **Context**: OPERATIONS - Placeholder
 
 ---
+
+## UOW-07 Functional Design Planning
+**Timestamp**: 2026-06-05T05:57:33Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-requirements-plan.md
+
+## My request for Codex:
+다음 과정을 진행해줘."
+**AI Response**: "Loaded the remaining unit-of-work context, identified UOW-07 React Target Generation as the next construction unit, created the UOW-07 Functional Design plan, and updated AI-DLC state to UOW-07 Functional Design Planning."
+**Context**: CONSTRUCTION - UOW-07 Functional Design planning
+
+---
+
+## UOW-07 Functional Design Recommendation Request
+**Timestamp**: 2026-06-05T06:00:02Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+
+## Active selection of the file:
+What should UOW-07 generate as the default target project?
+
+A) Vite + React 18 + TypeScript project with deterministic package/config/source layout
+B) Next.js project by default
+C) Only individual `.tsx` files without project scaffolding
+X) Other (please describe after [Answer]: tag below)
+## Open tabs:
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item recommendations for the UOW-07 Functional Design plan, with A recommended for all questions based on the approved Vite React TypeScript target generation direction."
+**Context**: CONSTRUCTION - UOW-07 Functional Design question guidance
+
+---
+
+## UOW-07 Functional Design Answers
+**Timestamp**: 2026-06-05T06:02:32Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+
+## Active selection of the file:
+What should be the blocking PBT focus for this unit?
+
+A) Write-plan determinism, path containment, idempotent generation, dependency selection stability, and trace coverage
+B) Only example-based tests for a few generated files
+C) UI interaction properties
+X) Other (please describe after [Answer]: tag below)
+## Open tabs:
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-07 Functional Design plan, validated the answers, generated business logic, business rules, and domain entity artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-07 Functional Design answer validation and artifact generation
+
+---
+
+## UOW-07 Functional Design Approval
+**Timestamp**: 2026-06-05T06:05:23Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-07 Functional Design, created the UOW-07 NFR Requirements plan, and updated AI-DLC state for NFR Requirements Planning."
+**Context**: CONSTRUCTION - UOW-07 Functional Design approval gate
+
+---
+
+## UOW-07 NFR Requirements Recommendation Request
+**Timestamp**: 2026-06-05T06:07:07Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item recommendations for the UOW-07 NFR Requirements plan, with A recommended for all questions based on deterministic, secure, and extensible React target generation requirements."
+**Context**: CONSTRUCTION - UOW-07 NFR Requirements question guidance
+
+---
+
+## UOW-07 NFR Requirements Answers
+**Timestamp**: 2026-06-05T06:08:12Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-07 NFR Requirements plan, validated the answers, generated NFR requirements and tech stack decision artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-07 NFR Requirements answer validation and artifact generation
+
+---
+
+## UOW-07 NFR Requirements Approval
+**Timestamp**: 2026-06-05T06:11:12Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-07 NFR Requirements, created the UOW-07 NFR Design plan, and updated AI-DLC state for NFR Design Planning."
+**Context**: CONSTRUCTION - UOW-07 NFR Requirements approval gate
+
+---
+
+## UOW-07 NFR Design Recommendation Request
+**Timestamp**: 2026-06-05T06:13:26Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item recommendations for the UOW-07 NFR Design plan, with A recommended for all questions based on fail-closed, deterministic, path-safe target generation design."
+**Context**: CONSTRUCTION - UOW-07 NFR Design question guidance
+
+---
+
+## UOW-07 NFR Design Answers
+**Timestamp**: 2026-06-05T06:16:34Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-07-react-target-generation-nfr-design-plan.md
+
+## Open tabs:
+- uow-07-react-target-generation-nfr-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-nfr-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-07 NFR Design plan, validated the answers, generated NFR design patterns and logical component artifacts, and updated state for review."
+**Context**: CONSTRUCTION - UOW-07 NFR Design answer validation and artifact generation
+
+---
+
+## UOW-07 NFR Design Approval and Code Generation Planning
+**Timestamp**: 2026-06-05T06:20:03Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-07-react-target-generation-nfr-design-plan.md
+
+## Open tabs:
+- uow-07-react-target-generation-nfr-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-nfr-design-plan.md
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md: aidlc-docs/construction/plans/uow-06-ai-provider-adapters-and-refinement-nfr-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-07 NFR Design, analyzed package patterns and UOW-07 artifacts, created the UOW-07 Code Generation plan, and updated AI-DLC state for Code Generation Planning Review."
+**Context**: CONSTRUCTION - UOW-07 NFR Design approval and Code Generation planning gate
+
+---
+
+## UOW-07 Code Generation Approval
+**Timestamp**: 2026-06-05T06:37:18Z
+**User Input**: "승인완료"
+**AI Response**: "Created the @spa-bridge/target-react workspace package, generated target-react source, tests, and documentation, updated the root build/test scripts and AI-DLC state, and verified the workspace build and test suites successfully."
+**Context**: CONSTRUCTION - UOW-07 Code Generation approval gate
+
+---
+
+## UOW-07 Build and Test Review
+**Timestamp**: 2026-06-05T06:42:30Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Updated the build/test instruction files to include @spa-bridge/target-react, refreshed the build/test summary, and moved AI-DLC state to Build and Test review."
+**Context**: CONSTRUCTION - UOW-07 build and test review gate
+
+---
+
+## Operations Placeholder Transition
+**Timestamp**: 2026-06-05T06:42:30Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Advanced AI-DLC state to the Operations placeholder stage after completing UOW-07 build and test documentation and verification."
+**Context**: CONSTRUCTION - transition into operations placeholder
+
+---

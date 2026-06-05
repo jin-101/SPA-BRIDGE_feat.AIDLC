@@ -1,0 +1,1 @@
+{"version":3,"file":"target-trace-builder.d.ts","sourceRoot":"","sources":["../../src/traceability/target-trace-builder.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,SAAS,EAAE,SAAS,EAAE,MAAM,wBAAwB,CAAC;AAInE,qBAAa,kBAAkB;IAC7B,KAAK,CAAC,MAAM,EAAE,SAAS,EAAE,UAAU,EAAE,MAAM,EAAE,QAAQ,GAAE,SAAS,CAAC,UAAU,CAAkB,GAAG,SAAS;CAU1G"}

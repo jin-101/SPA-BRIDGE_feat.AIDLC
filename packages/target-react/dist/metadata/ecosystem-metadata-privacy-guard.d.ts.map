@@ -1,0 +1,1 @@
+{"version":3,"file":"ecosystem-metadata-privacy-guard.d.ts","sourceRoot":"","sources":["../../src/metadata/ecosystem-metadata-privacy-guard.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,4BAA4B,EAAE,MAAM,wCAAwC,CAAC;AAE3F,qBAAa,6BAA6B;IACxC,QAAQ,CAAC,QAAQ,EAAE,4BAA4B,EAAE,GAAG,4BAA4B,EAAE;CAOnF"}

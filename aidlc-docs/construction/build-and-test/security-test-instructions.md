@@ -1,12 +1,12 @@
 # Security Test Instructions
 
 ## Purpose
-Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, and transformation pipeline safety.
+Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, transformation pipeline safety, and target-generation write-plan safety.
 
 ## Security Test Scenarios
 
 ### Scenario 1: Dependency and Supply Chain Review
-- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, and `transform-angular-react`
+- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, `transform-angular-react`, and `target-react`
 - **Steps**:
   1. Run `npm audit --omit=dev`
   2. Review the dependency lists in `packages/core-model/package.json`, `packages/core-security/package.json`, `packages/core-application/package.json`, and `packages/adapters-ai/package.json`
@@ -36,6 +36,15 @@ Validate that the workspace maintains the security baseline for dependency hygie
   3. Confirm the package does not call external providers directly and keeps unresolved mappings as manual-review items
   4. Confirm provider refinement handoff uses minimized context and safe audit events
 - **Expected Results**: Transformation output remains provider-neutral, redaction-safe, and fail-closed for invalid or unsupported mappings
+
+### Scenario 5: React Target Generation Safety Review
+- **Description**: Confirm the target-generation package enforces path containment, exact dependency pinning, safe diagnostics, and stable write plans
+- **Steps**:
+  1. Review `packages/target-react/src/`
+  2. Confirm `TargetGenerationRequestValidator`, `TargetPathGuard`, `WritePlanBuilder`, and `TraceCoverageValidator` reject unsafe or malformed inputs
+  3. Confirm `generateReactTarget` produces safe manual-review items instead of silently dropping unresolved materialization cases
+  4. Confirm dependency manifests remain exact-pinned and allowlisted
+- **Expected Results**: Target generation remains path-safe, redaction-safe, deterministic, and fail-closed for invalid or unsupported mappings
 
 ## Setup Security Test Environment
 
@@ -73,6 +82,9 @@ rg -n "(api[_-]?key|secret|password|token|PRIVATE KEY)" packages/core-model pack
 - `packages/transform-angular-react/src/validation/transformation-request-validator.ts`
 - `packages/transform-angular-react/src/validation/draft-validator.ts`
 - `packages/transform-angular-react/src/diagnostics/safe-review-diagnostic-builder.ts`
+- `packages/target-react/src/generation/target-generation-service.ts`
+- `packages/target-react/src/path/target-path-guard.ts`
+- `packages/target-react/src/write-plan/write-plan-builder.ts`
 
 ## Notes
 - UI hardening, auth, and production deployment rules are N/A for the current package-level workspace.

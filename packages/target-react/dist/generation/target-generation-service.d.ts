@@ -1,0 +1,41 @@
+import { type Result } from '@spa-bridge/core-model';
+import type { TargetGenerationError, TargetGenerationRequest, TargetGenerationResult } from '../types.js';
+import { TargetGenerationRequestValidator } from '../validation/target-generation-request-validator.js';
+import { TargetStrategyRegistry } from '../strategy/target-strategy-registry.js';
+import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
+import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { ServiceMaterializer } from '../materializers/service-materializer.js';
+import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
+import { StateOutputAdapters } from '../state/state-output-adapters.js';
+import { WritePlanBuilder } from '../write-plan/write-plan-builder.js';
+import { TargetTraceBuilder } from '../traceability/target-trace-builder.js';
+import { TraceCoverageValidator } from '../traceability/trace-coverage-validator.js';
+import { DependencyManifestBuilder } from '../dependencies/dependency-manifest-builder.js';
+import { TargetDiagnosticFactory } from '../diagnostics/target-diagnostic-factory.js';
+import { TargetManualReviewFactory } from '../review/target-manual-review-factory.js';
+import { ReviewStubGenerator } from '../review/review-stub-generator.js';
+import { EcosystemMetadataPrivacyGuard } from '../metadata/ecosystem-metadata-privacy-guard.js';
+export declare class TargetGenerationService {
+    private readonly registry;
+    private readonly validator;
+    private readonly normalizer;
+    private readonly dependencyBuilder;
+    private readonly componentMaterializer;
+    private readonly serviceMaterializer;
+    private readonly routeAdapter;
+    private readonly stateAdapters;
+    private readonly writePlanBuilder;
+    private readonly traceBuilder;
+    private readonly traceCoverageValidator;
+    private readonly diagnosticFactory;
+    private readonly manualReviewFactory;
+    private readonly reviewStubGenerator;
+    private readonly privacyGuard;
+    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard);
+    generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
+    private buildDependencyManifest;
+    private createManualReviewItems;
+    private createGeneratedDiagnostics;
+}
+export declare const generateReactTarget: (request: TargetGenerationRequest) => Result<TargetGenerationResult, TargetGenerationError>;
+//# sourceMappingURL=target-generation-service.d.ts.map

@@ -1,0 +1,1 @@
+{"version":3,"file":"target-ecosystem-metadata-catalog.d.ts","sourceRoot":"","sources":["../../src/metadata/target-ecosystem-metadata-catalog.ts"],"names":[],"mappings":"AAAA,MAAM,MAAM,4BAA4B,GAAG;IACzC,QAAQ,EAAE,MAAM,CAAC;IACjB,WAAW,EAAE,MAAM,CAAC;IACpB,QAAQ,EAAE,MAAM,EAAE,CAAC;CACpB,CAAC;AAEF,eAAO,MAAM,8BAA8B,EAAE,4BAA4B,EAMxE,CAAC"}

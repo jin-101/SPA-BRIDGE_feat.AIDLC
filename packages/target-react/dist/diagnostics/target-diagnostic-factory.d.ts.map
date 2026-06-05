@@ -1,0 +1,1 @@
+{"version":3,"file":"target-diagnostic-factory.d.ts","sourceRoot":"","sources":["../../src/diagnostics/target-diagnostic-factory.ts"],"names":[],"mappings":"AAAA,OAAO,EAAoB,KAAK,UAAU,EAAE,MAAM,wBAAwB,CAAC;AAE3E,qBAAa,uBAAuB;IAClC,MAAM,CAAC,IAAI,EAAE,MAAM,EAAE,QAAQ,EAAE,UAAU,CAAC,UAAU,CAAC,EAAE,OAAO,EAAE,MAAM,EAAE,UAAU,CAAC,EAAE,MAAM,GAAG,UAAU;CAUzG"}

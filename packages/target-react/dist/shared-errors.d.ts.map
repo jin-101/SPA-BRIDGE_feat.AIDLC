@@ -1,0 +1,1 @@
+{"version":3,"file":"shared-errors.d.ts","sourceRoot":"","sources":["../src/shared-errors.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,qBAAqB,EAAE,yBAAyB,EAAE,MAAM,YAAY,CAAC;AAEnF,eAAO,MAAM,2BAA2B,GACtC,MAAM,yBAAyB,EAC/B,SAAS,MAAM,EACf,UAAS,MAAM,EAAO,KACrB,qBAID,CAAC;AAEH,eAAO,MAAM,uBAAuB,GAAI,OAAO,OAAO,KAAG,KAAK,IAAI,qBAI9C,CAAC"}

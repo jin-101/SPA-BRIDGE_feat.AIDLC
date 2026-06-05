@@ -1,0 +1,1 @@
+{"version":3,"file":"target-path-guard.d.ts","sourceRoot":"","sources":["../../src/path/target-path-guard.ts"],"names":[],"mappings":"AAEA,OAAO,KAAK,EAAE,qBAAqB,EAAE,MAAM,aAAa,CAAC;AAGzD,qBAAa,eAAe;IAC1B,eAAe,CAAC,UAAU,EAAE,MAAM,EAAE,aAAa,EAAE,MAAM,GAAG;QAAE,EAAE,EAAE,IAAI,CAAC;QAAC,KAAK,EAAE,MAAM,CAAA;KAAE,GAAG;QAAE,EAAE,EAAE,KAAK,CAAC;QAAC,KAAK,EAAE,qBAAqB,CAAA;KAAE;CActI"}

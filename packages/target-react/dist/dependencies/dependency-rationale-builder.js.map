@@ -1,0 +1,1 @@
+{"version":3,"file":"dependency-rationale-builder.js","sourceRoot":"","sources":["../../src/dependencies/dependency-rationale-builder.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,0BAA0B;IACrC,KAAK,CAAC,QAAkC;QACtC,OAAO,EAAE,GAAG,QAAQ,CAAC,SAAS,EAAE,CAAC;IACnC,CAAC;CACF"}

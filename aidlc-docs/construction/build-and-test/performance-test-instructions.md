@@ -1,7 +1,7 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, security evaluation, config resolution, manifest handling, provider selection, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, and UOW-06.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, and UOW-07.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
@@ -10,6 +10,7 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 - **Error Rate**: 0% for valid deterministic run/workspace inputs
 - **Transformation Draft Throughput**: UOW-04 draft generation should remain deterministic for benchmark fixtures up to the configured generator size
 - **Provider Selection Throughput**: UOW-06 provider registry lookup and response validation should remain deterministic and bounded for local/internal and mock providers
+- **Target Generation Throughput**: UOW-07 target write-plan generation should remain deterministic and bounded for representative React target drafts
 
 ## Setup Performance Test Environment
 

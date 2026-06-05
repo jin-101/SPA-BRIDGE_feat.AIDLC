@@ -1,0 +1,25 @@
+{
+  "name": "@spa-bridge/target-react",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@spa-bridge/core-model": "0.1.0",
+    "@spa-bridge/transform-angular-react": "0.1.0",
+    "typescript": "5.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.0",
+    "fast-check": "3.23.2",
+    "vitest": "2.1.9"
+  }
+}

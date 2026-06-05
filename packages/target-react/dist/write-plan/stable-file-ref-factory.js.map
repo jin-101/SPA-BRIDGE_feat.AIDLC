@@ -1,0 +1,1 @@
+{"version":3,"file":"stable-file-ref-factory.js","sourceRoot":"","sources":["../../src/write-plan/stable-file-ref-factory.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,oBAAoB;IAC/B,MAAM,CAAC,SAAiB,EAAE,IAAY;QACpC,OAAO;YACL,IAAI,EAAE,WAAW;YACjB,IAAI,EAAE,aAAa,SAAS,IAAI,IAAI,CAAC,KAAK,CAAC,CAAC,EAAE,EAAE,CAAC,EAAE;SACpD,CAAC;IACJ,CAAC;CACF"}

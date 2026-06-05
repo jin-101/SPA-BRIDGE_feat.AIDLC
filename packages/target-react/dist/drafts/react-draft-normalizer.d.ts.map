@@ -1,0 +1,1 @@
+{"version":3,"file":"react-draft-normalizer.d.ts","sourceRoot":"","sources":["../../src/drafts/react-draft-normalizer.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,2BAA2B,EAAE,uBAAuB,EAAE,MAAM,aAAa,CAAC;AAIxF,qBAAa,oBAAoB;IAC/B,SAAS,CAAC,OAAO,EAAE,uBAAuB,GAAG,2BAA2B;CAuBzE"}

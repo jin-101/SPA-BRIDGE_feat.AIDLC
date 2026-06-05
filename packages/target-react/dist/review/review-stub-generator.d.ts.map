@@ -1,0 +1,1 @@
+{"version":3,"file":"review-stub-generator.d.ts","sourceRoot":"","sources":["../../src/review/review-stub-generator.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,wBAAwB,CAAC;AAG/D,OAAO,KAAK,EAAE,iBAAiB,EAAE,MAAM,aAAa,CAAC;AAErD,qBAAa,mBAAmB;IAC9B,KAAK,CAAC,WAAW,EAAE,gBAAgB,EAAE,GAAG,iBAAiB,EAAE;CAgB5D"}

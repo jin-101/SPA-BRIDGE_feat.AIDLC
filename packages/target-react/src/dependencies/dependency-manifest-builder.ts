@@ -1,0 +1,48 @@
+import type { TargetDependencyManifest, TargetStateStrategy } from '../types.js';
+import { targetDependencyAllowlist, targetStateDependencyHints } from './target-dependency-allowlist.js';
+
+export class DependencyManifestBuilder {
+  build(stateStrategy: TargetStateStrategy, includeRouter = true): TargetDependencyManifest {
+    const dependencies: TargetDependencyManifest['dependencies'] = {
+      react: targetDependencyAllowlist.react,
+      'react-dom': targetDependencyAllowlist['react-dom'],
+    };
+
+    if (includeRouter) {
+      dependencies['react-router-dom'] = targetDependencyAllowlist['react-router-dom'];
+    }
+
+    const devDependencies: TargetDependencyManifest['devDependencies'] = {
+      '@types/react': targetDependencyAllowlist['@types/react'],
+      '@types/react-dom': targetDependencyAllowlist['@types/react-dom'],
+      '@vitejs/plugin-react': targetDependencyAllowlist['@vitejs/plugin-react'],
+      typescript: targetDependencyAllowlist.typescript,
+      vite: targetDependencyAllowlist.vite,
+    };
+
+    if (stateStrategy === 'store') {
+      dependencies['@reduxjs/toolkit'] = targetDependencyAllowlist['@reduxjs/toolkit'];
+    }
+
+    const rationale: TargetDependencyManifest['rationale'] = {
+      react: 'Core UI runtime for the generated target project.',
+      'react-dom': 'Browser rendering for React root mounting.',
+      'react-router-dom': includeRouter ? 'Routing support for converted navigation.' : 'Optional routing support not required by the current generation request.',
+      '@types/react': 'TypeScript declarations for React components.',
+      '@types/react-dom': 'TypeScript declarations for DOM rendering APIs.',
+      '@vitejs/plugin-react': 'Vite fast refresh and JSX transform support.',
+      typescript: 'TypeScript compiler for the generated target project.',
+      vite: 'Deterministic dev-server and build pipeline.',
+    };
+
+    if (stateStrategy === 'store') {
+      rationale['@reduxjs/toolkit'] = 'Optional store support for state conversions that require an explicit centralized store.';
+    }
+
+    return {
+      dependencies,
+      devDependencies,
+      rationale,
+    };
+  }
+}
