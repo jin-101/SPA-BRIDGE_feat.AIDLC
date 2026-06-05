@@ -1,0 +1,1 @@
+{"version":3,"file":"correction-candidate-factory.d.ts","sourceRoot":"","sources":["../../src/correction/correction-candidate-factory.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,0BAA0B,EAAE,cAAc,EAAE,MAAM,aAAa,CAAC;AAE9E,qBAAa,0BAA0B;IACrC,iBAAiB,CAAC,OAAO,EAAE,cAAc,GAAG,0BAA0B,EAAE;CAOzE"}

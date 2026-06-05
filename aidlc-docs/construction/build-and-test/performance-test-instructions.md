@@ -1,7 +1,7 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, security evaluation, config resolution, manifest handling, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, and UOW-07.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, and UOW-08.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
@@ -11,6 +11,7 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 - **Transformation Draft Throughput**: UOW-04 draft generation should remain deterministic for benchmark fixtures up to the configured generator size
 - **Provider Selection Throughput**: UOW-06 provider registry lookup and response validation should remain deterministic and bounded for local/internal and mock providers
 - **Target Generation Throughput**: UOW-07 target write-plan generation should remain deterministic and bounded for representative React target drafts
+- **Quality Orchestration Throughput**: UOW-08 gate ordering, bounded self-correction, and evidence aggregation should remain deterministic and bounded for representative quality runs
 
 ## Setup Performance Test Environment
 
@@ -31,10 +32,12 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 # Performance harness is not yet generated for this workspace.
 # Use the run workspace helpers in:
 # packages/core-application/src/
-# and the benchmark fixture factory in:
+# the benchmark fixture factory in:
 # packages/transform-angular-react/src/testing/
-# plus the provider test generators in:
+# the provider test generators in:
 # packages/adapters-ai/src/testing/
+# and the quality test generators in:
+# packages/core-quality/src/testing/
 # to construct a benchmark runner in a later unit.
 ```
 

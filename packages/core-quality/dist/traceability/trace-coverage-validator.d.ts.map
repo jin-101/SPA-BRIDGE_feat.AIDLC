@@ -1,0 +1,1 @@
+{"version":3,"file":"trace-coverage-validator.d.ts","sourceRoot":"","sources":["../../src/traceability/trace-coverage-validator.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,cAAc,EAAE,MAAM,aAAa,CAAC;AAElE,qBAAa,sBAAsB;IACjC,QAAQ,CAAC,OAAO,EAAE,cAAc,EAAE,QAAQ,EAAE,cAAc,EAAE,EAAE,SAAS,EAAE,MAAM,EAAE,GAAG,OAAO;CAe5F"}

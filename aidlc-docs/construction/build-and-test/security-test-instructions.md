@@ -1,32 +1,32 @@
 # Security Test Instructions
 
 ## Purpose
-Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, transformation pipeline safety, and target-generation write-plan safety.
+Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, quality-evidence safety, transformation pipeline safety, and target-generation write-plan safety.
 
 ## Security Test Scenarios
 
 ### Scenario 1: Dependency and Supply Chain Review
-- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `source-angular`, `adapters-ai`, `transform-angular-react`, and `target-react`
+- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `core-quality`, `source-angular`, `adapters-ai`, `transform-angular-react`, and `target-react`
 - **Steps**:
   1. Run `npm audit --omit=dev`
-  2. Review the dependency lists in `packages/core-model/package.json`, `packages/core-security/package.json`, `packages/core-application/package.json`, and `packages/adapters-ai/package.json`
+  2. Review the dependency lists in `packages/core-model/package.json`, `packages/core-security/package.json`, `packages/core-application/package.json`, `packages/core-quality/package.json`, and `packages/adapters-ai/package.json`
   3. Confirm that no dependency is pulled from an untrusted registry
 - **Expected Results**: No unresolved critical dependency findings for the current package set
 
 ### Scenario 2: Secret and Sensitive Data Scan
 - **Description**: Confirm generated code and docs do not contain hardcoded secrets or raw sensitive values, including in security policy artifacts
 - **Steps**:
-  1. Search `packages/core-model/`, `packages/core-security/`, `packages/core-application/`, `packages/adapters-ai/`, and `aidlc-docs/construction/uow-05-security-masking-and-provider-policy/` for secret-like patterns
+  1. Search `packages/core-model/`, `packages/core-security/`, `packages/core-application/`, `packages/core-quality/`, `packages/adapters-ai/`, and `aidlc-docs/construction/uow-05-security-masking-and-provider-policy/` for secret-like patterns
   2. Review `packages/core-security/src/audit/`, `packages/core-security/src/policy/`, `packages/core-security/src/masking/`, `packages/core-security/src/token-vault/`, `packages/core-application/src/policy/`, and `packages/adapters-ai/src/` for safe-display behavior
 - **Expected Results**: No raw secrets, passwords, or tokens are present
 
 ### Scenario 3: Security-Aware Contract Review
-- **Description**: Ensure orchestration, provider, and security contracts expose only safe, structured data
+- **Description**: Ensure orchestration, quality, provider, and security contracts expose only safe, structured data
 - **Steps**:
   1. Review `packages/core-application/src/policy/policy.ts`
-  2. Review `packages/core-security/src/policy/provider-policy-gate.ts`, `packages/core-security/src/audit/safe-audit-event-builder.ts`, and `packages/core-application/src/policy/security-policy-coordinator.ts`
-  3. Confirm safe display strings are used for user-visible fields, policy decisions, and provider audit events
-- **Expected Results**: Orchestration, provider, and report contracts remain redaction-safe and non-leaky
+  2. Review `packages/core-security/src/policy/provider-policy-gate.ts`, `packages/core-security/src/audit/safe-audit-event-builder.ts`, `packages/core-application/src/policy/security-policy-coordinator.ts`, and `packages/core-quality/src/`
+  3. Confirm safe display strings are used for user-visible fields, policy decisions, quality evidence, and provider audit events
+- **Expected Results**: Orchestration, quality, provider, and report contracts remain redaction-safe and non-leaky
 
 ### Scenario 4: Transformation Pipeline Safety Review
 - **Description**: Confirm the Angular-to-React transformation package emits safe review diagnostics, uses provider-neutral mapping metadata, preserves path containment, and remains compatible with provider policy handoff

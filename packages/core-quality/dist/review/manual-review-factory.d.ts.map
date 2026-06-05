@@ -1,0 +1,1 @@
+{"version":3,"file":"manual-review-factory.d.ts","sourceRoot":"","sources":["../../src/review/manual-review-factory.ts"],"names":[],"mappings":"AAAA,OAAO,EAA2B,KAAK,gBAAgB,EAAE,MAAM,wBAAwB,CAAC;AAExF,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,aAAa,CAAC;AAElD,qBAAa,mBAAmB;IAC9B,iBAAiB,CAAC,OAAO,EAAE,cAAc,GAAG,gBAAgB;CAQ7D"}

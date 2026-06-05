@@ -238,6 +238,22 @@ Continue to Next Stage"
 uow-01 ~ uow-04 중에서 꼭 보강해야 할 부분이 있다면 보완해줘."
 **AI Response**: "Reviewed UOW-01 through UOW-04, identified UOW-04 as the place that benefits most from a target-ecosystem supplement, added package-aware Angular 15 / NgRx / third-party library review rules, expanded the benchmark fixture to reflect the first target application's ecosystem, and verified the workspace build and test suite still pass."
 **Context**: CONSTRUCTION - UOW-04 supplemental hardening for first target ecosystem
+
+---
+
+## UOW-08 Build and Test Review Transition
+**Timestamp**: 2026-06-05T07:25:59Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Updated the AI-DLC state to UOW-08 Build and Test Review, refreshed the build and test instruction set to include @spa-bridge/core-quality, updated the build/test summary totals, and prepared the standard build-and-test approval prompt."
+**Context**: CONSTRUCTION - UOW-08 Build and Test instruction refresh
+
+---
+
+## UOW-08 Build and Test Approval
+**Timestamp**: 2026-06-05T07:29:33Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded explicit approval of the UOW-08 build and test instructions, updated AI-DLC state to the Operations placeholder, and closed the current workflow path."
+**Context**: CONSTRUCTION - UOW-08 Build and Test approval gate
 **Context**: CONSTRUCTION - UOW-02 Build and Test review gate
 
 ---
@@ -2114,5 +2130,113 @@ Continue to Next Stage"
 **User Input**: "Continue to Next Stage"
 **AI Response**: "Advanced AI-DLC state to the Operations placeholder stage after completing UOW-07 build and test documentation and verification."
 **Context**: CONSTRUCTION - transition into operations placeholder
+
+---
+
+## UOW-08 Functional Design Planning
+**Timestamp**: 2026-06-05T06:48:06Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Created the UOW-08 Functional Design plan for quality gates, self-correction, and PBT integration, and updated AI-DLC state for question collection."
+**Context**: CONSTRUCTION - UOW-08 functional design planning gate
+
+---
+
+## UOW-08 Functional Design Answers
+**Timestamp**: 2026-06-05T06:51:49Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- audit.md: aidlc-docs/audit.md
+- requirements.md: requirements.md
+- uow-07-react-target-generation-nfr-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-nfr-design-plan.md
+- uow-07-react-target-generation-functional-design-plan.md: aidlc-docs/construction/plans/uow-07-react-target-generation-functional-design-plan.md
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-08 Functional Design plan, completed the task checklist, generated the functional design artifacts for quality gates, self-correction, and PBT integration, and updated AI-DLC state to the review stage."
+**Context**: CONSTRUCTION - UOW-08 functional design answer application
+
+---
+
+## UOW-08 Functional Design Approval
+**Timestamp**: 2026-06-05T06:55:36Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded approval of the UOW-08 Functional Design, updated AI-DLC state to the UOW-08 NFR Requirements planning stage, and created the UOW-08 NFR Requirements plan with question prompts."
+**Context**: CONSTRUCTION - UOW-08 functional design approval gate
+
+---
+
+## UOW-08 NFR Requirements Answers
+**Timestamp**: 2026-06-05T06:58:11Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: requirements.md
+
+## Open tabs:
+- requirements.md: requirements.md
+- service-materializer.ts: packages/target-react/src/materializers/service-materializer.ts
+- component-materializer.ts: packages/target-react/src/materializers/component-materializer.ts
+- target-generation-service.ts: packages/target-react/src/generation/target-generation-service.ts
+- target-path-guard.ts: packages/target-react/src/path/target-path-guard.ts
+
+## My request for Codex:
+전부 A로 적용해서 진행해줘."
+**AI Response**: "Applied all A answers to the UOW-08 NFR Requirements plan, validated the answers, generated the NFR requirements and tech stack decisions artifacts for quality gates, self-correction, and PBT integration, and updated AI-DLC state to the review stage."
+**Context**: CONSTRUCTION - UOW-08 NFR Requirements answer application
+
+---
+
+## UOW-08 NFR Requirements Approval and NFR Design Planning
+**Timestamp**: 2026-06-05T07:00:47Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Recorded approval of the UOW-08 NFR Requirements, updated AI-DLC state to the UOW-08 NFR Design planning stage, and created the UOW-08 NFR Design plan with question prompts."
+**Context**: CONSTRUCTION - UOW-08 NFR Requirements approval gate
+
+---
+
+## UOW-08 NFR Design Answers
+**Timestamp**: 2026-06-05T07:02:01Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/inception/application-design/unit-of-work.md
+
+## Open tabs:
+- unit-of-work.md: aidlc-docs/inception/application-design/unit-of-work.md
+- requirements.md: requirements.md
+- service-materializer.ts: packages/target-react/src/materializers/service-materializer.ts
+- component-materializer.ts: packages/target-react/src/materializers/component-materializer.ts
+- target-generation-service.ts: packages/target-react/src/generation/target-generation-service.ts
+
+## My request for Codex:
+각 항목을 하나씩 질문해주고, 이 프로젝트에 제일 적합해보이는 보기를 추천해줘."
+**AI Response**: "Provided item-by-item recommendations for the UOW-08 NFR Design plan, with A recommended for all questions based on fail-closed, deterministic, traceable quality orchestration design."
+**Context**: CONSTRUCTION - UOW-08 NFR Design question guidance
+
+---
+
+## UOW-08 NFR Design Approval and Code Generation Planning
+**Timestamp**: 2026-06-05T07:05:41Z
+**User Input**: "continue to Next Stage"
+**AI Response**: "Recorded approval of the UOW-08 NFR Design, updated AI-DLC state to the UOW-08 Code Generation planning stage, and created the UOW-08 Code Generation plan with explicit implementation steps."
+**Context**: CONSTRUCTION - UOW-08 NFR Design approval gate
+
+---
+
+## UOW-08 Code Generation Approval
+**Timestamp**: 2026-06-05T07:05:41Z
+**User Input**: "승인완료"
+**AI Response**: "Acknowledged approval of the UOW-08 Code Generation plan and began implementing the core-quality workspace package, supporting modules, and workspace integration."
+**Context**: CONSTRUCTION - UOW-08 code generation approval gate
+
+---
+
+## UOW-08 Code Generation Completion
+**Timestamp**: 2026-06-05T07:22:56Z
+**User Input**: "승인완료"
+**AI Response**: "Completed the UOW-08 code generation work for @spa-bridge/core-quality, added deterministic orchestration, bounded self-correction, PBT coordination, safe evidence and traceability, refreshed build/test coverage, and verified workspace build/test success."
+**Context**: CONSTRUCTION - UOW-08 code generation completion
 
 ---

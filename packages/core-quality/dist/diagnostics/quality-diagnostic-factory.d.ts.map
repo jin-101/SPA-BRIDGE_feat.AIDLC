@@ -1,0 +1,1 @@
+{"version":3,"file":"quality-diagnostic-factory.d.ts","sourceRoot":"","sources":["../../src/diagnostics/quality-diagnostic-factory.ts"],"names":[],"mappings":"AAAA,OAAO,EAAoB,KAAK,UAAU,EAAE,MAAM,wBAAwB,CAAC;AAE3E,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,aAAa,CAAC;AAElD,qBAAa,wBAAwB;IACnC,iBAAiB,CAAC,OAAO,EAAE,cAAc,EAAE,QAAQ,EAAE,MAAM,GAAG,SAAS,GAAG,eAAe,GAAG,UAAU,GAAG,UAAU;CAkBpH"}

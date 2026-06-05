@@ -8,7 +8,7 @@ npm test
 ```
 
 ### 2. Review Test Results
-- **Expected**: `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/source-angular`, `@spa-bridge/adapters-ai`, `@spa-bridge/transform-angular-react`, and `@spa-bridge/target-react` test suites pass with 0 failures
+- **Expected**: `@spa-bridge/core-model`, `@spa-bridge/core-security`, `@spa-bridge/core-application`, `@spa-bridge/core-quality`, `@spa-bridge/source-angular`, `@spa-bridge/adapters-ai`, `@spa-bridge/transform-angular-react`, and `@spa-bridge/target-react` test suites pass with 0 failures
 - **Test Coverage**: Broad coverage for schemas, invariants, orchestration behavior, and helper utilities; coverage tooling is not configured yet
 - **Test Report Location**: Console output from Vitest
 
