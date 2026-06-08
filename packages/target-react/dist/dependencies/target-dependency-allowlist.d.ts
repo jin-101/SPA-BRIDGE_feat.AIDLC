@@ -5,6 +5,7 @@ export declare const targetDependencyAllowlist: {
     readonly 'react-router-dom': "6.30.1";
     readonly '@types/react': "18.3.12";
     readonly '@types/react-dom': "18.3.1";
+    readonly '@types/node': "22.15.0";
     readonly '@vitejs/plugin-react': "4.3.4";
     readonly typescript: "5.8.3";
     readonly vite: "5.4.11";

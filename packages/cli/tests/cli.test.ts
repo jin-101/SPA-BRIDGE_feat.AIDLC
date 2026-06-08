@@ -1,3 +1,7 @@
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
@@ -234,6 +238,88 @@ describe('cli package', () => {
     }
     expect(result.value.commandName).toBe('convert');
     expect(result.value.reportPath).toContain('report.json');
+  });
+
+  it('runs a real end-to-end Angular-to-React conversion into an output directory', async () => {
+    const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'spa-bridge-cli-'));
+    const angularRoot = path.join(workspaceRoot, 'angular-app');
+    const outputRoot = path.join(workspaceRoot, 'react-output');
+    await fs.mkdir(path.join(angularRoot, 'src', 'app'), { recursive: true });
+    await fs.writeFile(
+      path.join(angularRoot, 'package.json'),
+      JSON.stringify({ name: 'fixture-angular-app', dependencies: { '@angular/core': '15.2.10' } }, null, 2),
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(angularRoot, 'angular.json'),
+      JSON.stringify(
+        {
+          defaultProject: 'fixture-angular-app',
+          projects: {
+            'fixture-angular-app': {
+              sourceRoot: 'src',
+              projectType: 'application',
+            },
+          },
+        },
+        null,
+        2,
+      ),
+      'utf8',
+    );
+    await fs.writeFile(path.join(angularRoot, 'src', 'main.ts'), "import './app/app.component';\n", 'utf8');
+    await fs.writeFile(
+      path.join(angularRoot, 'src', 'app', 'app.component.ts'),
+      [
+        "import { Component, Input } from '@angular/core';",
+        '',
+        '@Component({',
+        "  selector: 'app-root',",
+        "  templateUrl: './app.component.html',",
+        '})',
+        'export class AppComponent {',
+        '  @Input() title = "Fixture";',
+        '}',
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(angularRoot, 'src', 'app', 'app.component.html'), '<h1>{{ title }}</h1>\n', 'utf8');
+
+    const result = await runCli(
+      [
+        'convert',
+        '--workspace',
+        workspaceRoot,
+        '--input',
+        'angular-app',
+        '--output',
+        'react-output',
+        '--report-format',
+        'json',
+        '--non-interactive',
+        '--confirm',
+        '--run-id',
+        'run-e2e',
+      ],
+      process.env,
+      {
+        cwd: workspaceRoot,
+        now: () => '2026-06-08T00:00:00.000Z',
+      },
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error(result.error.message);
+    }
+
+    expect(result.value.summary).toContain('Converted');
+    await expect(fs.readFile(path.join(outputRoot, 'package.json'), 'utf8')).resolves.toContain('fixture-angular-app');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'App.tsx'), 'utf8')).resolves.toContain('Target React scaffold');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'components', 'AppComponent.tsx'), 'utf8')).resolves.toContain('AppComponent');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'target-summary.json'), 'utf8')).resolves.toContain('totalFiles');
+    await expect(fs.readFile(path.join(outputRoot, 'report.json'), 'utf8')).resolves.toContain('Conversion Summary');
   });
 });
 

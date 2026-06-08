@@ -7,7 +7,7 @@ export class RoutingOutputAdapter {
     materialize(routes, sourceRefs = []) {
         const routeContent = [
             "import type { RouteObject } from 'react-router-dom';",
-            "import { App } from '../App.js';",
+            "import { App } from './App.js';",
             '',
             'export const routes: RouteObject[] = [',
             ...routes.map((route) => `  { path: '${route.path}', element: <App /> },`),

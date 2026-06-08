@@ -15,6 +15,7 @@ const baseDependencies = {
 const baseDevDependencies = {
   '@types/react': '18.3.12',
   '@types/react-dom': '18.3.1',
+  '@types/node': '22.15.0',
   '@vitejs/plugin-react': '4.3.4',
   typescript: '5.8.3',
   vite: '5.4.11',
@@ -62,11 +63,21 @@ const buildPackageJson = (
 const buildTsconfig = (): string =>
   JSON.stringify(
     {
-      extends: '../../tsconfig.base.json',
       compilerOptions: {
+        target: 'ES2022',
+        useDefineForClassFields: true,
         jsx: 'react-jsx',
         lib: ['DOM', 'DOM.Iterable', 'ES2022'],
-        moduleResolution: 'NodeNext',
+        allowJs: false,
+        skipLibCheck: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true,
+        strict: true,
+        forceConsistentCasingInFileNames: true,
+        module: 'ESNext',
+        moduleResolution: 'Bundler',
+        resolveJsonModule: true,
+        isolatedModules: true,
         noEmit: true,
         types: ['vite/client'],
       },
@@ -156,7 +167,6 @@ const buildStrategy = (id: TargetStrategyDescriptor['id'], defaultStrategy: bool
   ],
   exactDependencies: {
     ...baseDependencies,
-    ...baseDevDependencies,
   },
   createScaffoldFiles: ({ request, normalizedDrafts, dependencyManifest }): GeneratedFileSpec[] => {
     const projectName = normalizedDrafts.projectName || request.projectName || 'spa-bridge-react-target';

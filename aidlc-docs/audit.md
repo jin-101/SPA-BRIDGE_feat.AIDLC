@@ -2692,3 +2692,19 @@ Continue to Next Stage"
 **Context**: Post-construction documentation update
 
 ---
+
+## Execution and Upload Guidance Request
+**Timestamp**: 2026-06-08T04:18:33Z
+**User Input**: "실제 앵귤러 코드를 넣어서 변환되는 것을 보고 싶은데, 어떻게 실행하고 어떻게 업로드해서 출력을 받을 수 있는지 알려줘."
+**AI Response**: "Explained the current execution state, local input/output model, CLI limitations, and the additional wiring needed for a true end-to-end Angular-to-React conversion run."
+**Context**: Post-construction usage guidance
+
+---
+
+## End-to-End Conversion Implementation Request
+**Timestamp**: 2026-06-08T04:20:51Z
+**User Input**: "ngular repo 전체를 넣고 React repo 전체를 출력받는 도구가 되도록 부족한 부분은 모두 개발해줘."
+**AI Response**: "Implemented end-to-end CLI conversion wiring from Angular repo input to React repo output, added CLI binary metadata, materialized generated target files, updated target scaffold portability, added an integration test, refreshed README usage guidance, and verified workspace build/test success."
+**Context**: CONSTRUCTION - post-UOW end-to-end CLI conversion wiring
+
+---

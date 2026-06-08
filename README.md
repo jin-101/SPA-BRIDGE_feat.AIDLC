@@ -63,7 +63,35 @@ npm run test --workspace @spa-bridge/web
 
 ### CLI 흐름 사용
 
-현재 `@spa-bridge/cli`는 executable binary보다 패키지 API 중심으로 구현되어 있습니다. `runCli`를 import해 `convert`, `validate`, `report`, `help` 명령 흐름을 실행할 수 있습니다.
+빌드 후에는 CLI entry를 직접 실행할 수 있습니다. 입력은 zip 업로드가 아니라 압축 해제된 Angular repo 폴더 경로입니다. 출력은 지정한 React output 폴더에 생성됩니다.
+
+```bash
+npm run build
+
+node packages/cli/dist/bin/spa-bridge.js convert \
+  --workspace /path/to/workspace \
+  --input angular-app \
+  --output react-output \
+  --report-format json \
+  --non-interactive \
+  --confirm
+```
+
+`npm install` 이후 package bin symlink가 갱신되어 있다면 아래처럼 실행할 수도 있습니다.
+
+```bash
+npx spa-bridge convert \
+  --workspace /path/to/workspace \
+  --input angular-app \
+  --output react-output \
+  --report-format json \
+  --non-interactive \
+  --confirm
+```
+
+위 예시에서 `/path/to/workspace/angular-app`은 Angular 프로젝트 루트여야 하며, `angular.json`, `package.json`, `src/main.ts` 또는 `src/app/app.component.ts` 같은 Angular entry 파일을 포함해야 합니다. 출력 폴더에는 Vite + React 18 + TypeScript 프로젝트 파일과 `.spa-bridge` 변환 요약, `report.json`이 함께 생성됩니다.
+
+API로 직접 실행할 수도 있습니다.
 
 ```ts
 import { runCli } from '@spa-bridge/cli';
