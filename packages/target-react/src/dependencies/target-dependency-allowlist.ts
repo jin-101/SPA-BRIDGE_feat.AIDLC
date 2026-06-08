@@ -10,6 +10,7 @@ export const targetDependencyAllowlist = {
   '@vitejs/plugin-react': '4.3.4',
   typescript: '5.8.3',
   vite: '5.4.11',
+  less: '4.2.0',
   '@reduxjs/toolkit': '2.2.7',
   zustand: '5.0.6',
 } as const;

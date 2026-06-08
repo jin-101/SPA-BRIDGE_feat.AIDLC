@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { createSafeDisplayString, ok, type Result } from '@spa-bridge/core-model';
 import { SourceAngularAnalysisService } from '@spa-bridge/source-angular';
+import type { AngularAnalysisResult } from '@spa-bridge/source-angular';
 import { createTransformationService, type ProviderNeutralMappingRequest } from '@spa-bridge/transform-angular-react';
 import { defaultCapabilityCatalog, refineMapping, type ProviderDescriptor, type ProviderMode, type RefinementResult } from '@spa-bridge/adapters-ai';
 import type { ProviderPolicyDecision } from '@spa-bridge/core-security';
@@ -55,6 +56,77 @@ const writeJsonArtifact = async (targetRoot: string, name: string, value: unknow
   await fs.mkdir(path.dirname(artifactPath), { recursive: true });
   await fs.writeFile(artifactPath, JSON.stringify(value, null, 2) + '\n', 'utf8');
   return artifactPath;
+};
+
+const toPosixPath = (value: string): string => value.replace(/\\/g, '/');
+
+const safeRelativePath = (value: string): string =>
+  toPosixPath(value)
+    .replace(/^(\.\.\/)+/g, '')
+    .replace(/^\/+/g, '')
+    .replace(/[^A-Za-z0-9._/-]/g, '-');
+
+const tryCopyFile = async (sourcePath: string, targetPath: string): Promise<boolean> => {
+  try {
+    await fs.mkdir(path.dirname(targetPath), { recursive: true });
+    await fs.copyFile(sourcePath, targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+const resolveAssetPathCandidates = (projectRoot: string, sourceRoot: string, reference: string): string[] => {
+  if (/^(https?:|data:|javascript:)/i.test(reference)) {
+    return [];
+  }
+
+  const normalized = reference.replace(/^\/+/, '');
+  return [
+    path.join(projectRoot, normalized),
+    path.join(sourceRoot, normalized),
+    path.join(sourceRoot, 'assets', normalized.replace(/^assets\//, '')),
+  ];
+};
+
+const copyAngularResources = async (analysis: AngularAnalysisResult, targetRoot: string): Promise<{ styles: number; assets: number }> => {
+  const copiedStyleImports: string[] = [];
+  let styles = 0;
+  let assets = 0;
+
+  for (const file of analysis.inventory.files.filter((record) => record.role === 'style' || record.kind === 'style')) {
+    const relativePath = safeRelativePath(file.relativePath);
+    const targetPath = path.join(targetRoot, 'src', 'styles', 'angular', relativePath);
+    if (await tryCopyFile(file.path, targetPath)) {
+      copiedStyleImports.push(`import './styles/angular/${relativePath}';`);
+      styles += 1;
+    }
+  }
+
+  const assetRefs = [...new Set(analysis.templateSummaries.flatMap((template) => template.bindings.externalReferences))];
+  for (const reference of assetRefs) {
+    const targetRelative = reference.startsWith('assets/')
+      ? safeRelativePath(reference)
+      : path.join('assets', 'angular', safeRelativePath(reference));
+    for (const sourcePath of resolveAssetPathCandidates(analysis.workspaceProfile.projectRoot, analysis.workspaceProfile.sourceRoot, reference)) {
+      if (await tryCopyFile(sourcePath, path.join(targetRoot, 'public', targetRelative))) {
+        assets += 1;
+        break;
+      }
+    }
+  }
+
+  const sourceStylesPath = path.join(targetRoot, 'src', 'source-styles.ts');
+  await fs.mkdir(path.dirname(sourceStylesPath), { recursive: true });
+  await fs.writeFile(
+    sourceStylesPath,
+    copiedStyleImports.length > 0
+      ? `${copiedStyleImports.sort().join('\n')}\n`
+      : '/* No Angular source styles were copied for this conversion run. */\n',
+    'utf8',
+  );
+
+  return { styles, assets };
 };
 
 type AiRefinementSummary = {
@@ -274,16 +346,19 @@ export const createDefaultApplicationBridge = (): CliApplicationBridge => ({
       return { ok: false, error: toCliError('React target generation failed.', targetResult.error) };
     }
 
+    let copiedResources = { styles: 0, assets: 0 };
     try {
       await fs.mkdir(request.validatedPaths.outputPath, { recursive: true });
       if (!request.resolvedOptions.dryRun) {
         await writeGeneratedFiles(targetResult.value.writePlan.files);
+        copiedResources = await copyAngularResources(analysisResult.value, request.validatedPaths.outputPath);
       }
 
       await writeJsonArtifact(request.validatedPaths.outputPath, 'analysis-summary.json', analysisResult.value.summary);
       await writeJsonArtifact(request.validatedPaths.outputPath, 'transformation-summary.json', transformationResult.value.summary);
       await writeJsonArtifact(request.validatedPaths.outputPath, 'target-summary.json', targetResult.value.summary);
       await writeJsonArtifact(request.validatedPaths.outputPath, 'manual-review-items.json', targetResult.value.manualReviewItems);
+      await writeJsonArtifact(request.validatedPaths.outputPath, 'resource-copy-summary.json', copiedResources);
     } catch (error) {
       return { ok: false, error: toCliError('Unable to write generated React target files.', error) };
     }
@@ -331,6 +406,8 @@ export const createDefaultApplicationBridge = (): CliApplicationBridge => ({
             `Output: ${request.validatedPaths.outputPath}`,
             `Generated files: ${targetResult.value.summary.totalFiles}`,
             `Strategy: ${targetResult.value.summary.strategyId}`,
+            `Copied Angular styles: ${copiedResources.styles}`,
+            `Copied Angular assets: ${copiedResources.assets}`,
           ],
         },
         {

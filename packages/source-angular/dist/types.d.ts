@@ -53,6 +53,7 @@ export type TypeScriptSymbolSummary = {
     constructorDependencies: string[];
     lifecycleHooks: string[];
     references: string[];
+    styleUrls: string[];
     propertyInitializers: Array<{
         name: string;
         initializer?: string;

@@ -34,6 +34,7 @@ export type NormalizedComponent = {
     serviceRefs: string[];
     stateRefs: string[];
     routeRefs: string[];
+    styleUrls: string[];
     propertyInitializers: Array<{
         name: string;
         initializer?: string;
@@ -128,7 +129,10 @@ export type ReactComponentDraft = {
     hooks: ReactHookDraft[];
     imports: string[];
     templateDraftId?: string;
+    templateRawText?: string;
+    templateExternalReferences: string[];
     serviceRefs: string[];
+    styleUrls: string[];
     propertyInitializers: NormalizedComponent['propertyInitializers'];
     methods: NormalizedComponent['methods'];
     reviewItemIds: string[];
@@ -142,6 +146,8 @@ export type ReactTemplateDraft = {
     bindings: string[];
     events: string[];
     forms: string[];
+    rawText?: string;
+    externalReferences: string[];
     reviewItemIds: string[];
     generatedRefs: GeneratedArtifactRef[];
 };

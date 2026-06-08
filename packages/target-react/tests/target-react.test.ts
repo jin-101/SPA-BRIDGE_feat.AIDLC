@@ -47,7 +47,10 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         hooks: [],
         imports: ['react'],
         templateDraftId: 'template-1',
+        templateRawText: '<article class="panel"><button (click)="selectPassenger(title)">{{ title }}</button><img src="assets/logo.png"></article>',
+        templateExternalReferences: ['assets/logo.png'],
         serviceRefs: ['service-1'],
+        styleUrls: ['./main-panel.less'],
         propertyInitializers: [
           {
             name: 'title',
@@ -76,6 +79,8 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         bindings: ['title'],
         events: [],
         forms: [],
+        rawText: '<article class="panel"><button (click)="selectPassenger(title)">{{ title }}</button><img src="assets/logo.png"></article>',
+        externalReferences: ['assets/logo.png'],
         reviewItemIds: [],
         generatedRefs: [{ kind: 'generated', path: 'src/components/MainPanel.tsx' }],
       },
@@ -156,6 +161,11 @@ describe('TargetGenerationService', () => {
     expect(componentFile?.content).toContain("useState('Hello')");
     expect(componentFile?.content).toContain('selectPassenger');
     expect(componentFile?.content).toContain('setTitle(id)');
+    expect(componentFile?.content).toContain('className="panel"');
+    expect(componentFile?.content).toContain('onClick={(event) => selectPassenger(title)}');
+    expect(componentFile?.content).toContain('src="/assets/logo.png"');
+    expect(componentFile?.content).toContain("import '../styles/components/MainPanel.less';");
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/styles/components/MainPanel.less'))).toBe(true);
     expect(result.manualReviewItems.length).toBeGreaterThan(0);
     expect(result.traces.length).toBeGreaterThanOrEqual(result.writePlan.files.length);
   });

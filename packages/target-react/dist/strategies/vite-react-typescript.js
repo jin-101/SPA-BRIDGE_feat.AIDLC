@@ -10,6 +10,7 @@ const baseDevDependencies = {
     '@vitejs/plugin-react': '4.3.4',
     typescript: '5.8.3',
     vite: '5.4.11',
+    less: '4.2.0',
 };
 const makeFile = (path, kind, content, sourceRefs = [], overwrite = true) => ({
     path,
@@ -88,6 +89,7 @@ const buildMainTsx = () => `import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App.js';
 import './styles.css';
+import './source-styles.js';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -136,6 +138,7 @@ const buildStrategy = (id, defaultStrategy) => ({
             makeFile('src/main.tsx', 'scaffold', buildMainTsx()),
             makeFile('src/App.tsx', 'scaffold', buildAppTsx(projectName)),
             makeFile('src/styles.css', 'scaffold', buildStyles()),
+            makeFile('src/source-styles.ts', 'scaffold', '/* Angular source style imports are added by the CLI resource copier. */\n'),
         ];
     },
 });
@@ -154,6 +157,7 @@ export const createViteReactDependencyManifest = () => ({
         '@vitejs/plugin-react': 'Vite fast refresh and JSX transform support.',
         typescript: 'TypeScript compiler for the generated target project.',
         vite: 'Deterministic dev-server and build pipeline.',
+        less: 'LESS preprocessing support for Angular styles carried into the React target.',
     },
 });
 //# sourceMappingURL=vite-react-typescript.js.map

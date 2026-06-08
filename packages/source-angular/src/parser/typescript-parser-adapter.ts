@@ -104,6 +104,13 @@ export class TypeScriptParserAdapter {
           .map((member) => member.name.getText(sourceFile))
           .filter((name) => lifecycleHooks.has(name));
         const references = node.members.map((member) => member.getText(sourceFile).slice(0, 80));
+        const componentDecorator = decorators.find((decorator) => decorator.kind === 'Component');
+        const styleMetadata = componentDecorator?.metadata.styleUrls;
+        const styleUrls = Array.isArray(styleMetadata)
+          ? styleMetadata.map((entry) => entry.replace(/^['"]|['"]$/g, ''))
+          : typeof styleMetadata === 'string'
+            ? [styleMetadata]
+            : [];
         const propertyInitializers = node.members
           .filter((member): member is ts.PropertyDeclaration => ts.isPropertyDeclaration(member) && !!member.name)
           .map((member) => ({
@@ -132,6 +139,7 @@ export class TypeScriptParserAdapter {
           constructorDependencies,
           lifecycleHooks: lifecycle,
           references,
+          styleUrls,
           propertyInitializers,
           methods,
         });
@@ -150,6 +158,7 @@ export class TypeScriptParserAdapter {
           constructorDependencies: [],
           lifecycleHooks: [],
           references: [node.getText(sourceFile).slice(0, 80)],
+          styleUrls: [],
           propertyInitializers: [],
           methods: [],
         });
@@ -172,6 +181,7 @@ export class TypeScriptParserAdapter {
             constructorDependencies: [],
             lifecycleHooks: [],
             references: declarationNames,
+            styleUrls: [],
             propertyInitializers: [],
             methods: [],
           });

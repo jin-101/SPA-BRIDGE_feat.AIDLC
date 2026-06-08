@@ -40,6 +40,7 @@ const createComponentSummary = (componentName, sourcePath, serviceName, template
             constructorDependencies: [serviceName],
             lifecycleHooks: ['ngOnInit', 'ngOnDestroy'],
             references: [serviceName, templatePath, stylePath],
+            styleUrls: [path.basename(stylePath)],
             propertyInitializers: [
                 {
                     name: 'title',
@@ -83,6 +84,7 @@ const createServiceSummary = (serviceName, sourcePath) => ({
             constructorDependencies: [],
             lifecycleHooks: [],
             references: [],
+            styleUrls: [],
             propertyInitializers: [],
             methods: [],
         },
@@ -105,6 +107,7 @@ const createStateSummary = (stateName, sourcePath) => ({
             constructorDependencies: [],
             lifecycleHooks: [],
             references: [],
+            styleUrls: [],
             propertyInitializers: [],
             methods: [],
         },

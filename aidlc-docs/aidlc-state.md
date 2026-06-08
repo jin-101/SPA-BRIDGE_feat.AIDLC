@@ -6,7 +6,7 @@
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
 - **Current Stage**: OPERATIONS Placeholder
-- **Last Completed**: Semantic Component Logic Conversion Wiring
+- **Last Completed**: Complex Angular Pattern Conversion Coverage Expansion
 - **Next Step**: Run against a real Angular repository and review generated React output
 
 ## Workspace State
@@ -108,6 +108,7 @@
 - [x] CONSTRUCTION - Local-first AI Refinement Wiring
 - [x] CONSTRUCTION - Component Logic Preservation Wiring
 - [x] CONSTRUCTION - Semantic Component Logic Conversion Wiring
+- [x] CONSTRUCTION - Complex Angular Pattern Conversion Coverage Expansion
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -236,6 +237,7 @@
 - **Operations Placeholder**: Reached after UOW-11 build and test approval on 2026-06-08T04:09:03Z.
 - **End-to-End CLI Conversion Wiring**: Implemented actual Angular repo input to React repo output flow on 2026-06-08T04:28:02Z. The CLI now runs Angular source analysis, Angular-to-React transformation, React target generation, file materialization, and report export. Workspace build and test verification passed.
 - **Local-first AI Refinement Wiring**: Implemented default Ollama EXAONE 3.5 local provider refinement and optional OpenAI-compatible external provider fallback on 2026-06-08T04:42:53Z. External provider use requires explicit opt-in and security readiness. Workspace build and test verification passed.
+- **Complex Angular Pattern Conversion Coverage Expansion**: Expanded conversion coverage for Angular templates, styles, assets, routing, service DI shape, local/store state scaffolding, and component JSX output on 2026-06-08T05:22:35Z. CLI conversion now copies Angular style files and template asset references into the React target and writes a resource-copy summary. Workspace build/test verification passed.
 
 ## Execution Plan Summary
 - **Recommended Next Stage**: Run a real Angular repository conversion and review output quality

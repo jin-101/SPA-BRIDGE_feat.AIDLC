@@ -53,7 +53,10 @@ const createDraftSetArbitrary = (): fc.Arbitrary<ReactTargetDraftSet> =>
           hooks: fc.constant([]),
           imports: fc.array(identifierArbitrary, { maxLength: 3 }),
           templateDraftId: fc.option(identifierArbitrary, { nil: undefined }),
+          templateRawText: fc.option(fc.constant('<button (click)="select()"> {{ title }} </button>'), { nil: undefined }),
+          templateExternalReferences: fc.array(fc.constantFrom('assets/logo.png', './local.png'), { maxLength: 2 }),
           serviceRefs: fc.array(identifierArbitrary, { maxLength: 3 }),
+          styleUrls: fc.array(fc.constantFrom('./component.less', './component.css'), { maxLength: 1 }),
           propertyInitializers: fc.array(
             fc.record({
               name: identifierArbitrary,
@@ -85,6 +88,8 @@ const createDraftSetArbitrary = (): fc.Arbitrary<ReactTargetDraftSet> =>
           bindings: fc.array(identifierArbitrary, { maxLength: 3 }),
           events: fc.array(identifierArbitrary, { maxLength: 3 }),
           forms: fc.array(identifierArbitrary, { maxLength: 2 }),
+          rawText: fc.option(fc.constant('<input [(ngModel)]="title" />'), { nil: undefined }),
+          externalReferences: fc.array(fc.constantFrom('assets/logo.png', './local.png'), { maxLength: 2 }),
           reviewItemIds: fc.array(identifierArbitrary, { maxLength: 2 }),
           generatedRefs: fc.array(generatedRefArbitrary, { minLength: 1, maxLength: 2 }),
         }),
@@ -175,7 +180,7 @@ export const targetGenerationRequestArbitrary: fc.Arbitrary<TargetGenerationRequ
     correlationId: identifierArbitrary,
     targetRoot: absolutePathArbitrary,
     strategyId: fc.option(fc.constantFrom<TargetProjectStrategyId>('vite-react-typescript', 'react-default'), { nil: undefined }),
-    overwritePolicy: fc.constantFrom<TargetOverwritePolicy>('preserve', 'overwrite', 'fail'),
+    overwritePolicy: fc.constantFrom<TargetOverwritePolicy>('preserve', 'overwrite'),
     projectName: fc.option(identifierArbitrary, { nil: undefined }),
     selectedStateStrategy: fc.option(fc.constantFrom<TargetStateStrategy>('service', 'signals', 'store', 'local', 'unknown'), {
       nil: undefined,

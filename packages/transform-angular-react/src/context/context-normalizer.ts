@@ -84,6 +84,7 @@ export class ContextNormalizer {
             serviceRefs: [...symbol.constructorDependencies],
             stateRefs: [],
             routeRefs: [],
+            styleUrls: [...symbol.styleUrls],
             propertyInitializers: [...symbol.propertyInitializers],
             methods: [...symbol.methods],
             diagnostics: [...summary.diagnostics],

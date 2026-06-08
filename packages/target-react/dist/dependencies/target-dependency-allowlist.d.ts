@@ -9,6 +9,7 @@ export declare const targetDependencyAllowlist: {
     readonly '@vitejs/plugin-react': "4.3.4";
     readonly typescript: "5.8.3";
     readonly vite: "5.4.11";
+    readonly less: "4.2.0";
     readonly '@reduxjs/toolkit': "2.2.7";
     readonly zustand: "5.0.6";
 };

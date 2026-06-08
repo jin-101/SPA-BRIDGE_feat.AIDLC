@@ -18,6 +18,22 @@ const toStateSetter = (name: string): string => {
   return `set${id.charAt(0).toUpperCase()}${id.slice(1)}`;
 };
 
+const toReactEventName = (name: string): string => {
+  const eventMap: Record<string, string> = {
+    click: 'onClick',
+    input: 'onInput',
+    change: 'onChange',
+    submit: 'onSubmit',
+    focus: 'onFocus',
+    blur: 'onBlur',
+    keyup: 'onKeyUp',
+    keydown: 'onKeyDown',
+    mouseenter: 'onMouseEnter',
+    mouseleave: 'onMouseLeave',
+  };
+  return eventMap[name.toLowerCase()] ?? `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+};
+
 const needsReactImport = (component: ReactComponentDraft): boolean =>
   component.propertyInitializers.length > 0 || component.hooks.length > 0;
 
@@ -59,6 +75,12 @@ const transformExpression = (expression: string, context: ComponentLogicContext)
   });
 
   return transformed;
+};
+
+const transformTemplateExpression = (expression: string, context: ComponentLogicContext): string => {
+  const [baseExpression, ...pipes] = expression.split('|').map((part) => part.trim()).filter(Boolean);
+  const transformed = transformExpression(baseExpression ?? expression, context);
+  return pipes.length > 0 ? `String(${transformed} ?? '')` : transformed;
 };
 
 const transformAngularStatement = (line: string, context: ComponentLogicContext): string[] => {
@@ -137,13 +159,73 @@ const renderConvertedBody = (bodyText: string, context: ComponentLogicContext): 
   return convertedLines.length > 0 ? convertedLines : ['    // Original Angular method body could not be converted safely.'];
 };
 
+const rewriteAssetPath = (value: string): string => {
+  if (/^(https?:|data:|\/)/i.test(value)) {
+    return value;
+  }
+  if (value.startsWith('assets/')) {
+    return `/${value}`;
+  }
+  return value;
+};
+
+const convertAngularTemplateToJsx = (templateText: string | undefined, context: ComponentLogicContext): string[] => {
+  if (!templateText?.trim()) {
+    return [];
+  }
+
+  let jsx = templateText
+    .slice(0, 8_000)
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/\s+\*ngIf="([^"]+)"/g, (_match, expression: string) => ` data-ng-if="${transformTemplateExpression(expression, context)}"`)
+    .replace(/\s+\*ngFor="([^"]+)"/g, (_match, expression: string) => ` data-ng-for="${expression.replace(/"/g, '&quot;')}"`)
+    .replace(/\s+class=/g, ' className=')
+    .replace(/\s+for=/g, ' htmlFor=')
+    .replace(/\s+\[\((ngModel)\)\]="([^"]+)"/g, (_match, _name: string, model: string) => {
+      const identifier = toIdentifier(model.replace(/^this\./, ''), 'value');
+      return ` value={${identifier} ?? ''} onChange={(event) => ${toStateSetter(identifier)}((event.target as HTMLInputElement).value)}`;
+    })
+    .replace(/\s+\[([A-Za-z0-9_.:-]+)\]="([^"]+)"/g, (_match, property: string, expression: string) => {
+      const prop = property === 'class' ? 'className' : property;
+      return ` ${prop}={${transformTemplateExpression(expression, context)}}`;
+    })
+    .replace(/\s+\(([A-Za-z0-9_.:-]+)\)="([^"]+)"/g, (_match, eventName: string, expression: string) => {
+      const transformed = transformExpression(expression.replace(/\$event/g, 'event'), context);
+      return ` ${toReactEventName(eventName)}={(event) => ${stripTrailingSemicolon(transformed)}}`;
+    })
+    .replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_match, expression: string) => `{${transformTemplateExpression(expression, context)}}`)
+    .replace(/\s(src|href)=["']([^"']+)["']/g, (_match, attr: string, value: string) => ` ${attr}="${rewriteAssetPath(value)}"`)
+    .replace(/<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>]*?)(?<!\/)>/g, '<$1$2 />');
+
+  if (!jsx.trim().startsWith('<')) {
+    jsx = `<>{${JSON.stringify(jsx.trim())}}</>`;
+  }
+
+  return [
+    '      {/* Converted from Angular template. Review data-ng-* markers for structural directives. */}',
+    ...jsx
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => `      ${line}`),
+  ];
+};
+
 export class ComponentMaterializer {
   materialize(component: ReactComponentDraft, sourceRefs: SourceRef[] = []): GeneratedFileSpec[] {
     const safeName = toComponentName(component.name) || 'Component';
     const propsType = component.props.length > 0
       ? `type Props = {\n${component.props.map((prop) => `  ${prop.replace(/[^A-Za-z0-9_]/g, '')}?: unknown;`).join('\n')}\n};`
       : 'type Props = Record<string, never>;';
-    const imports = needsReactImport(component) ? ["import { useEffect, useState } from 'react';", ''] : [];
+    const styleImports = component.styleUrls.map((styleUrl) => {
+      const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '.css';
+      return `import '../styles/components/${safeName}${extension}';`;
+    });
+    const imports = [
+      ...(needsReactImport(component) ? ["import { useEffect, useState } from 'react';"] : []),
+      ...styleImports,
+      ...(needsReactImport(component) || styleImports.length > 0 ? [''] : []),
+    ];
     const logicContext: ComponentLogicContext = {
       stateNames: new Set(component.propertyInitializers.filter((property) => !property.readonly).map((property) => property.name)),
       propertyNames: new Set(component.propertyInitializers.map((property) => property.name)),
@@ -193,6 +275,13 @@ export class ComponentMaterializer {
         .filter((method) => !['ngOnInit', 'ngOnDestroy', 'ngOnChanges', 'ngAfterViewInit', 'ngAfterContentInit'].includes(method.name))
         .map((method) => toIdentifier(method.name, 'handler')),
     ];
+    const templateLines = convertAngularTemplateToJsx(component.templateRawText, logicContext);
+    const fallbackTemplateLines = [
+      `      <h2>${safeName}</h2>`,
+      ...(component.propertyInitializers.length > 0
+        ? component.propertyInitializers.map((property) => `      <p data-field="${toIdentifier(property.name, 'value')}">{String(${toIdentifier(property.name, 'value')} ?? '')}</p>`)
+        : []),
+    ];
 
     const content = [
       ...imports,
@@ -210,25 +299,36 @@ export class ComponentMaterializer {
       ...(usedIdentifiers.length > 0 ? [''] : []),
       '  return (',
       `    <section data-component="${safeName}">`,
-      `      <h2>${safeName}</h2>`,
-      ...(component.propertyInitializers.length > 0
-        ? component.propertyInitializers.map((property) => `      <p data-field="${toIdentifier(property.name, 'value')}">{String(${toIdentifier(property.name, 'value')} ?? '')}</p>`)
-        : []),
+      ...(templateLines.length > 0 ? templateLines : fallbackTemplateLines),
       '    </section>',
       '  );',
       '};',
       '',
     ].join('\n');
 
-    return [
-      createFileSpec({
+    const componentFile = createFileSpec({
         path: `src/components/${safeName}.tsx`,
         kind: 'component',
         content,
         sourceRefs,
         overwrite: true,
-      }),
-    ];
+      });
+    const styleFiles = component.styleUrls.map((styleUrl) => {
+      const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '.css';
+      return createFileSpec({
+        path: `src/styles/components/${safeName}${extension}`,
+        kind: 'scaffold',
+        content: [
+          `/* Converted style placeholder for ${safeName}. */`,
+          `/* Original Angular style reference: ${styleUrl.replace(/\*\//g, '* /')} */`,
+          '',
+        ].join('\n'),
+        sourceRefs,
+        overwrite: true,
+      });
+    });
+
+    return [componentFile, ...styleFiles];
   }
 
   materializeMany(components: ReactComponentDraft[], sourceRef: SourceRef): GeneratedFileSpec[] {

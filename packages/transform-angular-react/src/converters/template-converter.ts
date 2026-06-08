@@ -49,6 +49,8 @@ export class TemplateConverter {
           bindings: [...template.bindings],
           events: [...template.events],
           forms,
+          rawText: template.rawText,
+          externalReferences: [...template.externalReferences],
           reviewItemIds,
           generatedRefs: [this.ids.artifactRef(`${template.id}/template.json`, 'template')],
         };
@@ -62,6 +64,8 @@ export class TemplateConverter {
         bindings: [...template.bindings],
         events: [...template.events],
         forms,
+        rawText: template.rawText,
+        externalReferences: [...template.externalReferences],
         reviewItemIds,
         generatedRefs: [this.ids.artifactRef(`${template.id}/template.json`, 'template')],
       };

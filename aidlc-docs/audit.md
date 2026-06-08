@@ -2766,3 +2766,11 @@ Check that --workspace is a real directory and --input points to an Angular proj
 **Context**: CLI conversion quality support and semantic component logic conversion
 
 ---
+
+## Complex Angular Pattern Conversion Coverage Request
+**Timestamp**: 2026-06-08T05:22:35Z
+**User Input**: "아직 많은 부분이 부족해보여. 첫번째로 너가 얘기했던 RxJS stream, NgRx reducer/effects/selectors, Angular DI/service, Router, Forms, animation 같은 복잡한 패턴도 리엑트에 맞게 최대한 수정되어서 적용되어야 해. 또, 앵귤러에서 쓰였던 이미지나 less 파일들도 사용이 되어야 하고, html 파일들도 jsx 문법에 하나도 적용이 안된 것 같아."
+**AI Response**: "Expanded Angular-to-React conversion coverage by carrying template/style/asset metadata through the source-analysis and transformation pipeline, converting Angular template HTML into JSX-oriented component output, generating component style imports/placeholders, copying Angular source styles and template assets during CLI conversion, improving route output to use target components, adding hook/context based service output, adding React state/store scaffolding, and verifying workspace build/test success."
+**Context**: CLI conversion quality support and complex Angular pattern coverage expansion
+
+---

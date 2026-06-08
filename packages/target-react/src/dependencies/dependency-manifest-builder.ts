@@ -19,6 +19,7 @@ export class DependencyManifestBuilder {
       '@vitejs/plugin-react': targetDependencyAllowlist['@vitejs/plugin-react'],
       typescript: targetDependencyAllowlist.typescript,
       vite: targetDependencyAllowlist.vite,
+      less: targetDependencyAllowlist.less,
     };
 
     if (stateStrategy === 'store') {
@@ -35,6 +36,7 @@ export class DependencyManifestBuilder {
     '@vitejs/plugin-react': 'Vite fast refresh and JSX transform support.',
       typescript: 'TypeScript compiler for the generated target project.',
       vite: 'Deterministic dev-server and build pipeline.',
+      less: 'LESS preprocessing support for Angular component styles carried into the React target.',
     };
 
     if (stateStrategy === 'store') {

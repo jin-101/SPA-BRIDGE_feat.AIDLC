@@ -50,6 +50,7 @@ export class ComponentConverter {
     convertComponent(component, templates) {
         const matchingTemplates = templates.filter((template) => template.ownerComponentPath === component.sourceRef?.path);
         const templateDraftId = matchingTemplates[0]?.id;
+        const primaryTemplate = matchingTemplates[0];
         const hooks = component.lifecycleHooks.map((hookName, index) => ({
             id: this.ids.hookId(component.name, hookName, index + 1),
             kind: hookName === 'ngOnInit' || hookName === 'ngOnDestroy' ? 'effect' : 'custom',
@@ -70,7 +71,10 @@ export class ComponentConverter {
             hooks,
             imports: [...new Set([...component.serviceRefs])],
             templateDraftId,
+            templateRawText: primaryTemplate?.rawText,
+            templateExternalReferences: [...new Set(matchingTemplates.flatMap((template) => template.externalReferences))],
             serviceRefs: [...component.serviceRefs],
+            styleUrls: [...component.styleUrls],
             propertyInitializers: [...component.propertyInitializers],
             methods: [...component.methods],
             reviewItemIds: [],

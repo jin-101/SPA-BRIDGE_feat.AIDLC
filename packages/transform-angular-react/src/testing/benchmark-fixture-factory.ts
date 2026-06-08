@@ -74,6 +74,7 @@ const createComponentSummary = (
       constructorDependencies: [serviceName],
       lifecycleHooks: ['ngOnInit', 'ngOnDestroy'],
       references: [serviceName, templatePath, stylePath],
+      styleUrls: [path.basename(stylePath)],
       propertyInitializers: [
         {
           name: 'title',
@@ -118,6 +119,7 @@ const createServiceSummary = (serviceName: string, sourcePath: string): TypeScri
       constructorDependencies: [],
       lifecycleHooks: [],
       references: [],
+      styleUrls: [],
       propertyInitializers: [],
       methods: [],
     },
@@ -141,6 +143,7 @@ const createStateSummary = (stateName: string, sourcePath: string): TypeScriptPa
       constructorDependencies: [],
       lifecycleHooks: [],
       references: [],
+      styleUrls: [],
       propertyInitializers: [],
       methods: [],
     },
