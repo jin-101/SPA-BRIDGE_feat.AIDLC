@@ -1,0 +1,1 @@
+{"version":3,"file":"cli-output-formatter.d.ts","sourceRoot":"","sources":["../../src/output/cli-output-formatter.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,kBAAkB,EAAE,cAAc,EAAE,cAAc,EAAE,YAAY,EAAE,MAAM,aAAa,CAAC;AAQpG,eAAO,MAAM,gBAAgB,GAC3B,QAAQ,kBAAkB,EAC1B,WAAW,YAAY,EACvB,cAAc,cAAc,KAC3B,cAgCF,CAAC;AAEF,eAAO,MAAM,oBAAoB,GAAI,OAAO,cAAc,EAAE,WAAW,YAAY,KAAG,MAsBrF,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"cli-command-parser.d.ts","sourceRoot":"","sources":["../../src/parsing/cli-command-parser.ts"],"names":[],"mappings":"AAAA,OAAO,EAAW,KAAK,MAAM,EAAE,MAAM,wBAAwB,CAAC;AAE9D,OAAO,EAAkB,KAAK,QAAQ,EAAE,MAAM,qBAAqB,CAAC;AACpE,OAAO,KAAK,EAAE,iBAAiB,EAAqC,MAAM,aAAa,CAAC;AAyExF,eAAO,MAAM,eAAe,GAAI,SAAS,MAAM,EAAE,KAAG,MAAM,CAAC,iBAAiB,EAAE,QAAQ,CAgJrF,CAAC"}

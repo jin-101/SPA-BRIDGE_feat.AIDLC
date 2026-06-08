@@ -1,0 +1,1 @@
+{"version":3,"file":"exit-code-mapper.d.ts","sourceRoot":"","sources":["../../src/exit-codes/exit-code-mapper.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,WAAW,EAAE,kBAAkB,EAAE,MAAM,aAAa,CAAC;AAEnE,eAAO,MAAM,eAAe,EAAE,MAAM,CAAC,kBAAkB,EAAE,WAAW,CA0BnE,CAAC;AAEF,eAAO,MAAM,WAAW,GAAI,UAAU,kBAAkB,KAAG,WAAwC,CAAC"}

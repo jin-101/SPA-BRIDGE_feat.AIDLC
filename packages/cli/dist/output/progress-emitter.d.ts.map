@@ -1,0 +1,1 @@
+{"version":3,"file":"progress-emitter.d.ts","sourceRoot":"","sources":["../../src/output/progress-emitter.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,aAAa,CAAC;AAEpD,qBAAa,eAAe;IAC1B,OAAO,CAAC,QAAQ,CAAC,MAAM,CAA0B;IAEjD,IAAI,CAAC,KAAK,EAAE,gBAAgB,GAAG,IAAI;IAInC,QAAQ,IAAI,gBAAgB,EAAE;CAG/B"}

@@ -1,7 +1,7 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, report generation, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, UOW-08, and UOW-09.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, report generation, provider selection, target generation, CLI dispatch, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, UOW-08, UOW-09, and UOW-10.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
@@ -13,6 +13,7 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 - **Target Generation Throughput**: UOW-07 target write-plan generation should remain deterministic and bounded for representative React target drafts
 - **Quality Orchestration Throughput**: UOW-08 gate ordering, bounded self-correction, and evidence aggregation should remain deterministic and bounded for representative quality runs
 - **Reporting Throughput**: UOW-09 canonical report generation and export rendering should remain deterministic and bounded for representative report bundles
+- **CLI Throughput**: UOW-10 command parsing, option resolution, and formatted output should remain deterministic and bounded for representative conversion and validation commands
 
 ## Setup Performance Test Environment
 
@@ -44,6 +45,8 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 # packages/adapters-ai/src/testing/
 # and the quality test generators in:
 # packages/core-quality/src/testing/
+# plus the CLI parsing, formatting, and path-safety helpers in:
+# packages/cli/src/
 # to construct a benchmark runner in a later unit.
 ```
 
