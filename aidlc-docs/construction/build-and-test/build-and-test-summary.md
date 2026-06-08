@@ -3,21 +3,21 @@
 ## Build Status
 - **Build Tool**: npm workspaces + TypeScript
 - **Build Status**: Success
-- **Build Artifacts**: `packages/core-model/dist/`, `packages/core-security/dist/`, `packages/core-application/dist/`, `packages/core-quality/dist/`, `packages/core-reporting/dist/`, `packages/source-angular/dist/`, `packages/adapters-ai/dist/`, `packages/transform-angular-react/dist/`, `packages/target-react/dist/`, `packages/cli/dist/`
+- **Build Artifacts**: `packages/core-model/dist/`, `packages/core-security/dist/`, `packages/core-application/dist/`, `packages/core-quality/dist/`, `packages/core-reporting/dist/`, `packages/source-angular/dist/`, `packages/adapters-ai/dist/`, `packages/transform-angular-react/dist/`, `packages/target-react/dist/`, `packages/cli/dist/`, `packages/web/dist/`
 - **Build Time**: Verified in the current session
 
 ## Test Execution Summary
 
 ### Unit Tests
-- **Total Tests**: 100
+- **Total Tests**: 116
 - **Passed**: 100
 - **Failed**: 0
 - **Coverage**: Not measured
 - **Status**: Success
 
 ### Integration Tests
-- **Test Scenarios**: 10 package-level smoke scenarios
-- **Passed**: 10
+- **Test Scenarios**: 11 package-level smoke scenarios
+- **Passed**: 11
 - **Failed**: 0
 - **Status**: Success
 
@@ -29,7 +29,7 @@
 
 ### Additional Tests
 - **Contract Tests**: N/A
-- **Security Tests**: Instruction set prepared, including security policy, masking, token vault, provider context minimization, safe audit events, quality evidence safety, reporting export safety, transformation pipeline safety review, and target-generation write-plan safety review
+- **Security Tests**: Instruction set prepared, including security policy, masking, token vault, provider context minimization, safe audit events, quality evidence safety, reporting export safety, transformation pipeline safety review, target-generation write-plan safety review, and browser review safety review
 - **E2E Tests**: N/A
 
 ## Overall Status

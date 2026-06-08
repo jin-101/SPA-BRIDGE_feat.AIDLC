@@ -1,32 +1,32 @@
 # Security Test Instructions
 
 ## Purpose
-Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, quality-evidence safety, reporting safety, transformation pipeline safety, target-generation write-plan safety, and CLI output safety.
+Validate that the workspace maintains the security baseline for dependency hygiene, path safety, redaction-safe models, sensitive-data handling, provider policy gating, token vault safety, provider context minimization, quality-evidence safety, reporting safety, transformation pipeline safety, target-generation write-plan safety, CLI output safety, and browser review safety.
 
 ## Security Test Scenarios
 
 ### Scenario 1: Dependency and Supply Chain Review
-- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `core-quality`, `core-reporting`, `source-angular`, `adapters-ai`, `transform-angular-react`, `target-react`, and `cli`
+- **Description**: Confirm exact-pinned dependencies and basic vulnerability scanning across `core-model`, `core-security`, `core-application`, `core-quality`, `core-reporting`, `source-angular`, `adapters-ai`, `transform-angular-react`, `target-react`, `cli`, and `web`
 - **Steps**:
   1. Run `npm audit --omit=dev`
-  2. Review the dependency lists in `packages/core-model/package.json`, `packages/core-security/package.json`, `packages/core-application/package.json`, `packages/core-quality/package.json`, and `packages/adapters-ai/package.json`
+  2. Review the dependency lists in `packages/core-model/package.json`, `packages/core-security/package.json`, `packages/core-application/package.json`, `packages/core-quality/package.json`, `packages/core-reporting/package.json`, `packages/adapters-ai/package.json`, `packages/cli/package.json`, and `packages/web/package.json`
   3. Confirm that no dependency is pulled from an untrusted registry
 - **Expected Results**: No unresolved critical dependency findings for the current package set
 
 ### Scenario 2: Secret and Sensitive Data Scan
 - **Description**: Confirm generated code and docs do not contain hardcoded secrets or raw sensitive values, including in security policy and reporting artifacts
 - **Steps**:
-  1. Search `packages/core-model/`, `packages/core-security/`, `packages/core-application/`, `packages/core-quality/`, `packages/core-reporting/`, `packages/adapters-ai/`, `packages/cli/`, and `aidlc-docs/construction/uow-05-security-masking-and-provider-policy/` for secret-like patterns
-  2. Review `packages/core-security/src/audit/`, `packages/core-security/src/policy/`, `packages/core-security/src/masking/`, `packages/core-security/src/token-vault/`, `packages/core-application/src/policy/`, `packages/core-reporting/src/`, `packages/adapters-ai/src/`, and `packages/cli/src/` for safe-display behavior
+  1. Search `packages/core-model/`, `packages/core-security/`, `packages/core-application/`, `packages/core-quality/`, `packages/core-reporting/`, `packages/adapters-ai/`, `packages/cli/`, `packages/web/`, and `aidlc-docs/construction/uow-05-security-masking-and-provider-policy/` for secret-like patterns
+  2. Review `packages/core-security/src/audit/`, `packages/core-security/src/policy/`, `packages/core-security/src/masking/`, `packages/core-security/src/token-vault/`, `packages/core-application/src/policy/`, `packages/core-reporting/src/`, `packages/adapters-ai/src/`, `packages/cli/src/`, and `packages/web/src/` for safe-display behavior
 - **Expected Results**: No raw secrets, passwords, or tokens are present
 
 ### Scenario 3: Security-Aware Contract Review
-- **Description**: Ensure orchestration, quality, reporting, provider, and security contracts expose only safe, structured data
+- **Description**: Ensure orchestration, quality, reporting, provider, security, and browser review contracts expose only safe, structured data
 - **Steps**:
   1. Review `packages/core-application/src/policy/policy.ts`
-  2. Review `packages/core-security/src/policy/provider-policy-gate.ts`, `packages/core-security/src/audit/safe-audit-event-builder.ts`, `packages/core-application/src/policy/security-policy-coordinator.ts`, `packages/core-quality/src/`, and `packages/cli/src/output/`
-  3. Confirm safe display strings are used for user-visible fields, policy decisions, quality evidence, report exports, and provider audit events
-- **Expected Results**: Orchestration, quality, provider, and report contracts remain redaction-safe and non-leaky
+  2. Review `packages/core-security/src/policy/provider-policy-gate.ts`, `packages/core-security/src/audit/safe-audit-event-builder.ts`, `packages/core-application/src/policy/security-policy-coordinator.ts`, `packages/core-quality/src/`, `packages/cli/src/output/`, and `packages/web/src/`
+  3. Confirm safe display strings are used for user-visible fields, policy decisions, quality evidence, report exports, browser review views, and provider audit events
+- **Expected Results**: Orchestration, quality, provider, report, and browser review contracts remain redaction-safe and non-leaky
 
 ### Scenario 4: Transformation Pipeline Safety Review
 - **Description**: Confirm the Angular-to-React transformation package emits safe review diagnostics, uses provider-neutral mapping metadata, preserves path containment, and remains compatible with provider policy handoff
@@ -51,8 +51,16 @@ Validate that the workspace maintains the security baseline for dependency hygie
 - **Steps**:
   1. Review `packages/cli/src/`
   2. Confirm `CliCommandParser`, `CliOptionResolver`, `WorkspacePathGuard`, and `CliOutputFormatter` reject unsafe inputs and sanitize display output
-  3. Confirm help text, progress output, and error rendering remain safe for non-interactive shells
-- **Expected Results**: CLI output remains path-safe, redaction-safe, and deterministic for validation and runtime errors
+  3. Confirm help text, progress output, error rendering, and browser review handoff summaries remain safe for non-interactive shells
+- **Expected Results**: CLI output remains path-safe, redaction-safe, and deterministic for validation, runtime errors, and review handoff summaries
+
+### Scenario 7: Web Review Workflow Safety Review
+- **Description**: Confirm the browser review workflow package enforces safe rendering, role-based gating, deterministic navigation, and confirmation-guarded remediation handoff
+- **Steps**:
+  1. Review `packages/web/src/`
+  2. Confirm `buildWebReviewState`, `buildAccessGateState`, `renderSafeText`, `buildConfirmationDialog`, and `createRemediationBridge` reject unsafe inputs and preserve safe display output
+  3. Confirm the browser review package does not expose raw source snippets, unsafe HTML, or unguarded remediation actions
+- **Expected Results**: Web review output remains safe, deterministic, and confirmation-guarded for review triage and remediation handoff
 
 ## Setup Security Test Environment
 
@@ -75,7 +83,7 @@ npm audit --omit=dev
 
 ### 2. Execute Secret Scan
 ```bash
-rg -n "(api[_-]?key|secret|password|token|PRIVATE KEY)" packages/core-model packages/core-security packages/core-application packages/core-quality packages/core-reporting packages/adapters-ai packages/cli aidlc-docs/construction/uow-05-security-masking-and-provider-policy
+rg -n "(api[_-]?key|secret|password|token|PRIVATE KEY)" packages/core-model packages/core-security packages/core-application packages/core-quality packages/core-reporting packages/adapters-ai packages/cli packages/web aidlc-docs/construction/uow-05-security-masking-and-provider-policy
 ```
 
 ### 3. Review Security-Sensitive Modules
@@ -96,7 +104,8 @@ rg -n "(api[_-]?key|secret|password|token|PRIVATE KEY)" packages/core-model pack
 - `packages/cli/src/parsing/cli-command-parser.ts`
 - `packages/cli/src/path/workspace-path-guard.ts`
 - `packages/cli/src/output/cli-output-formatter.ts`
+- `packages/web/src/`
 
 ## Notes
 - UI hardening, auth, and production deployment rules are N/A for the current package-level workspace.
-- Security Baseline compliance is primarily about dependency hygiene, path containment, safe display fields, provider-neutral transformation handling, report export safety, and avoiding raw sensitive value leakage in this stage.
+- Security Baseline compliance is primarily about dependency hygiene, path containment, safe display fields, provider-neutral transformation handling, report export safety, browser review safety, and avoiding raw sensitive value leakage in this stage.

@@ -1,0 +1,1 @@
+{"version":3,"file":"access-gate.d.ts","sourceRoot":"","sources":["../../src/access/access-gate.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,cAAc,EAAE,YAAY,EAAE,MAAM,aAAa,CAAC;AAEhE,eAAO,MAAM,YAAY,GAAI,QAAQ,cAAc,EAAE,KAAK,YAAY,KAAG,OAA2C,CAAC;AAErH,eAAO,MAAM,eAAe,GAAI,QAAQ,cAAc,EAAE,UAAU,MAAM,KAAG,OAAmD,CAAC;AAE/H,eAAO,MAAM,eAAe,GAAI,QAAQ,cAAc,KAAG,OAA+C,CAAC"}

@@ -1,7 +1,7 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, report generation, provider selection, target generation, CLI dispatch, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, UOW-08, UOW-09, and UOW-10.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, report generation, provider selection, target generation, CLI dispatch, browser review state mapping, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, UOW-08, UOW-09, UOW-10, and UOW-11.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
@@ -14,6 +14,7 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 - **Quality Orchestration Throughput**: UOW-08 gate ordering, bounded self-correction, and evidence aggregation should remain deterministic and bounded for representative quality runs
 - **Reporting Throughput**: UOW-09 canonical report generation and export rendering should remain deterministic and bounded for representative report bundles
 - **CLI Throughput**: UOW-10 command parsing, option resolution, and formatted output should remain deterministic and bounded for representative conversion and validation commands
+- **Web Review Throughput**: UOW-11 browser review state mapping, safe rendering, access gating, and remediation confirmation should remain deterministic and bounded for representative review workflows
 
 ## Setup Performance Test Environment
 
@@ -47,6 +48,8 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 # packages/core-quality/src/testing/
 # plus the CLI parsing, formatting, and path-safety helpers in:
 # packages/cli/src/
+# plus the browser review workflow helpers in:
+# packages/web/src/
 # to construct a benchmark runner in a later unit.
 ```
 
