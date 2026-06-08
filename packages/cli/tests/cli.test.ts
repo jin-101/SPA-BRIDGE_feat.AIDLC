@@ -241,6 +241,8 @@ describe('cli package', () => {
   });
 
   it('runs a real end-to-end Angular-to-React conversion into an output directory', async () => {
+    const previousTimeout = process.env.SPA_BRIDGE_AI_TIMEOUT_MS;
+    process.env.SPA_BRIDGE_AI_TIMEOUT_MS = '50';
     const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'spa-bridge-cli-'));
     const angularRoot = path.join(workspaceRoot, 'angular-app');
     const outputRoot = path.join(workspaceRoot, 'react-output');
@@ -319,7 +321,14 @@ describe('cli package', () => {
     await expect(fs.readFile(path.join(outputRoot, 'src', 'App.tsx'), 'utf8')).resolves.toContain('Target React scaffold');
     await expect(fs.readFile(path.join(outputRoot, 'src', 'components', 'AppComponent.tsx'), 'utf8')).resolves.toContain('AppComponent');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'target-summary.json'), 'utf8')).resolves.toContain('totalFiles');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'ai-refinement-results.json'), 'utf8')).resolves.toContain('ollama-exaone3.5');
     await expect(fs.readFile(path.join(outputRoot, 'report.json'), 'utf8')).resolves.toContain('Conversion Summary');
+
+    if (previousTimeout === undefined) {
+      delete process.env.SPA_BRIDGE_AI_TIMEOUT_MS;
+    } else {
+      process.env.SPA_BRIDGE_AI_TIMEOUT_MS = previousTimeout;
+    }
   });
 });
 

@@ -2708,3 +2708,19 @@ Continue to Next Stage"
 **Context**: CONSTRUCTION - post-UOW end-to-end CLI conversion wiring
 
 ---
+
+## AI Capability Clarification Request
+**Timestamp**: 2026-06-08T04:34:30Z
+**User Input**: "또 하나 궁금한 것은 ai 요소가 적용이 된 것은 맞아>"
+**AI Response**: "Clarified that AI provider/refinement infrastructure is implemented, while the default CLI conversion currently runs deterministic local conversion and does not call an external LLM unless a future opt-in provider path is wired into the conversion pipeline."
+**Context**: Post-construction AI capability clarification
+
+---
+
+## Local-first AI Refinement Implementation Request
+**Timestamp**: 2026-06-08T04:42:53Z
+**User Input**: "기본적으로는 로컬에서 작동하는 allama의 exaone3.5 모델을 적용해놓고, 보안 요소가 문제없으면 외부 LLM API 호출하는거로 적용하고 싶은데."
+**AI Response**: "Implemented local-first AI refinement using Ollama EXAONE 3.5 by default, added OpenAI-compatible external LLM fallback behind explicit security opt-in, wired AI refinement artifacts into CLI conversion reports, documented environment variables, added tests, and verified workspace build/test success."
+**Context**: CONSTRUCTION - local-first AI refinement and external LLM opt-in wiring
+
+---

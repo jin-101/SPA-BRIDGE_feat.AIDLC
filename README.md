@@ -91,6 +91,45 @@ npx spa-bridge convert \
 
 위 예시에서 `/path/to/workspace/angular-app`은 Angular 프로젝트 루트여야 하며, `angular.json`, `package.json`, `src/main.ts` 또는 `src/app/app.component.ts` 같은 Angular entry 파일을 포함해야 합니다. 출력 폴더에는 Vite + React 18 + TypeScript 프로젝트 파일과 `.spa-bridge` 변환 요약, `report.json`이 함께 생성됩니다.
 
+### AI refinement 설정
+
+기본 AI refinement provider는 로컬 Ollama의 EXAONE 3.5입니다. 변환 중 생성된 mapping request에 대해 안전하게 축소된 context만 provider로 전달하고, 결과는 `.spa-bridge/ai-refinement-results.json`과 변환 리포트의 `AI Refinement` 섹션에 기록됩니다. AI 제안은 기본적으로 코드에 바로 덮어쓰지 않고 review 가능한 보강 산출물로 남깁니다.
+
+로컬 Ollama 기본값:
+
+```bash
+export SPA_BRIDGE_OLLAMA_BASE_URL=http://127.0.0.1:11434
+export SPA_BRIDGE_OLLAMA_MODEL=exaone3.5
+export SPA_BRIDGE_AI_PROVIDER_MODE=local-first
+```
+
+Ollama가 실행 중이고 `exaone3.5` 모델이 준비되어 있으면 별도 설정 없이 local-first refinement가 시도됩니다.
+
+```bash
+ollama run exaone3.5
+```
+
+외부 LLM API는 명시적으로 opt-in하고 보안 조건이 만족될 때만 후보로 사용됩니다. 외부 API는 OpenAI-compatible chat completions endpoint 형식을 기대합니다.
+
+```bash
+export SPA_BRIDGE_EXTERNAL_PROVIDER_OPT_IN=true
+export SPA_BRIDGE_ALLOW_EXTERNAL_PROVIDER=true
+export SPA_BRIDGE_EXTERNAL_LLM_ENDPOINT=https://api.example.com/v1/chat/completions
+export SPA_BRIDGE_EXTERNAL_LLM_MODEL=your-model-name
+export SPA_BRIDGE_EXTERNAL_LLM_API_KEY=your-api-key
+```
+
+관련 옵션:
+
+| 변수 | 기본값 | 설명 |
+| --- | --- | --- |
+| `SPA_BRIDGE_AI_PROVIDER_MODE` | `local-first` | `local-first`, `auto`, `external-only` 중 선택 |
+| `SPA_BRIDGE_AI_DISABLED` | unset | `true`면 AI refinement 비활성화 |
+| `SPA_BRIDGE_AI_MAX_REQUESTS` | `20` | 한 번의 변환에서 AI refinement를 시도할 mapping request 수 |
+| `SPA_BRIDGE_AI_TIMEOUT_MS` | `1200` | provider 호출 timeout |
+| `SPA_BRIDGE_OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Ollama API base URL |
+| `SPA_BRIDGE_OLLAMA_MODEL` | `exaone3.5` | 로컬 Ollama 모델명 |
+
 API로 직접 실행할 수도 있습니다.
 
 ```ts

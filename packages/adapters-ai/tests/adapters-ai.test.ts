@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import fc from 'fast-check';
 
 import {
@@ -19,6 +19,10 @@ import {
 } from '../src/index.js';
 
 describe('adapters-ai', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('rejects duplicate provider IDs', () => {
     const provider = fc.sample(providerDescriptorArb, 1)[0]!;
     const result = createProviderRegistry([provider, provider]);
@@ -84,6 +88,57 @@ describe('adapters-ai', () => {
     expect(first.ok).toBe(true);
     expect(second.ok).toBe(true);
   });
+
+  it('invokes Ollama local provider metadata and returns safe suggestions', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => ({
+          model: 'exaone3.5',
+          response: JSON.stringify({
+            summary: 'Prefer a React hook for lifecycle migration.',
+            rationale: 'The safe context indicates lifecycle behavior.',
+            confidence: 0.82,
+          }),
+        }),
+      })),
+    );
+
+    const provider = {
+      providerId: 'ollama-exaone3.5',
+      adapterKind: 'local-internal' as const,
+      displayName: 'Ollama EXAONE 3.5',
+      capabilities: [{ category: 'template' as const, tags: ['jsx'], supportsStructuredResponse: true, supportsSafeRationale: true, maxContextItems: 50 }],
+      priority: 100,
+      enabled: true,
+      requiresExternalPolicy: false,
+      metadata: { backend: 'ollama', baseUrl: 'http://127.0.0.1:11434', model: 'exaone3.5' },
+    };
+    const adapter = createLocalInternalProviderAdapter(provider);
+    const result = await adapter.invoke({
+      providerId: provider.providerId,
+      adapterKind: 'local-internal',
+      context: {
+        contextId: 'ctx-ollama',
+        mappingRequestId: 'map-ollama',
+        category: 'template',
+        safeContext: { bindingCount: 1 },
+        safeRefs: [{ kind: 'source', path: 'src/app/app.component.ts' }],
+        policyEvidenceRef: 'policy-ollama',
+        masked: true,
+      },
+      timeoutMs: 1000,
+      requestMetadata: {},
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.value.modelLabel).toBe('exaone3.5');
+      expect(result.value.suggestions[0]?.safeSummary).toContain('React hook');
+    }
+  });
+
 
   it('validates provider responses against mapping requests', () => {
     const request = {

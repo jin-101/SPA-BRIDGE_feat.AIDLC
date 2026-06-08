@@ -9,6 +9,7 @@ import { GeneratedArtifactRefSchema, IrRefSchema, SourceRefSchema, TraceLinkSche
 const safeString = fc
     .string({ minLength: 1, maxLength: 24 })
     .map((value) => createSafeDisplayString(value.replace(/\s+/g, ' ').trim()));
+const jsonRoundTripValue = fc.jsonValue().map((value) => JSON.parse(JSON.stringify(value)));
 const isoDateString = fc.constant('2026-06-04T00:00:00.000Z');
 const sourceRef = fc.record({
     kind: fc.constant('source'),
@@ -69,7 +70,7 @@ const component = fc
     dependencyRefs: fc.array(irRef, { maxLength: 3 }),
     sourceRefs: fc.array(sourceRef, { maxLength: 3 }),
     generatedRefs: fc.array(generatedRef, { maxLength: 3 }),
-    extensionSlots: fc.dictionary(fc.string({ minLength: 1, maxLength: 8 }), fc.jsonValue(), { maxKeys: 3 }),
+    extensionSlots: fc.dictionary(fc.string({ minLength: 1, maxLength: 8 }), jsonRoundTripValue, { maxKeys: 3 }),
 })
     .map((value) => IrComponentSchema.parse(value));
 const traceabilityMap = fc

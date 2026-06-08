@@ -1,8 +1,9 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { ok } from '@spa-bridge/core-model';
+import { createSafeDisplayString, ok } from '@spa-bridge/core-model';
 import { SourceAngularAnalysisService } from '@spa-bridge/source-angular';
 import { createTransformationService } from '@spa-bridge/transform-angular-react';
+import { defaultCapabilityCatalog, refineMapping } from '@spa-bridge/adapters-ai';
 import { generateReactTarget } from '@spa-bridge/target-react';
 import { createCliError } from '../shared-errors.js';
 const buildPayload = (request, title, summary, warnings = [], reviewItems = [], sections = []) => ({
@@ -32,6 +33,135 @@ const writeJsonArtifact = async (targetRoot, name, value) => {
     await fs.writeFile(artifactPath, JSON.stringify(value, null, 2) + '\n', 'utf8');
     return artifactPath;
 };
+const readBooleanEnv = (name, fallback = false) => {
+    const value = process.env[name];
+    if (value === undefined) {
+        return fallback;
+    }
+    return ['1', 'true', 'yes', 'y'].includes(value.trim().toLowerCase());
+};
+const readProviderMode = () => {
+    const value = process.env.SPA_BRIDGE_AI_PROVIDER_MODE;
+    return value === 'external-only' || value === 'auto' || value === 'local-first' ? value : 'local-first';
+};
+const createProviderDecision = (input) => ({
+    decision: input.securityReady ? 'allow' : 'block',
+    reasonCode: input.securityReady ? 'ALLOW_AI_REFINEMENT' : 'AI_REFINEMENT_BLOCKED',
+    reason: createSafeDisplayString(input.securityReady
+        ? 'AI refinement is permitted for minimized, safe mapping context.'
+        : 'AI refinement is blocked because security readiness checks failed.'),
+    providerMode: input.providerMode,
+    externalProviderAllowed: input.externalProviderAllowed,
+    maskingRequired: true,
+    auditRequired: true,
+    findingsPresent: !input.securityReady,
+});
+const createProviderDescriptors = () => {
+    const externalOptIn = readBooleanEnv('SPA_BRIDGE_EXTERNAL_PROVIDER_OPT_IN');
+    const externalEndpoint = process.env.SPA_BRIDGE_EXTERNAL_LLM_ENDPOINT;
+    const externalModel = process.env.SPA_BRIDGE_EXTERNAL_LLM_MODEL;
+    return [
+        {
+            providerId: 'ollama-exaone3.5',
+            adapterKind: 'local-internal',
+            displayName: createSafeDisplayString('Ollama EXAONE 3.5'),
+            capabilities: [...defaultCapabilityCatalog],
+            priority: 100,
+            enabled: true,
+            requiresExternalPolicy: false,
+            metadata: {
+                backend: 'ollama',
+                baseUrl: process.env.SPA_BRIDGE_OLLAMA_BASE_URL ?? 'http://127.0.0.1:11434',
+                model: process.env.SPA_BRIDGE_OLLAMA_MODEL ?? 'exaone3.5',
+            },
+        },
+        {
+            providerId: 'external-openai-compatible',
+            adapterKind: 'external',
+            displayName: createSafeDisplayString('External OpenAI-compatible LLM'),
+            capabilities: [...defaultCapabilityCatalog],
+            priority: 50,
+            enabled: externalOptIn && !!externalEndpoint && !!externalModel,
+            requiresExternalPolicy: true,
+            metadata: {
+                backend: 'openai-compatible',
+                endpoint: externalEndpoint ?? '',
+                model: externalModel ?? '',
+                apiKeyEnv: process.env.SPA_BRIDGE_EXTERNAL_LLM_API_KEY_ENV ?? 'SPA_BRIDGE_EXTERNAL_LLM_API_KEY',
+            },
+        },
+    ];
+};
+const runAiRefinement = async (targetRoot, mappingRequests, securityReady) => {
+    const enabled = !readBooleanEnv('SPA_BRIDGE_AI_DISABLED');
+    const providerMode = readProviderMode();
+    const externalOptIn = readBooleanEnv('SPA_BRIDGE_EXTERNAL_PROVIDER_OPT_IN');
+    const externalAllowed = externalOptIn && readBooleanEnv('SPA_BRIDGE_ALLOW_EXTERNAL_PROVIDER') && securityReady;
+    const maxRequests = Number.parseInt(process.env.SPA_BRIDGE_AI_MAX_REQUESTS ?? '20', 10);
+    const timeoutMs = Number.parseInt(process.env.SPA_BRIDGE_AI_TIMEOUT_MS ?? '1200', 10);
+    const providers = createProviderDescriptors();
+    const localProvider = providers[0];
+    const externalProviderConfigured = providers.some((provider) => provider.adapterKind === 'external' && provider.enabled);
+    const selectedRequests = enabled ? mappingRequests.slice(0, Number.isFinite(maxRequests) && maxRequests > 0 ? maxRequests : 20) : [];
+    const results = [];
+    for (const mappingRequest of selectedRequests) {
+        const localResult = await refineMapping(mappingRequest, {
+            providers,
+            policyDecision: createProviderDecision({
+                providerMode,
+                externalProviderAllowed: externalAllowed,
+                securityReady,
+            }),
+            config: {
+                providerMode,
+                externalProviderOptIn: externalOptIn,
+                auditReady: true,
+                maskingSatisfied: true,
+                timeoutMs,
+            },
+        });
+        if (localResult.ok) {
+            results.push(localResult.value);
+            if (localResult.value.status === 'succeeded' || !externalAllowed) {
+                continue;
+            }
+        }
+        if (externalAllowed) {
+            const externalResult = await refineMapping(mappingRequest, {
+                providers,
+                policyDecision: createProviderDecision({
+                    providerMode: 'external-only',
+                    externalProviderAllowed: true,
+                    securityReady,
+                }),
+                config: {
+                    providerMode: 'external-only',
+                    externalProviderOptIn: true,
+                    auditReady: true,
+                    maskingSatisfied: true,
+                    timeoutMs,
+                },
+            });
+            if (externalResult.ok) {
+                results.push(externalResult.value);
+            }
+        }
+    }
+    const summary = {
+        enabled,
+        providerMode,
+        localProviderId: localProvider?.providerId ?? 'unknown',
+        externalProviderConfigured,
+        externalProviderAllowed: externalAllowed,
+        totalMappingRequests: mappingRequests.length,
+        processedMappingRequests: selectedRequests.length,
+        totalSuggestions: results.reduce((total, result) => total + result.suggestions.length, 0),
+        totalDiagnostics: results.reduce((total, result) => total + result.diagnostics.length, 0),
+        results,
+    };
+    await writeJsonArtifact(targetRoot, 'ai-refinement-results.json', summary);
+    return summary;
+};
 export const createDefaultApplicationBridge = () => ({
     async startConversion(request) {
         const analysisService = new SourceAngularAnalysisService();
@@ -58,6 +188,8 @@ export const createDefaultApplicationBridge = () => ({
         if (!transformationResult.ok) {
             return { ok: false, error: toCliError('Angular-to-React transformation failed.', transformationResult.error) };
         }
+        const securityReady = !analysisResult.value.diagnostics.some((diagnostic) => diagnostic.severity === 'security-blocker');
+        const aiRefinement = await runAiRefinement(request.validatedPaths.outputPath, transformationResult.value.mappingRequests, securityReady);
         const targetResult = generateReactTarget({
             runId,
             correlationId,
@@ -91,6 +223,8 @@ export const createDefaultApplicationBridge = () => ({
         const warnings = [
             ...analysisResult.value.diagnostics.filter((diagnostic) => diagnostic.severity === 'warning').map((diagnostic) => diagnostic.message),
             ...(request.resolvedOptions.dryRun ? ['Dry run mode enabled; React target files were not written.'] : []),
+            ...(aiRefinement.enabled && aiRefinement.totalDiagnostics > 0 ? [`AI refinement produced ${aiRefinement.totalDiagnostics} diagnostic(s).`] : []),
+            ...(!aiRefinement.enabled ? ['AI refinement disabled by SPA_BRIDGE_AI_DISABLED.'] : []),
         ];
         const reviewItems = targetResult.value.manualReviewItems.map((item) => item.title);
         const summary = request.resolvedOptions.dryRun
@@ -128,6 +262,19 @@ export const createDefaultApplicationBridge = () => ({
                         `Output: ${request.validatedPaths.outputPath}`,
                         `Generated files: ${targetResult.value.summary.totalFiles}`,
                         `Strategy: ${targetResult.value.summary.strategyId}`,
+                    ],
+                },
+                {
+                    title: 'AI Refinement',
+                    lines: [
+                        `Enabled: ${aiRefinement.enabled}`,
+                        `Provider mode: ${aiRefinement.providerMode}`,
+                        `Local provider: ${aiRefinement.localProviderId}`,
+                        `External provider allowed: ${aiRefinement.externalProviderAllowed}`,
+                        `Mapping requests processed: ${aiRefinement.processedMappingRequests}/${aiRefinement.totalMappingRequests}`,
+                        `Suggestions: ${aiRefinement.totalSuggestions}`,
+                        `Diagnostics: ${aiRefinement.totalDiagnostics}`,
+                        `Artifact: ${path.join(request.validatedPaths.outputPath, '.spa-bridge', 'ai-refinement-results.json')}`,
                     ],
                 },
             ]),

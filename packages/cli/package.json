@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@spa-bridge/core-application": "0.1.0",
+    "@spa-bridge/adapters-ai": "0.1.0",
     "@spa-bridge/core-quality": "0.1.0",
     "@spa-bridge/core-reporting": "0.1.0",
     "@spa-bridge/core-security": "0.1.0",

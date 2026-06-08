@@ -6,7 +6,7 @@
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
 - **Current Stage**: OPERATIONS Placeholder
-- **Last Completed**: End-to-End CLI Conversion Wiring
+- **Last Completed**: Local-first AI Refinement Wiring
 - **Next Step**: Run against a real Angular repository and review generated React output
 
 ## Workspace State
@@ -105,6 +105,7 @@
 - [x] CONSTRUCTION - UOW-11 Code Generation
 - [x] CONSTRUCTION - UOW-11 Build and Test
 - [x] CONSTRUCTION - End-to-End CLI Conversion Wiring
+- [x] CONSTRUCTION - Local-first AI Refinement Wiring
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -230,6 +231,7 @@
 - **UOW-11 Build and Test Approval**: Approved by user on 2026-06-08T04:09:03Z. Workflow transitioned to the Operations placeholder.
 - **Operations Placeholder**: Reached after UOW-11 build and test approval on 2026-06-08T04:09:03Z.
 - **End-to-End CLI Conversion Wiring**: Implemented actual Angular repo input to React repo output flow on 2026-06-08T04:28:02Z. The CLI now runs Angular source analysis, Angular-to-React transformation, React target generation, file materialization, and report export. Workspace build and test verification passed.
+- **Local-first AI Refinement Wiring**: Implemented default Ollama EXAONE 3.5 local provider refinement and optional OpenAI-compatible external provider fallback on 2026-06-08T04:42:53Z. External provider use requires explicit opt-in and security readiness. Workspace build and test verification passed.
 
 ## Execution Plan Summary
 - **Recommended Next Stage**: Run a real Angular repository conversion and review output quality
