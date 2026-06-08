@@ -53,6 +53,17 @@ export type TypeScriptSymbolSummary = {
     constructorDependencies: string[];
     lifecycleHooks: string[];
     references: string[];
+    propertyInitializers: Array<{
+        name: string;
+        initializer?: string;
+        readonly: boolean;
+    }>;
+    methods: Array<{
+        name: string;
+        parameters: string[];
+        bodyText: string;
+        isAsync: boolean;
+    }>;
 };
 export type TypeScriptParseSummary = {
     sourcePath: string;
@@ -72,6 +83,7 @@ export type TemplateParseSummary = {
     sourcePath: string;
     ownerPath?: string;
     bindings: TemplateBindingSummary;
+    rawText?: string;
     diagnostics: Diagnostic[];
     parserMode: 'angular-compiler' | 'heuristic';
 };

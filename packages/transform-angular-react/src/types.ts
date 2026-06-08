@@ -50,6 +50,17 @@ export type NormalizedComponent = {
   serviceRefs: string[];
   stateRefs: string[];
   routeRefs: string[];
+  propertyInitializers: Array<{
+    name: string;
+    initializer?: string;
+    readonly: boolean;
+  }>;
+  methods: Array<{
+    name: string;
+    parameters: string[];
+    bodyText: string;
+    isAsync: boolean;
+  }>;
   diagnostics: Diagnostic[];
 };
 
@@ -65,6 +76,7 @@ export type NormalizedTemplate = {
   templateRefs: string[];
   pipes: string[];
   externalReferences: string[];
+  rawText?: string;
   diagnostics: Diagnostic[];
 };
 
@@ -140,6 +152,8 @@ export type ReactComponentDraft = {
   imports: string[];
   templateDraftId?: string;
   serviceRefs: string[];
+  propertyInitializers: NormalizedComponent['propertyInitializers'];
+  methods: NormalizedComponent['methods'];
   reviewItemIds: string[];
   generatedRefs: GeneratedArtifactRef[];
 };

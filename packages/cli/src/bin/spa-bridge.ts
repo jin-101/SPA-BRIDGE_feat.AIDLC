@@ -11,6 +11,9 @@ if (result.ok) {
   process.exitCode = result.value.exitCode.code;
 } else {
   console.error(result.error.message);
+  if (result.error.details) {
+    console.error(result.error.details);
+  }
   if (result.error.hint) {
     console.error(result.error.hint);
   }

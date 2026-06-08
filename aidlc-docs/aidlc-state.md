@@ -6,7 +6,7 @@
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
 - **Current Stage**: OPERATIONS Placeholder
-- **Last Completed**: Local-first AI Refinement Wiring
+- **Last Completed**: Semantic Component Logic Conversion Wiring
 - **Next Step**: Run against a real Angular repository and review generated React output
 
 ## Workspace State
@@ -106,6 +106,8 @@
 - [x] CONSTRUCTION - UOW-11 Build and Test
 - [x] CONSTRUCTION - End-to-End CLI Conversion Wiring
 - [x] CONSTRUCTION - Local-first AI Refinement Wiring
+- [x] CONSTRUCTION - Component Logic Preservation Wiring
+- [x] CONSTRUCTION - Semantic Component Logic Conversion Wiring
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -218,6 +220,8 @@
 - **UOW-10 NFR Design Approval**: Approved by user on 2026-06-08T00:42:38Z.
 - **UOW-10 Code Generation Planning**: Started on 2026-06-08T00:42:38Z. CLI code generation plan created for `packages/cli` and awaiting approval.
 - **UOW-10 Code Generation**: Code generated on 2026-06-08T00:55:35Z. `@spa-bridge/cli` was added, built, tested, and documented successfully.
+- **Component Logic Preservation Wiring**: Added Angular class property/method extraction, carried component logic metadata through transformation drafts, generated React state and review-preserved method stubs, fixed related property-based test expectations, and verified workspace build/test success on 2026-06-08T05:07:48Z.
+- **Semantic Component Logic Conversion Wiring**: Added first-pass Angular class-to-React hook conversion for component field state, `this.field = value` state setters, lifecycle method bodies inside `useEffect`, method body member-reference rewriting, and safe TODO fallback for unsupported Angular-specific statements. Workspace build/test verification passed on 2026-06-08T05:11:10Z.
 - **UOW-10 Build and Test**: Build and test instruction files refreshed to include `@spa-bridge/cli`, with updated integration, security, performance, and summary docs, on 2026-06-08T01:02:22Z. Awaiting explicit approval.
 - **UOW-10 Build and Test Approval**: Approved by user on 2026-06-08T01:02:22Z. Workflow transitioned to the Operations placeholder.
 - **UOW-11 Functional Design**: Planning started on 2026-06-08T01:02:22Z. Web UI review workflow plan was created for `packages/web` and functional design artifacts were generated on 2026-06-08T01:02:22Z. Awaiting explicit approval.

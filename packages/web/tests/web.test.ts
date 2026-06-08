@@ -1,6 +1,7 @@
 import fc from 'fast-check';
 import { describe, expect, test } from 'vitest';
 
+import { createSafeDisplayString } from '@spa-bridge/core-model';
 import { canonicalConversionReportArbitrary } from '@spa-bridge/core-reporting';
 
 import { buildAccessGateState } from '../src/access/role-hook.js';
@@ -254,7 +255,7 @@ describe('property-based invariants', () => {
     fc.assert(
       fc.property(remediationRequestArbitrary, (request) => {
         const dialog = buildConfirmationDialog(request);
-        expect(dialog.actionId).toBe(request.actionId.trim());
+        expect(dialog.actionId).toBe(createSafeDisplayString(request.actionId));
         const confirmation = resolveConfirmation(request);
         expect(confirmation.ok).toBe(request.confirmed);
       }),

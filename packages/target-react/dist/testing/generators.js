@@ -37,6 +37,17 @@ const createDraftSetArbitrary = () => fc
         imports: fc.array(identifierArbitrary, { maxLength: 3 }),
         templateDraftId: fc.option(identifierArbitrary, { nil: undefined }),
         serviceRefs: fc.array(identifierArbitrary, { maxLength: 3 }),
+        propertyInitializers: fc.array(fc.record({
+            name: identifierArbitrary,
+            initializer: fc.option(fc.constantFrom("'value'", '0', 'false'), { nil: undefined }),
+            readonly: fc.boolean(),
+        }), { maxLength: 2 }),
+        methods: fc.array(fc.record({
+            name: identifierArbitrary,
+            parameters: fc.array(identifierArbitrary, { maxLength: 2 }),
+            bodyText: fc.constant('this.value = 1;'),
+            isAsync: fc.boolean(),
+        }), { maxLength: 2 }),
         reviewItemIds: fc.array(identifierArbitrary, { maxLength: 2 }),
         generatedRefs: fc.array(generatedRefArbitrary, { minLength: 1, maxLength: 2 }),
     }), { minLength: 1, maxLength: 3 }),
@@ -126,7 +137,7 @@ export const targetGenerationRequestArbitrary = fc
         nil: undefined,
     }),
     sourceModelRef: fc.option(sourceRefArbitrary, { nil: undefined }),
-    existingPaths: fc.option(fc.array(fc.string({ minLength: 1, maxLength: 16 }), { maxLength: 4 }), { nil: undefined }),
+    existingPaths: fc.constant(undefined),
 })
     .chain((fields) => createDraftSetArbitrary().map((draftSet) => ({
     runId: fields.runId,

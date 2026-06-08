@@ -10,6 +10,9 @@ if (result.ok) {
 }
 else {
     console.error(result.error.message);
+    if (result.error.details) {
+        console.error(result.error.details);
+    }
     if (result.error.hint) {
         console.error(result.error.hint);
     }

@@ -32,7 +32,12 @@ const buildPayload = (
 });
 
 const toCliError = (message: string, cause: unknown): CliError =>
-  createCliError('RUNTIME_FAILED', message, cause instanceof Error ? cause.message : JSON.stringify(cause));
+  createCliError(
+    'RUNTIME_FAILED',
+    message,
+    cause instanceof Error ? cause.message : JSON.stringify(cause),
+    'Check that --workspace is a real directory and --input points to an Angular project root containing angular.json/package.json and src entry files.',
+  );
 
 const writeGeneratedFiles = async (files: GeneratedFileSpec[]): Promise<void> => {
   for (const file of [...files].sort((left, right) => left.path.localeCompare(right.path))) {

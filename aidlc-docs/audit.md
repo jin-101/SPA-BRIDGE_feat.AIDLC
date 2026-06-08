@@ -2724,3 +2724,45 @@ Continue to Next Stage"
 **Context**: CONSTRUCTION - local-first AI refinement and external LLM opt-in wiring
 
 ---
+
+## Angular Analysis Failure Support Request
+**Timestamp**: 2026-06-08T04:48:01Z
+**User Input**: "path/to/workspace 경로에 앵귤러 프로젝트를 두고  아래처럼 실행했는데, Angular source analysis failed. 오류가 나
+node packages/cli/dist/bin/spa-bridge.js convert \
+  --workspace /path/to/workspace \
+  --input frontend-app \
+  --output react-output \
+  --report-format json \
+  --non-interactive \
+  --confirm"
+**AI Response**: "Diagnosed that the CLI resolved the input to `/path/to/workspace/frontend-app/src` and could not find Angular entry files, improved CLI error detail output, rebuilt the CLI package, and provided concrete path and project structure checks."
+**Context**: CLI usage support and diagnostics improvement
+
+---
+
+## React Target Write Failure Support Request
+**Timestamp**: 2026-06-08T04:55:44Z
+**User Input**: "Unable to write generated React target files.
+ENAMETOOLONG: name too long, open '/Users/jhan/Desktop/test/react-output/src/review/review-lifecycle-behavior-lifecycle-users-jhan-desktop-test-frontend-app-src-app-auto-checkin-auto-checkin-select-passengers-components-auto-checkin-select-passengers-presenter-components-auto-checkin-status-tooltip-auto-checkin-status-tooltip-component-ts-1.md'
+Check that --workspace is a real directory and --input points to an Angular project root containing angular.json/package.json and src entry files.
+이렇게 나왔는데, 무슨말이야?"
+**AI Response**: "Diagnosed that review stub filenames were derived from very long manual-review IDs containing source paths, causing filesystem ENAMETOOLONG errors. Updating review stub generation to use bounded stable filenames."
+**Context**: CLI target generation support and filename safety fix
+
+---
+
+## Component Logic Preservation Support Request
+**Timestamp**: 2026-06-08T05:02:50Z
+**User Input**: "생성된 것을 봤는데, 컴포넌트 내부에 로직이 하나도 없는 상태던데 변환이 정상적으로 되는게 맞아?"
+**AI Response**: "Acknowledged that placeholder-only components are not sufficient for normal conversion quality, added Angular class property/method extraction, carried the logic model into React drafts, materialized React state and review-preserved method stubs, fixed related PBT expectations, and verified workspace build/test success."
+**Context**: CLI conversion quality support and component logic preservation
+
+---
+
+## Full Logic Conversion Expectation
+**Timestamp**: 2026-06-08T05:11:10Z
+**User Input**: "내가 원하는건 앵귤러 문법과 동일한 역할을 하는 리엑트 훅이나 클래스를 사용해서 로직도 전체가 변환이 되는 것이었거든."
+**AI Response**: "Acknowledged that the intended product behavior is semantic Angular-to-React logic conversion, not just preservation, and started adding class-to-hook body conversion for component state, lifecycle methods, and handlers."
+**Context**: CLI conversion quality support and semantic component logic conversion
+
+---

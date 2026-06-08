@@ -5,6 +5,7 @@ import { createDiagnostic } from '@spa-bridge/core-model';
 
 import {
   DependencyManifestBuilder,
+  ReviewStubGenerator,
   TargetGenerationRequestValidator,
   TargetPathGuard,
   TargetStrategyRegistry,
@@ -47,6 +48,21 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         imports: ['react'],
         templateDraftId: 'template-1',
         serviceRefs: ['service-1'],
+        propertyInitializers: [
+          {
+            name: 'title',
+            initializer: "'Hello'",
+            readonly: false,
+          },
+        ],
+        methods: [
+          {
+            name: 'selectPassenger',
+            parameters: ['id: string'],
+            bodyText: 'this.title = id;',
+            isAsync: false,
+          },
+        ],
         reviewItemIds: [],
         generatedRefs: [{ kind: 'generated', path: 'src/components/MainPanel.tsx' }],
       },
@@ -136,6 +152,10 @@ describe('TargetGenerationService', () => {
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/components/MainPanel.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/routes.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/state/local/index.ts'))).toBe(true);
+    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/components/MainPanel.tsx'));
+    expect(componentFile?.content).toContain("useState('Hello')");
+    expect(componentFile?.content).toContain('selectPassenger');
+    expect(componentFile?.content).toContain('setTitle(id)');
     expect(result.manualReviewItems.length).toBeGreaterThan(0);
     expect(result.traces.length).toBeGreaterThanOrEqual(result.writePlan.files.length);
   });
@@ -183,6 +203,23 @@ describe('Support utilities', () => {
     const result = validator.validate(createFixtureRequest());
 
     expect(result.ok).toBe(true);
+  });
+
+  it('bounds manual review stub filenames even for long source-derived IDs', () => {
+    const longId = `review-lifecycle-${'very-long-source-path-segment-'.repeat(20)}component-ts-1`;
+    const files = new ReviewStubGenerator().build([
+      {
+        id: longId,
+        title: 'Review lifecycle behavior for converted component',
+        description: 'Generated from a long source path.',
+        status: 'open',
+      },
+    ]);
+
+    expect(files).toHaveLength(1);
+    expect(files[0]?.path.length).toBeLessThan(120);
+    expect(files[0]?.path).toMatch(/^src\/review\/0001-review-lifecycle-behavior-for-converted-componen-[a-f0-9]{12}\.md$/);
+    expect(files[0]?.content).toContain(longId);
   });
 });
 

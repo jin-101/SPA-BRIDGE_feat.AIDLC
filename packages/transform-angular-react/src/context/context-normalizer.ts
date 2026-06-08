@@ -52,6 +52,7 @@ export class ContextNormalizer {
         templateRefs: [...template.bindings.templateRefs],
         pipes: [...template.bindings.pipes],
         externalReferences: [...template.bindings.externalReferences],
+        rawText: template.rawText,
         diagnostics: [...template.diagnostics],
       });
       templateByOwner.set(ownerPath, ownerTemplates);
@@ -83,6 +84,8 @@ export class ContextNormalizer {
             serviceRefs: [...symbol.constructorDependencies],
             stateRefs: [],
             routeRefs: [],
+            propertyInitializers: [...symbol.propertyInitializers],
+            methods: [...symbol.methods],
             diagnostics: [...summary.diagnostics],
           });
           templates.push(...templateCandidates);

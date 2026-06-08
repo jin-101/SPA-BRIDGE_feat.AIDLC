@@ -7,6 +7,15 @@ import type { AnalysisError, TypeScriptParseSummary, TypeScriptSymbolSummary } f
 
 const lifecycleHooks = new Set(['ngOnInit', 'ngOnChanges', 'ngOnDestroy', 'ngAfterViewInit', 'ngAfterContentInit']);
 
+const sanitizeBodyText = (bodyText: string): string =>
+  bodyText
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0)
+    .join('\n')
+    .slice(0, 2_000);
+
 const parseDecorator = (decorator: ts.Decorator, sourceFile: ts.SourceFile): Record<string, string | boolean | string[]> => {
   const result: Record<string, string | boolean | string[]> = {};
   const expression = decorator.expression;
@@ -95,6 +104,21 @@ export class TypeScriptParserAdapter {
           .map((member) => member.name.getText(sourceFile))
           .filter((name) => lifecycleHooks.has(name));
         const references = node.members.map((member) => member.getText(sourceFile).slice(0, 80));
+        const propertyInitializers = node.members
+          .filter((member): member is ts.PropertyDeclaration => ts.isPropertyDeclaration(member) && !!member.name)
+          .map((member) => ({
+            name: member.name.getText(sourceFile),
+            initializer: member.initializer?.getText(sourceFile),
+            readonly: member.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword) ?? false,
+          }));
+        const methods = node.members
+          .filter((member): member is ts.MethodDeclaration => ts.isMethodDeclaration(member) && !!member.name)
+          .map((member) => ({
+            name: member.name.getText(sourceFile),
+            parameters: member.parameters.map((parameter) => parameter.getText(sourceFile)),
+            bodyText: sanitizeBodyText(member.body?.getText(sourceFile).replace(/^\{|\}$/g, '') ?? ''),
+            isAsync: member.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
+          }));
 
         symbols.push({
           id: this.ids.symbolId(sourcePath, 'class', node.name.text, symbols.length),
@@ -108,6 +132,8 @@ export class TypeScriptParserAdapter {
           constructorDependencies,
           lifecycleHooks: lifecycle,
           references,
+          propertyInitializers,
+          methods,
         });
       }
 
@@ -124,6 +150,8 @@ export class TypeScriptParserAdapter {
           constructorDependencies: [],
           lifecycleHooks: [],
           references: [node.getText(sourceFile).slice(0, 80)],
+          propertyInitializers: [],
+          methods: [],
         });
       }
 
@@ -144,6 +172,8 @@ export class TypeScriptParserAdapter {
             constructorDependencies: [],
             lifecycleHooks: [],
             references: declarationNames,
+            propertyInitializers: [],
+            methods: [],
           });
         }
       }

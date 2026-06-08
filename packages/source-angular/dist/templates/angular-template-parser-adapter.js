@@ -46,6 +46,7 @@ export class AngularTemplateParserAdapter {
             sourcePath,
             ownerPath,
             bindings,
+            rawText: templateText.slice(0, 4_000),
             diagnostics,
             parserMode: 'heuristic',
         });

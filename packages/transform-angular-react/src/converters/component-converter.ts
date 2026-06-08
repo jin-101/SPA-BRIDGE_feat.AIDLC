@@ -87,6 +87,8 @@ export class ComponentConverter {
       imports: [...new Set([...component.serviceRefs])],
       templateDraftId,
       serviceRefs: [...component.serviceRefs],
+      propertyInitializers: [...component.propertyInitializers],
+      methods: [...component.methods],
       reviewItemIds: [],
       generatedRefs: [this.ids.artifactRef(`${component.name}/component.json`, 'component')],
     };
