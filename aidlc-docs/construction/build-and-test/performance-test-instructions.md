@@ -1,7 +1,7 @@
 # Performance Test Instructions
 
 ## Purpose
-Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, and UOW-08.
+Validate that run orchestration, security evaluation, config resolution, manifest handling, quality gating, report generation, provider selection, target generation, and status lookup remain efficient for the target fixture sizes defined in UOW-02, UOW-05, UOW-06, UOW-07, UOW-08, and UOW-09.
 
 ## Performance Requirements
 - **Response Time**: Target under 50 ms for typical run status lookup
@@ -12,6 +12,7 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 - **Provider Selection Throughput**: UOW-06 provider registry lookup and response validation should remain deterministic and bounded for local/internal and mock providers
 - **Target Generation Throughput**: UOW-07 target write-plan generation should remain deterministic and bounded for representative React target drafts
 - **Quality Orchestration Throughput**: UOW-08 gate ordering, bounded self-correction, and evidence aggregation should remain deterministic and bounded for representative quality runs
+- **Reporting Throughput**: UOW-09 canonical report generation and export rendering should remain deterministic and bounded for representative report bundles
 
 ## Setup Performance Test Environment
 
@@ -33,6 +34,11 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 # Use the run workspace helpers in:
 # packages/core-application/src/
 # the benchmark fixture factory in:
+# packages/core-reporting/src/testing/
+# the reporting renderers in:
+# packages/core-reporting/src/renderers/
+# the reporting generators in:
+# packages/core-reporting/src/testing/
 # packages/transform-angular-react/src/testing/
 # the provider test generators in:
 # packages/adapters-ai/src/testing/
@@ -58,4 +64,5 @@ Validate that run orchestration, security evaluation, config resolution, manifes
 If performance does not meet requirements:
 1. Profile config resolution, manifest serialization, and run status lookup
 2. Reduce object allocation in orchestration and provider-selection hot paths
-3. Re-run the benchmark harness with the same seed or fixture set
+3. Reduce object allocation in orchestration, reporting, and provider-selection hot paths
+4. Re-run the benchmark harness with the same seed or fixture set

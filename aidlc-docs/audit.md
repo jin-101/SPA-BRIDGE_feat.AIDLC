@@ -254,6 +254,146 @@ uow-01 ~ uow-04 중에서 꼭 보강해야 할 부분이 있다면 보완해줘.
 **User Input**: "Continue to Next Stage"
 **AI Response**: "Recorded explicit approval of the UOW-08 build and test instructions, updated AI-DLC state to the Operations placeholder, and closed the current workflow path."
 **Context**: CONSTRUCTION - UOW-08 Build and Test approval gate
+
+---
+
+## UOW-09 Functional Design Planning
+**Timestamp**: 2026-06-07T23:09:17Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md
+- aidlc-state.md: aidlc-docs/aidlc-state.md
+
+## My request for Codex:
+이어서 다음 단계를 시작해줘."
+**AI Response**: "Resumed the AI-DLC workflow after UOW-08, identified UOW-09 Reporting and Exports as the next construction unit, created the UOW-09 Functional Design plan with questions, and updated the state file."
+**Context**: CONSTRUCTION - UOW-09 Functional Design planning
+
+---
+
+## UOW-09 Functional Design Answers
+**Timestamp**: 2026-06-07T23:16:58Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md
+
+## My request for Codex:
+답변 완료."
+**AI Response**: "Read and validated the UOW-09 Functional Design answers, confirmed all questions were answered with A and no contradictions were present, generated functional design artifacts, updated plan checkboxes, and moved the state to UOW-09 Functional Design Review."
+**Context**: CONSTRUCTION - UOW-09 Functional Design answer validation and artifact generation
+
+---
+
+## UOW-09 Functional Design Approval
+**Timestamp**: 2026-06-07T23:20:24Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-code-generation-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-09 Functional Design, updated the AI-DLC state to UOW-09 NFR Requirements Planning, and created the UOW-09 NFR Requirements plan with questions."
+**Context**: CONSTRUCTION - UOW-09 Functional Design approval gate
+
+---
+
+## UOW-09 NFR Requirements Answers
+**Timestamp**: 2026-06-07T23:28:01Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+
+## My request for Codex:
+답변 완료."
+**AI Response**: "Read and validated the UOW-09 NFR Requirements answers, confirmed all questions were answered with A and no contradictions were present, generated NFR requirements artifacts, updated plan checkboxes, and moved the state to UOW-09 NFR Requirements Review."
+**Context**: CONSTRUCTION - UOW-09 NFR Requirements answer validation and artifact generation
+
+---
+
+## UOW-09 NFR Requirements Approval
+**Timestamp**: 2026-06-07T23:30:30Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-functional-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-09 NFR Requirements, updated the AI-DLC state to UOW-09 NFR Design Planning, and created the UOW-09 NFR Design plan with questions."
+**Context**: CONSTRUCTION - UOW-09 NFR Requirements approval gate
+
+---
+
+## UOW-09 NFR Design Answers
+**Timestamp**: 2026-06-07T23:34:35Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-design-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-nfr-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-design-plan.md
+- uow-09-reporting-and-exports-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+답변 완료."
+**AI Response**: "Read and validated the UOW-09 NFR Design answers, confirmed all questions were answered with A and no contradictions were present, generated NFR design artifacts, updated plan checkboxes, and moved the state to UOW-09 NFR Design Review."
+**Context**: CONSTRUCTION - UOW-09 NFR Design answer validation and artifact generation
+
+---
+
+## UOW-09 NFR Design Approval and Code Generation Planning
+**Timestamp**: 2026-06-07T23:37:18Z
+**User Input**: "# Context from my IDE setup:
+
+## Active file: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-design-plan.md
+
+## Open tabs:
+- uow-09-reporting-and-exports-nfr-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-design-plan.md
+- uow-09-reporting-and-exports-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-nfr-requirements-plan.md
+- uow-09-reporting-and-exports-functional-design-plan.md: aidlc-docs/construction/plans/uow-09-reporting-and-exports-functional-design-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-requirements-plan.md
+- uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md: aidlc-docs/construction/plans/uow-02-core-application-orchestration-and-run-workspace-nfr-design-plan.md
+
+## My request for Codex:
+Continue to Next Stage"
+**AI Response**: "Recorded approval of UOW-09 NFR Design, updated the AI-DLC state to UOW-09 Code Generation Planning, and created the UOW-09 Code Generation plan with explicit implementation steps."
+**Context**: CONSTRUCTION - UOW-09 NFR Design approval gate and code generation planning
 **Context**: CONSTRUCTION - UOW-02 Build and Test review gate
 
 ---
@@ -2238,5 +2378,53 @@ Continue to Next Stage"
 **User Input**: "승인완료"
 **AI Response**: "Completed the UOW-08 code generation work for @spa-bridge/core-quality, added deterministic orchestration, bounded self-correction, PBT coordination, safe evidence and traceability, refreshed build/test coverage, and verified workspace build/test success."
 **Context**: CONSTRUCTION - UOW-08 code generation completion
+
+---
+
+## UOW-09 Code Generation Start
+**Timestamp**: 2026-06-07T23:46:30Z
+**User Input**: "승인할게. 코드 생성해줘."
+**AI Response**: "Beginning UOW-09 code generation for @spa-bridge/core-reporting, including canonical report types, validation, normalization, grouping, quality summary, trace coverage, renderers, export metadata, generators, tests, and workspace integration."
+**Context**: CONSTRUCTION - UOW-09 code generation implementation start
+
+---
+
+## UOW-09 Code Generation Completion
+**Timestamp**: 2026-06-08T00:01:51Z
+**User Input**: "승인할게. 코드 생성해줘."
+**AI Response**: "Completed UOW-09 code generation for @spa-bridge/core-reporting, refreshed workspace build/test integration, generated documentation summaries, and verified package-level plus workspace-level build/test success."
+**Context**: CONSTRUCTION - UOW-09 code generation completion
+
+---
+
+## UOW-09 Build and Test Review Start
+**Timestamp**: 2026-06-08T00:03:32Z
+**User Input**: "다시 진행해줘."
+**AI Response**: "Starting UOW-09 build and test instruction generation for the updated workspace, including @spa-bridge/core-reporting, and preparing the verification package for review."
+**Context**: CONSTRUCTION - UOW-09 build and test documentation update start
+
+---
+
+## UOW-09 Build and Test Review Completion
+**Timestamp**: 2026-06-08T00:16:15Z
+**User Input**: "다시 진행해줘."
+**AI Response**: "Completed the UOW-09 build and test instruction refresh, updated summaries and security/performance/integration guidance for @spa-bridge/core-reporting, and moved the workflow to the build/test review stage."
+**Context**: CONSTRUCTION - UOW-09 build and test documentation update completion
+
+---
+
+## UOW-09 Operations Transition
+**Timestamp**: 2026-06-08T00:19:11Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Advanced the workflow from UOW-09 build and test review to the Operations placeholder stage after confirming the updated build/test package and workspace verification."
+**Context**: CONSTRUCTION - UOW-09 transition to operations placeholder
+
+---
+
+## UOW-09 Code Generation Completion
+**Timestamp**: 2026-06-08T00:00:53Z
+**User Input**: "승인할게. 코드 생성해줘."
+**AI Response**: "Completed UOW-09 code generation for @spa-bridge/core-reporting, updated workspace build/test integration, generated documentation artifacts, and verified both package-level and workspace-level build/test success."
+**Context**: CONSTRUCTION - UOW-09 code generation completion
 
 ---
