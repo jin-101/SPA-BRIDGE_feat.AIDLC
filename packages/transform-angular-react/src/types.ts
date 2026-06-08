@@ -55,6 +55,9 @@ export type NormalizedComponent = {
     name: string;
     initializer?: string;
     readonly: boolean;
+    decorators: string[];
+    typeText?: string;
+    isEventEmitter: boolean;
   }>;
   methods: Array<{
     name: string;
@@ -147,6 +150,7 @@ export type ReactComponentDraft = {
   id: string;
   name: string;
   sourceRef?: SourceRef;
+  selector?: string;
   props: string[];
   state: string[];
   hooks: ReactHookDraft[];
@@ -156,6 +160,7 @@ export type ReactComponentDraft = {
   templateExternalReferences: string[];
   serviceRefs: string[];
   styleUrls: string[];
+  sourceRelativePath?: string;
   propertyInitializers: NormalizedComponent['propertyInitializers'];
   methods: NormalizedComponent['methods'];
   reviewItemIds: string[];

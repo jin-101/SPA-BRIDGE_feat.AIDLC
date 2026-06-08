@@ -58,6 +58,24 @@ const writeJsonArtifact = async (targetRoot: string, name: string, value: unknow
   return artifactPath;
 };
 
+const readSourcePackageDependencies = async (
+  projectRoot: string,
+): Promise<{ dependencies: Record<string, string>; devDependencies: Record<string, string> }> => {
+  try {
+    const packageJsonText = await fs.readFile(path.join(projectRoot, 'package.json'), 'utf8');
+    const packageJson = JSON.parse(packageJsonText) as {
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+    return {
+      dependencies: packageJson.dependencies ?? {},
+      devDependencies: packageJson.devDependencies ?? {},
+    };
+  } catch {
+    return { dependencies: {}, devDependencies: {} };
+  }
+};
+
 const toPosixPath = (value: string): string => value.replace(/\\/g, '/');
 
 const safeRelativePath = (value: string): string =>
@@ -322,6 +340,7 @@ export const createDefaultApplicationBridge = (): CliApplicationBridge => ({
     }
 
     const securityReady = !analysisResult.value.diagnostics.some((diagnostic) => diagnostic.severity === 'security-blocker');
+    const sourcePackageDependencies = await readSourcePackageDependencies(analysisResult.value.workspaceProfile.projectRoot);
     const aiRefinement = await runAiRefinement(
       request.validatedPaths.outputPath,
       transformationResult.value.mappingRequests,
@@ -341,6 +360,8 @@ export const createDefaultApplicationBridge = (): CliApplicationBridge => ({
         kind: 'source',
         path: analysisResult.value.sourceModelBoundary.sourceModelRef.projectPath,
       },
+      sourceDependencies: sourcePackageDependencies.dependencies,
+      sourceDevDependencies: sourcePackageDependencies.devDependencies,
     });
     if (!targetResult.ok) {
       return { ok: false, error: toCliError('React target generation failed.', targetResult.error) };

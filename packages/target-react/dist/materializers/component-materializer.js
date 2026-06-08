@@ -133,10 +133,40 @@ const rewriteAssetPath = (value) => {
     }
     return value;
 };
-const convertAngularTemplateToJsx = (templateText, context) => {
-    if (!templateText?.trim()) {
-        return [];
+const toSourceRelativeComponentPath = (component) => {
+    const sourcePath = component.sourceRef?.path ?? component.sourceRelativePath ?? component.name;
+    const normalized = sourcePath.replace(/\\/g, '/');
+    const srcIndex = normalized.lastIndexOf('/src/');
+    const relative = srcIndex >= 0 ? normalized.slice(srcIndex + '/src/'.length) : normalized.split('/').slice(-2).join('/');
+    const withoutExtension = relative
+        .replace(/\.ts$/i, '')
+        .replace(/\.component$/i, '')
+        .replace(/\.page$/i, '')
+        .replace(/\.container$/i, '');
+    const safeRelative = withoutExtension
+        .split('/')
+        .map((segment) => segment.replace(/[^A-Za-z0-9._-]/g, '-'))
+        .filter(Boolean)
+        .join('/');
+    return `src/${safeRelative}/${toComponentName(component.name) || 'Component'}.tsx`;
+};
+const toRelativeImport = (fromPath, toPath) => {
+    const fromDir = fromPath.split('/').slice(0, -1).join('/');
+    const fromParts = fromDir.split('/').filter(Boolean);
+    const toParts = toPath.replace(/\.tsx$/i, '.js').split('/').filter(Boolean);
+    while (fromParts.length > 0 && toParts.length > 0 && fromParts[0] === toParts[0]) {
+        fromParts.shift();
+        toParts.shift();
     }
+    const prefix = fromParts.length > 0 ? '../'.repeat(fromParts.length) : './';
+    return `${prefix}${toParts.join('/')}`;
+};
+const propertyDecorators = (property) => Array.isArray(property.decorators) ? property.decorators : [];
+const convertAngularTemplateToJsx = (templateText, context, selectorRegistry) => {
+    if (!templateText?.trim()) {
+        return { lines: [], usedSelectors: [] };
+    }
+    const usedSelectors = new Set();
     let jsx = templateText
         .slice(0, 8_000)
         .replace(/<!--[\s\S]*?-->/g, '')
@@ -159,27 +189,43 @@ const convertAngularTemplateToJsx = (templateText, context) => {
         .replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_match, expression) => `{${transformTemplateExpression(expression, context)}}`)
         .replace(/\s(src|href)=["']([^"']+)["']/g, (_match, attr, value) => ` ${attr}="${rewriteAssetPath(value)}"`)
         .replace(/<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>]*?)(?<!\/)>/g, '<$1$2 />');
+    for (const [selector, entry] of [...selectorRegistry.entries()].sort(([left], [right]) => right.length - left.length)) {
+        const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const tagPattern = new RegExp(`(<\\/?\\s*)${escaped}(?=[\\s>/])`, 'gi');
+        if (tagPattern.test(jsx)) {
+            usedSelectors.add(selector);
+            jsx = jsx.replace(tagPattern, `$1${entry.name}`);
+        }
+    }
     if (!jsx.trim().startsWith('<')) {
         jsx = `<>{${JSON.stringify(jsx.trim())}}</>`;
     }
-    return [
-        '      {/* Converted from Angular template. Review data-ng-* markers for structural directives. */}',
-        ...jsx
-            .split('\n')
-            .map((line) => line.trim())
-            .filter(Boolean)
-            .map((line) => `      ${line}`),
-    ];
+    return {
+        lines: [
+            '      {/* Converted from Angular template. Review data-ng-* markers for structural directives. */}',
+            ...jsx
+                .split('\n')
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => `      ${line}`),
+        ],
+        usedSelectors: [...usedSelectors].sort(),
+    };
 };
 export class ComponentMaterializer {
-    materialize(component, sourceRefs = []) {
+    materialize(component, sourceRefs = [], context = { selectorRegistry: new Map() }) {
         const safeName = toComponentName(component.name) || 'Component';
+        const componentPath = toSourceRelativeComponentPath(component);
+        const eventEmitterNames = new Set(component.propertyInitializers.filter((property) => property.isEventEmitter).map((property) => property.name));
         const propsType = component.props.length > 0
-            ? `type Props = {\n${component.props.map((prop) => `  ${prop.replace(/[^A-Za-z0-9_]/g, '')}?: unknown;`).join('\n')}\n};`
+            ? `type Props = {\n${component.props.map((prop) => {
+                const propName = prop.replace(/[^A-Za-z0-9_]/g, '');
+                return eventEmitterNames.has(prop) ? `  ${propName}?: (value?: unknown) => void;` : `  ${propName}?: unknown;`;
+            }).join('\n')}\n};`
             : 'type Props = Record<string, never>;';
         const styleImports = component.styleUrls.map((styleUrl) => {
             const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '.css';
-            return `import '../styles/components/${safeName}${extension}';`;
+            return `import '${toRelativeImport(componentPath, `src/styles/components/${safeName}${extension}`)}';`;
         });
         const imports = [
             ...(needsReactImport(component) ? ["import { useEffect, useState } from 'react';"] : []),
@@ -187,20 +233,25 @@ export class ComponentMaterializer {
             ...(needsReactImport(component) || styleImports.length > 0 ? [''] : []),
         ];
         const logicContext = {
-            stateNames: new Set(component.propertyInitializers.filter((property) => !property.readonly).map((property) => property.name)),
+            stateNames: new Set(component.propertyInitializers.filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input')).map((property) => property.name)),
             propertyNames: new Set(component.propertyInitializers.map((property) => property.name)),
             methodNames: new Set(component.methods.map((method) => method.name)),
             propNames: new Set(component.props),
         };
         const stateLines = component.propertyInitializers
-            .filter((property) => !property.readonly)
+            .filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input'))
             .map((property) => {
             const id = toIdentifier(property.name, 'value');
             return `  const [${id}, ${toStateSetter(id)}] = useState(${normalizeInitializer(property.initializer)});`;
         });
         const readonlyLines = component.propertyInitializers
-            .filter((property) => property.readonly)
-            .map((property) => `  const ${toIdentifier(property.name, 'value')} = ${normalizeInitializer(property.initializer)};`);
+            .filter((property) => property.readonly || propertyDecorators(property).includes('Input'))
+            .map((property) => {
+            const identifier = toIdentifier(property.name, 'value');
+            return propertyDecorators(property).includes('Input')
+                ? `  const ${identifier} = props.${identifier};`
+                : `  const ${identifier} = ${normalizeInitializer(property.initializer)};`;
+        });
         const lifecycleMethodNames = ['ngOnInit', 'ngOnDestroy', 'ngOnChanges', 'ngAfterViewInit', 'ngAfterContentInit'];
         const lifecycleMethods = component.methods.filter((method) => lifecycleMethodNames.includes(method.name));
         const lifecycleLines = lifecycleMethods.length > 0
@@ -235,7 +286,15 @@ export class ComponentMaterializer {
                 .filter((method) => !['ngOnInit', 'ngOnDestroy', 'ngOnChanges', 'ngAfterViewInit', 'ngAfterContentInit'].includes(method.name))
                 .map((method) => toIdentifier(method.name, 'handler')),
         ];
-        const templateLines = convertAngularTemplateToJsx(component.templateRawText, logicContext);
+        const template = convertAngularTemplateToJsx(component.templateRawText, logicContext, context.selectorRegistry);
+        const customComponentImports = template.usedSelectors
+            .map((selector) => context.selectorRegistry.get(selector))
+            .filter((entry) => !!entry && entry.name !== safeName)
+            .map((entry) => `import { ${entry.name} } from '${toRelativeImport(componentPath, entry.path)}';`);
+        const eventEmitterLines = [...eventEmitterNames].sort().map((eventName) => {
+            const identifier = toIdentifier(eventName, 'event');
+            return `  const ${identifier} = { emit: (value?: unknown) => props.${identifier}?.(value) };`;
+        });
         const fallbackTemplateLines = [
             `      <h2>${safeName}</h2>`,
             ...(component.propertyInitializers.length > 0
@@ -244,13 +303,16 @@ export class ComponentMaterializer {
         ];
         const content = [
             ...imports,
+            ...customComponentImports,
+            ...(customComponentImports.length > 0 ? [''] : []),
             propsType,
             '',
             `export const ${safeName} = (props: Props) => {`,
             '  void props;',
             ...stateLines,
             ...readonlyLines,
-            ...(stateLines.length > 0 || readonlyLines.length > 0 ? [''] : []),
+            ...eventEmitterLines,
+            ...(stateLines.length > 0 || readonlyLines.length > 0 || eventEmitterLines.length > 0 ? [''] : []),
             ...lifecycleLines,
             ...(lifecycleLines.length > 0 ? [''] : []),
             ...methodLines,
@@ -258,14 +320,14 @@ export class ComponentMaterializer {
             ...(usedIdentifiers.length > 0 ? [''] : []),
             '  return (',
             `    <section data-component="${safeName}">`,
-            ...(templateLines.length > 0 ? templateLines : fallbackTemplateLines),
+            ...(template.lines.length > 0 ? template.lines : fallbackTemplateLines),
             '    </section>',
             '  );',
             '};',
             '',
         ].join('\n');
         const componentFile = createFileSpec({
-            path: `src/components/${safeName}.tsx`,
+            path: componentPath,
             kind: 'component',
             content,
             sourceRefs,
@@ -288,7 +350,10 @@ export class ComponentMaterializer {
         return [componentFile, ...styleFiles];
     }
     materializeMany(components, sourceRef) {
-        return components.flatMap((component) => this.materialize(component, [sourceRef]));
+        const selectorRegistry = new Map(components
+            .filter((component) => component.selector)
+            .map((component) => [component.selector, { name: toComponentName(component.name) || 'Component', path: toSourceRelativeComponentPath(component) }]));
+        return components.flatMap((component) => this.materialize(component, [sourceRef], { selectorRegistry }));
     }
 }
 //# sourceMappingURL=component-materializer.js.map

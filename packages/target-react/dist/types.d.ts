@@ -15,6 +15,8 @@ export type TargetGenerationRequest = {
     projectName?: string;
     selectedStateStrategy?: TargetStateStrategy;
     sourceModelRef?: SourceRef;
+    sourceDependencies?: Record<string, string>;
+    sourceDevDependencies?: Record<string, string>;
     existingPaths?: string[];
 };
 export type TargetStrategyMetadata = {

@@ -113,11 +113,19 @@ export class TypeScriptParserAdapter {
             : [];
         const propertyInitializers = node.members
           .filter((member): member is ts.PropertyDeclaration => ts.isPropertyDeclaration(member) && !!member.name)
-          .map((member) => ({
-            name: member.name.getText(sourceFile),
-            initializer: member.initializer?.getText(sourceFile),
-            readonly: member.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword) ?? false,
-          }));
+          .map((member) => {
+            const propertyDecorators = ts.getDecorators(member)?.map((decorator) => decorator.getText(sourceFile).replace(/^@/, '').split('(')[0] ?? 'Unknown') ?? [];
+            const initializer = member.initializer?.getText(sourceFile);
+            const typeText = member.type?.getText(sourceFile);
+            return {
+              name: member.name.getText(sourceFile),
+              initializer,
+              readonly: member.modifiers?.some((modifier) => modifier.kind === ts.SyntaxKind.ReadonlyKeyword) ?? false,
+              decorators: propertyDecorators,
+              typeText,
+              isEventEmitter: /EventEmitter/.test(initializer ?? '') || /EventEmitter/.test(typeText ?? '') || propertyDecorators.includes('Output'),
+            };
+          });
         const methods = node.members
           .filter((member): member is ts.MethodDeclaration => ts.isMethodDeclaration(member) && !!member.name)
           .map((member) => ({

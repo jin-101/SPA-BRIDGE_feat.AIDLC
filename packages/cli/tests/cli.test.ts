@@ -319,9 +319,10 @@ describe('cli package', () => {
     expect(result.value.summary).toContain('Converted');
     await expect(fs.readFile(path.join(outputRoot, 'package.json'), 'utf8')).resolves.toContain('fixture-angular-app');
     await expect(fs.readFile(path.join(outputRoot, 'src', 'App.tsx'), 'utf8')).resolves.toContain('Target React scaffold');
-    await expect(fs.readFile(path.join(outputRoot, 'src', 'components', 'AppComponent.tsx'), 'utf8')).resolves.toContain('AppComponent');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'app', 'app', 'AppComponent.tsx'), 'utf8')).resolves.toContain('AppComponent');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'target-summary.json'), 'utf8')).resolves.toContain('totalFiles');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'ai-refinement-results.json'), 'utf8')).resolves.toContain('ollama-exaone3.5');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'resource-copy-summary.json'), 'utf8')).resolves.toContain('styles');
     await expect(fs.readFile(path.join(outputRoot, 'report.json'), 'utf8')).resolves.toContain('Conversion Summary');
 
     if (previousTimeout === undefined) {

@@ -44,6 +44,9 @@ const createDraftSetArbitrary = () => fc
             name: identifierArbitrary,
             initializer: fc.option(fc.constantFrom("'value'", '0', 'false'), { nil: undefined }),
             readonly: fc.boolean(),
+            decorators: fc.array(fc.constantFrom('Input', 'Output'), { maxLength: 1 }),
+            typeText: fc.option(fc.constantFrom('string', 'boolean', 'EventEmitter<unknown>'), { nil: undefined }),
+            isEventEmitter: fc.boolean(),
         }), { maxLength: 2 }),
         methods: fc.array(fc.record({
             name: identifierArbitrary,

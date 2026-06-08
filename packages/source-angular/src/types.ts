@@ -79,6 +79,9 @@ export type TypeScriptSymbolSummary = {
     name: string;
     initializer?: string;
     readonly: boolean;
+    decorators: string[];
+    typeText?: string;
+    isEventEmitter: boolean;
   }>;
   methods: Array<{
     name: string;

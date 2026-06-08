@@ -75,7 +75,7 @@ export class TargetGenerationService {
     const strategy = selectTargetStrategy(requestValidation.value, this.registry);
     const normalizedDrafts = this.normalizer.normalize(requestValidation.value);
     const sourceRef = makeSourceRef(requestValidation.value);
-    const dependencyManifest = this.buildDependencyManifest(strategy, normalizedDrafts);
+    const dependencyManifest = this.buildDependencyManifest(strategy, normalizedDrafts, requestValidation.value);
 
     const scaffoldFiles = strategy.createScaffoldFiles({
       request: requestValidation.value,
@@ -87,7 +87,7 @@ export class TargetGenerationService {
       ...scaffoldFiles,
       ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
       ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
-      ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef]),
+      ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),
       ...this.stateAdapters.materialize(normalizedDrafts.state, normalizedDrafts.stateStrategy, [sourceRef]),
     ];
 
@@ -165,13 +165,28 @@ export class TargetGenerationService {
     });
   }
 
-  private buildDependencyManifest(strategy: TargetStrategyDescriptor, drafts: NormalizedTargetDraftBundle): TargetDependencyManifest {
+  private buildDependencyManifest(strategy: TargetStrategyDescriptor, drafts: NormalizedTargetDraftBundle, request: TargetGenerationRequest): TargetDependencyManifest {
     const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true);
+    const sourceDependencies = this.filterSourceDependencies(request.sourceDependencies ?? {});
+    const sourceDevDependencies = this.filterSourceDependencies(request.sourceDevDependencies ?? {});
     return {
-      dependencies: { ...strategy.exactDependencies, ...manifest.dependencies },
-      devDependencies: { ...manifest.devDependencies },
-      rationale: { ...manifest.rationale },
+      dependencies: { ...sourceDependencies, ...strategy.exactDependencies, ...manifest.dependencies },
+      devDependencies: { ...sourceDevDependencies, ...manifest.devDependencies },
+      rationale: {
+        ...Object.fromEntries(Object.keys(sourceDependencies).map((name) => [name, 'Carried over from the Angular source package because generated React code may still reference this runtime library.'])),
+        ...Object.fromEntries(Object.keys(sourceDevDependencies).map((name) => [name, 'Carried over from the Angular source package devDependencies when it is not Angular-specific.'])),
+        ...manifest.rationale,
+      },
     };
+  }
+
+  private filterSourceDependencies(dependencies: Record<string, string>): Record<string, string> {
+    const blocked = [/^@angular\//, /^@ngrx\//, /^@angular-devkit\//, /^@schematics\//, /^zone\.js$/, /^typescript$/, /^webpack$/];
+    return Object.fromEntries(
+      Object.entries(dependencies)
+        .filter(([name]) => !blocked.some((pattern) => pattern.test(name)))
+        .sort(([left], [right]) => left.localeCompare(right)),
+    );
   }
 
   private createManualReviewItems(drafts: NormalizedTargetDraftBundle): ManualReviewItem[] {

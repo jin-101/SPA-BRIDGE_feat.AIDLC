@@ -2774,3 +2774,26 @@ Check that --workspace is a real directory and --input points to an Angular proj
 **Context**: CLI conversion quality support and complex Angular pattern coverage expansion
 
 ---
+
+## React Runtime Parity Conversion Requirements
+**Timestamp**: 2026-06-08T23:14:55Z
+**User Input**: "내가 최종적으로 원하는 것은 새로운 리엑트 프로젝트를 출력물로 받으면 npm install 하고 npm run dev 했을때 기존 앵귤러 프로젝트와 동일한 화면이 나오고 동작이 되는 것이야.
+
+현재 빠져있는 부분이 너무 많은 것 같은데, 일단 필요한 사항을 정리해서 알려줄게.
+
+- 기존 앵귤러 프로젝트에 package.json에 설치된 패키지들이 리엑트에서도 설치가 되어야 할 것 같은데 설치가 안되는 것 같아. 앵귤러에 필요한 패키지가 아닌 외부 라이브러리들이나 api를 호출하기 위한 자체개발된 패키지들이 하나도 설치가 안된 것 같아.
+- 앵귤러에서 커스텀 태그(예시 형태: <ke-konbini-pres>) 변환 및 사용이 이상한데, 변환 된 리엑트 코드에서는 컴포넌트 이름을 호출해서 써야할 것 같은데, 커스텀 컴포넌트를 사용하는 부분을 다시 확인하고 수정해줘.
+- 지금 컴포넌트 폴더 안에 컴포넌트가 모두 다 나열되고 있는데 폴더 구조는 기존에 앵귤러 구조와 유사했으면 좋겠어. 
+- 앵귤러에서 EventEmitter 부분을 리엑트로 변환해줘."
+**AI Response**: "Implemented source package dependency carry-over with Angular-specific dependency filtering, selector-based Angular custom tag to React component import/tag conversion, source-path-based React component output structure, and EventEmitter to callback prop conversion. Updated route imports for nested component paths and verified workspace build/test success."
+**Context**: CLI conversion quality support and runtime parity conversion requirements
+
+---
+
+## Requirements V2 Documentation Request
+**Timestamp**: 2026-06-08T23:23:36Z
+**User Input**: "혹시 그린필드 이후에 수정된 사항들을 따로 기록하고 있어? 만약 기록되지 않고 있다면 requirements폴더에 requirements_v2.md 파일로 따로 수정 요청사항과 처리 결과를 남겨줘."
+**AI Response**: "Confirmed that post-greenfield changes were recorded in audit/state but not as a separate requirements delta document, then created `aidlc-docs/inception/requirements/requirements_v2.md` summarizing change requests, implemented results, remaining gaps, and verification status."
+**Context**: Post-greenfield requirements delta documentation
+
+---

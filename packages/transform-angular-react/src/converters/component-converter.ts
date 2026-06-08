@@ -78,11 +78,19 @@ export class ComponentConverter {
       ],
     }));
 
+    const propertyInputs = component.propertyInitializers
+      .filter((property) => property.decorators.includes('Input'))
+      .map((property) => property.name);
+    const propertyOutputs = component.propertyInitializers
+      .filter((property) => property.decorators.includes('Output') || property.isEventEmitter)
+      .map((property) => property.name);
+
     return {
       id: component.id,
       name: component.name,
       sourceRef: component.sourceRef,
-      props: [...new Set([...component.inputs, ...component.outputs])],
+      selector: component.selector,
+      props: [...new Set([...component.inputs, ...component.outputs, ...propertyInputs, ...propertyOutputs])],
       state: [...new Set([...component.stateRefs])],
       hooks,
       imports: [...new Set([...component.serviceRefs])],
@@ -91,6 +99,7 @@ export class ComponentConverter {
       templateExternalReferences: [...new Set(matchingTemplates.flatMap((template) => template.externalReferences))],
       serviceRefs: [...component.serviceRefs],
       styleUrls: [...component.styleUrls],
+      sourceRelativePath: component.sourceRef?.path,
       propertyInitializers: [...component.propertyInitializers],
       methods: [...component.methods],
       reviewItemIds: [],

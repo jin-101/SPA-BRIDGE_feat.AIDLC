@@ -33,6 +33,19 @@ const writeJsonArtifact = async (targetRoot, name, value) => {
     await fs.writeFile(artifactPath, JSON.stringify(value, null, 2) + '\n', 'utf8');
     return artifactPath;
 };
+const readSourcePackageDependencies = async (projectRoot) => {
+    try {
+        const packageJsonText = await fs.readFile(path.join(projectRoot, 'package.json'), 'utf8');
+        const packageJson = JSON.parse(packageJsonText);
+        return {
+            dependencies: packageJson.dependencies ?? {},
+            devDependencies: packageJson.devDependencies ?? {},
+        };
+    }
+    catch {
+        return { dependencies: {}, devDependencies: {} };
+    }
+};
 const toPosixPath = (value) => value.replace(/\\/g, '/');
 const safeRelativePath = (value) => toPosixPath(value)
     .replace(/^(\.\.\/)+/g, '')
@@ -246,6 +259,7 @@ export const createDefaultApplicationBridge = () => ({
             return { ok: false, error: toCliError('Angular-to-React transformation failed.', transformationResult.error) };
         }
         const securityReady = !analysisResult.value.diagnostics.some((diagnostic) => diagnostic.severity === 'security-blocker');
+        const sourcePackageDependencies = await readSourcePackageDependencies(analysisResult.value.workspaceProfile.projectRoot);
         const aiRefinement = await runAiRefinement(request.validatedPaths.outputPath, transformationResult.value.mappingRequests, securityReady);
         const targetResult = generateReactTarget({
             runId,
@@ -260,6 +274,8 @@ export const createDefaultApplicationBridge = () => ({
                 kind: 'source',
                 path: analysisResult.value.sourceModelBoundary.sourceModelRef.projectPath,
             },
+            sourceDependencies: sourcePackageDependencies.dependencies,
+            sourceDevDependencies: sourcePackageDependencies.devDependencies,
         });
         if (!targetResult.ok) {
             return { ok: false, error: toCliError('React target generation failed.', targetResult.error) };

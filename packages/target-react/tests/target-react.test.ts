@@ -56,6 +56,16 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
             name: 'title',
             initializer: "'Hello'",
             readonly: false,
+            decorators: [],
+            isEventEmitter: false,
+          },
+          {
+            name: 'selected',
+            initializer: 'new EventEmitter<string>()',
+            readonly: false,
+            decorators: ['Output'],
+            typeText: 'EventEmitter<string>',
+            isEventEmitter: true,
           },
         ],
         methods: [
@@ -154,18 +164,20 @@ describe('TargetGenerationService', () => {
     expect(result.writePlan.files.length).toBeGreaterThan(0);
     expect(result.writePlan.files.map((file) => file.path)).toEqual([...result.writePlan.files.map((file) => file.path)].sort());
     expect(result.writePlan.files.some((file) => file.path.endsWith('package.json'))).toBe(true);
-    expect(result.writePlan.files.some((file) => file.path.endsWith('src/components/MainPanel.tsx'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/routes.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/state/local/index.ts'))).toBe(true);
-    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/components/MainPanel.tsx'));
+    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
     expect(componentFile?.content).toContain("useState('Hello')");
     expect(componentFile?.content).toContain('selectPassenger');
     expect(componentFile?.content).toContain('setTitle(id)');
     expect(componentFile?.content).toContain('className="panel"');
     expect(componentFile?.content).toContain('onClick={(event) => selectPassenger(title)}');
     expect(componentFile?.content).toContain('src="/assets/logo.png"');
-    expect(componentFile?.content).toContain("import '../styles/components/MainPanel.less';");
+    expect(componentFile?.content).toContain("import '../../styles/components/MainPanel.less';");
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/styles/components/MainPanel.less'))).toBe(true);
+    const routesFile = result.writePlan.files.find((file) => file.path.endsWith('src/routes.tsx'));
+    expect(routesFile?.content).toContain("import { MainPanel } from './app/main-panel/MainPanel.js';");
     expect(result.manualReviewItems.length).toBeGreaterThan(0);
     expect(result.traces.length).toBeGreaterThanOrEqual(result.writePlan.files.length);
   });

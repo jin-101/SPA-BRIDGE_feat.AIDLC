@@ -80,6 +80,16 @@ const createComponentSummary = (
           name: 'title',
           initializer: "'Demo'",
           readonly: false,
+          decorators: ['Input'],
+          isEventEmitter: false,
+        },
+        {
+          name: 'closed',
+          initializer: 'new EventEmitter<void>()',
+          readonly: false,
+          decorators: ['Output'],
+          typeText: 'EventEmitter<void>',
+          isEventEmitter: true,
         },
       ],
       methods: [

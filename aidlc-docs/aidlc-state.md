@@ -6,7 +6,7 @@
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
 - **Current Stage**: OPERATIONS Placeholder
-- **Last Completed**: Complex Angular Pattern Conversion Coverage Expansion
+- **Last Completed**: React Runtime Parity Conversion Requirements Expansion
 - **Next Step**: Run against a real Angular repository and review generated React output
 
 ## Workspace State
@@ -109,6 +109,7 @@
 - [x] CONSTRUCTION - Component Logic Preservation Wiring
 - [x] CONSTRUCTION - Semantic Component Logic Conversion Wiring
 - [x] CONSTRUCTION - Complex Angular Pattern Conversion Coverage Expansion
+- [x] CONSTRUCTION - React Runtime Parity Conversion Requirements Expansion
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -238,6 +239,7 @@
 - **End-to-End CLI Conversion Wiring**: Implemented actual Angular repo input to React repo output flow on 2026-06-08T04:28:02Z. The CLI now runs Angular source analysis, Angular-to-React transformation, React target generation, file materialization, and report export. Workspace build and test verification passed.
 - **Local-first AI Refinement Wiring**: Implemented default Ollama EXAONE 3.5 local provider refinement and optional OpenAI-compatible external provider fallback on 2026-06-08T04:42:53Z. External provider use requires explicit opt-in and security readiness. Workspace build and test verification passed.
 - **Complex Angular Pattern Conversion Coverage Expansion**: Expanded conversion coverage for Angular templates, styles, assets, routing, service DI shape, local/store state scaffolding, and component JSX output on 2026-06-08T05:22:35Z. CLI conversion now copies Angular style files and template asset references into the React target and writes a resource-copy summary. Workspace build/test verification passed.
+- **React Runtime Parity Conversion Requirements Expansion**: Added source package dependency carry-over with Angular-specific filtering, selector-based custom Angular tag conversion to React component imports/tags, source-path-preserving component output paths, EventEmitter-to-callback-prop conversion, and nested route component imports on 2026-06-08T23:14:55Z. Workspace build/test verification passed.
 
 ## Execution Plan Summary
 - **Recommended Next Stage**: Run a real Angular repository conversion and review output quality

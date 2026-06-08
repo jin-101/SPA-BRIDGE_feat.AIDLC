@@ -34,6 +34,7 @@ export declare class TargetGenerationService {
     constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard);
     generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
     private buildDependencyManifest;
+    private filterSourceDependencies;
     private createManualReviewItems;
     private createGeneratedDiagnostics;
 }
