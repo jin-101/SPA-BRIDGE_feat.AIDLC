@@ -1,3 +1,5 @@
+import path from 'node:path';
+
 import type {
   GeneratedFileSpec,
   NormalizedTargetDraftBundle,
@@ -5,6 +7,13 @@ import type {
   TargetGenerationRequest,
   TargetStrategyDescriptor,
 } from '../types.js';
+
+type TargetAliasMapping = {
+  alias: string;
+  tsconfigKey: string;
+  tsconfigTargets: string[];
+  viteTarget: string;
+};
 
 const baseDependencies = {
   react: '18.2.0',
@@ -61,7 +70,59 @@ const buildPackageJson = (
     2,
   ) + '\n';
 
-const buildTsconfig = (): string =>
+const stripWildcard = (value: string): string => value.replace(/\/?\*+$/g, '');
+
+const isSafeTargetPath = (value: string): boolean => value.length > 0 && !path.isAbsolute(value) && !value.split(/[\\/]+/).includes('..');
+
+const normalizeTargetPath = (sourcePath: string, normalizedDrafts: NormalizedTargetDraftBundle): string | undefined => {
+  const absoluteSourcePath = path.resolve(sourcePath);
+  const projects = normalizedDrafts.aliasModel.workspaceProjects.filter((project) => project.status === 'supported');
+  for (const project of projects) {
+    if (project.sourceRoot) {
+      const relative = path.relative(project.sourceRoot, absoluteSourcePath);
+      if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
+        return path.posix.join('src', relative.split(path.sep).join('/'));
+      }
+    }
+    const projectRelative = path.relative(project.projectRoot, absoluteSourcePath);
+    if (projectRelative === '' || (!projectRelative.startsWith('..') && !path.isAbsolute(projectRelative))) {
+      return projectRelative.split(path.sep).join('/');
+    }
+  }
+  return undefined;
+};
+
+const buildAliasMappings = (normalizedDrafts: NormalizedTargetDraftBundle): TargetAliasMapping[] => {
+  const mappings: TargetAliasMapping[] = [];
+  for (const mapping of normalizedDrafts.aliasModel.paths) {
+    if (mapping.status !== 'supported') {
+      continue;
+    }
+
+    const aliasBase = stripWildcard(mapping.aliasPattern);
+    const tsconfigTargets = mapping.resolvedTargets
+      .map((target) => normalizeTargetPath(target, normalizedDrafts))
+      .filter((target): target is string => !!target && isSafeTargetPath(target))
+      .map((target) => `${target}${mapping.aliasPattern.endsWith('/*') ? '/*' : ''}`)
+      .sort((left, right) => left.localeCompare(right));
+
+    const viteTarget = tsconfigTargets[0] ? stripWildcard(tsconfigTargets[0]) : undefined;
+    if (!viteTarget || !isSafeTargetPath(viteTarget)) {
+      continue;
+    }
+
+    mappings.push({
+      alias: aliasBase,
+      tsconfigKey: mapping.aliasPattern,
+      tsconfigTargets,
+      viteTarget,
+    });
+  }
+
+  return mappings.sort((left, right) => left.alias.localeCompare(right.alias));
+};
+
+const buildTsconfig = (aliasMappings: TargetAliasMapping[]): string =>
   JSON.stringify(
     {
       compilerOptions: {
@@ -81,6 +142,12 @@ const buildTsconfig = (): string =>
         isolatedModules: true,
         noEmit: true,
         types: ['vite/client'],
+        ...(aliasMappings.length > 0
+          ? {
+              baseUrl: '.',
+              paths: Object.fromEntries(aliasMappings.map((mapping) => [mapping.tsconfigKey, mapping.tsconfigTargets])),
+            }
+          : {}),
       },
       include: ['src'],
     },
@@ -103,13 +170,48 @@ const buildTsconfigNode = (): string =>
     2,
   ) + '\n';
 
-const buildViteConfig = (): string => `import { defineConfig } from 'vite';
+const buildViteConfig = (aliasMappings: TargetAliasMapping[]): string => {
+  const aliasBlock =
+    aliasMappings.length > 0
+      ? `,
+  resolve: {
+    alias: {
+${aliasMappings.map((mapping) => `      '${mapping.alias}': path.resolve(__dirname, '${mapping.viteTarget}')`).join(',\n')}
+    },
+  }`
+      : '';
+
+  return `import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react()]${aliasBlock},
 });
 `;
+};
+
+const buildAliasMetadata = (normalizedDrafts: NormalizedTargetDraftBundle, aliasMappings: TargetAliasMapping[]): string =>
+  JSON.stringify(
+    {
+      schemaVersion: 1,
+      generatedAliases: aliasMappings,
+      sourceSummary: normalizedDrafts.aliasModel.summary,
+      unsupportedAliases: normalizedDrafts.aliasModel.paths
+        .filter((mapping) => mapping.status !== 'supported')
+        .map((mapping) => ({
+          aliasPattern: mapping.aliasPattern,
+          status: mapping.status,
+          sourceConfigPath: mapping.sourceConfigPath,
+        }))
+        .sort((left, right) => left.aliasPattern.localeCompare(right.aliasPattern)),
+    },
+    null,
+    2,
+  ) + '\n';
 
 const buildIndexHtml = (projectName: string): string => `<!doctype html>
 <html lang="en">
@@ -172,17 +274,19 @@ const buildStrategy = (id: TargetStrategyDescriptor['id'], defaultStrategy: bool
   },
   createScaffoldFiles: ({ request, normalizedDrafts, dependencyManifest }): GeneratedFileSpec[] => {
     const projectName = normalizedDrafts.projectName || request.projectName || 'spa-bridge-react-target';
+    const aliasMappings = buildAliasMappings(normalizedDrafts);
 
     return [
       makeFile('package.json', 'scaffold', buildPackageJson({ ...request, projectName }, dependencyManifest)),
-      makeFile('tsconfig.json', 'scaffold', buildTsconfig()),
+      makeFile('tsconfig.json', 'scaffold', buildTsconfig(aliasMappings)),
       makeFile('tsconfig.node.json', 'scaffold', buildTsconfigNode()),
-      makeFile('vite.config.ts', 'scaffold', buildViteConfig()),
+      makeFile('vite.config.ts', 'scaffold', buildViteConfig(aliasMappings)),
       makeFile('index.html', 'scaffold', buildIndexHtml(projectName)),
       makeFile('src/main.tsx', 'scaffold', buildMainTsx()),
       makeFile('src/App.tsx', 'scaffold', buildAppTsx(projectName)),
       makeFile('src/styles.css', 'scaffold', buildStyles()),
       makeFile('src/source-styles.ts', 'scaffold', '/* Angular source style imports are added by the CLI resource copier. */\n'),
+      makeFile('src/metadata/alias-mapping.json', 'metadata', buildAliasMetadata(normalizedDrafts, aliasMappings)),
     ];
   },
 });

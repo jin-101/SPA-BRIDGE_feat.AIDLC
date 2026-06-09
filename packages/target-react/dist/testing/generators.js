@@ -27,6 +27,40 @@ const createDraftSetArbitrary = () => fc
     schemaVersion: fc.constant(1),
     targetFramework: fc.constant('react'),
     projectStrategy: fc.constantFrom('vite-react-typescript', 'react-default'),
+    aliasModel: fc.constant({
+        schemaVersion: 1,
+        baseUrl: '/tmp/workspace/spa-bridge/src',
+        configFiles: ['/tmp/workspace/spa-bridge/tsconfig.json'],
+        paths: [
+            {
+                id: 'alias-app',
+                aliasPattern: '@app/*',
+                targetPatterns: ['app/*'],
+                resolvedTargets: ['/tmp/workspace/spa-bridge/src/app'],
+                sourceConfigPath: '/tmp/workspace/spa-bridge/tsconfig.json',
+                status: 'supported',
+            },
+        ],
+        workspaceProjects: [
+            {
+                id: 'project-demo',
+                projectName: 'demo',
+                projectRoot: '/tmp/workspace/spa-bridge',
+                sourceRoot: '/tmp/workspace/spa-bridge/src',
+                projectType: 'application',
+                status: 'supported',
+            },
+        ],
+        assetRoots: ['/tmp/workspace/spa-bridge/src/assets'],
+        diagnostics: [],
+        summary: {
+            totalAliases: 2,
+            supportedAliases: 2,
+            unresolvedAliases: 0,
+            unsafeAliases: 0,
+            externalAliases: 0,
+        },
+    }),
     components: fc.array(fc.record({
         id: identifierArbitrary,
         name: identifierArbitrary,

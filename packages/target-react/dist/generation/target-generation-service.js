@@ -134,6 +134,9 @@ export class TargetGenerationService {
             totalReviewItems: manualReviewItems.length,
             totalDiagnostics: diagnostics.length,
             totalTraces: traceLinks.length,
+            totalAliases: normalizedDrafts.aliasModel.summary.totalAliases,
+            totalGeneratedAliases: normalizedDrafts.aliasModel.paths.filter((mapping) => mapping.status === 'supported').length,
+            unresolvedAliases: normalizedDrafts.aliasModel.summary.unresolvedAliases,
         };
         return ok({
             status: manualReviewItems.length > 0 ? 'partial' : 'success',

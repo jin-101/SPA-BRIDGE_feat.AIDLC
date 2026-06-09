@@ -1,4 +1,4 @@
-import { ok } from '@spa-bridge/core-model';
+import { createDiagnostic, ok } from '@spa-bridge/core-model';
 import { StableIdFactory } from '../model/stable-id-factory.js';
 const isComponentSymbol = (symbol) => symbol.decorators.some((decorator) => decorator.kind === 'Component');
 const isServiceSymbol = (symbol) => symbol.decorators.some((decorator) => decorator.kind === 'Injectable') || /service/i.test(symbol.name);
@@ -8,6 +8,16 @@ export class ContextNormalizer {
     normalize(request) {
         const analysis = request.analysis;
         const diagnostics = [...analysis.diagnostics];
+        for (const mapping of analysis.aliasModel.paths.filter((alias) => alias.status !== 'supported')) {
+            diagnostics.push(createDiagnostic({
+                code: 'V2-GAP-ALIAS-TRANSFORM-001',
+                severity: mapping.status === 'unsafe' ? 'security-blocker' : 'manual-review',
+                message: `Alias ${mapping.aliasPattern} is preserved for manual review because it is ${mapping.status}.`,
+                sourceRefs: [{ kind: 'source', path: mapping.sourceConfigPath }],
+                generatedRefs: [],
+                tags: ['alias', 'transformation'],
+            }));
+        }
         const templateByOwner = new Map();
         for (const template of analysis.templateSummaries) {
             const ownerPath = template.ownerPath ?? template.sourcePath;
@@ -113,6 +123,7 @@ export class ContextNormalizer {
             correlationId: request.correlationId,
             sourceModelRef: analysis.sourceModelBoundary.sourceModelRef,
             packageRefs: [...analysis.workspaceProfile.packageRefs],
+            aliasModel: analysis.aliasModel,
             targetFramework: request.targetFramework,
             targetProjectStrategy: request.targetProjectStrategy,
             stateStrategy: request.stateStrategy,

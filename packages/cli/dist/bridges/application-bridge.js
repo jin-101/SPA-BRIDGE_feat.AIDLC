@@ -292,6 +292,18 @@ export const createDefaultApplicationBridge = () => ({
             await writeJsonArtifact(request.validatedPaths.outputPath, 'target-summary.json', targetResult.value.summary);
             await writeJsonArtifact(request.validatedPaths.outputPath, 'manual-review-items.json', targetResult.value.manualReviewItems);
             await writeJsonArtifact(request.validatedPaths.outputPath, 'resource-copy-summary.json', copiedResources);
+            await writeJsonArtifact(request.validatedPaths.outputPath, 'alias-mapping-summary.json', {
+                source: analysisResult.value.aliasModel.summary,
+                generated: {
+                    totalAliases: targetResult.value.summary.totalGeneratedAliases,
+                    unresolvedAliases: targetResult.value.summary.unresolvedAliases,
+                },
+                aliases: analysisResult.value.aliasModel.paths.map((mapping) => ({
+                    aliasPattern: mapping.aliasPattern,
+                    status: mapping.status,
+                    targetCount: mapping.resolvedTargets.length,
+                })),
+            });
         }
         catch (error) {
             return { ok: false, error: toCliError('Unable to write generated React target files.', error) };
@@ -319,6 +331,8 @@ export const createDefaultApplicationBridge = () => ({
                         `Files scanned: ${analysisResult.value.summary.totalFiles}`,
                         `Symbols discovered: ${analysisResult.value.summary.totalSymbols}`,
                         `Routes discovered: ${analysisResult.value.summary.totalRoutes}`,
+                        `Aliases discovered: ${analysisResult.value.summary.totalAliases}`,
+                        `Unresolved aliases: ${analysisResult.value.summary.unresolvedAliases}`,
                     ],
                 },
                 {
@@ -340,6 +354,8 @@ export const createDefaultApplicationBridge = () => ({
                         `Strategy: ${targetResult.value.summary.strategyId}`,
                         `Copied Angular styles: ${copiedResources.styles}`,
                         `Copied Angular assets: ${copiedResources.assets}`,
+                        `Aliases generated: ${targetResult.value.summary.totalGeneratedAliases}`,
+                        `Alias summary: ${path.join(request.validatedPaths.outputPath, '.spa-bridge', 'alias-mapping-summary.json')}`,
                     ],
                 },
                 {

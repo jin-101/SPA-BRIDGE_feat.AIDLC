@@ -32,6 +32,18 @@ export class ContextNormalizer {
   normalize(request: TransformationRequest): Result<TransformationContext, TransformationError> {
     const analysis = request.analysis;
     const diagnostics: Diagnostic[] = [...analysis.diagnostics];
+    for (const mapping of analysis.aliasModel.paths.filter((alias) => alias.status !== 'supported')) {
+      diagnostics.push(
+        createDiagnostic({
+          code: 'V2-GAP-ALIAS-TRANSFORM-001',
+          severity: mapping.status === 'unsafe' ? 'security-blocker' : 'manual-review',
+          message: `Alias ${mapping.aliasPattern} is preserved for manual review because it is ${mapping.status}.`,
+          sourceRefs: [{ kind: 'source', path: mapping.sourceConfigPath }],
+          generatedRefs: [],
+          tags: ['alias', 'transformation'],
+        }),
+      );
+    }
 
     const templateByOwner = new Map<string, NormalizedTemplate[]>();
     for (const template of analysis.templateSummaries) {
@@ -145,6 +157,7 @@ export class ContextNormalizer {
       correlationId: request.correlationId,
       sourceModelRef: analysis.sourceModelBoundary.sourceModelRef,
       packageRefs: [...analysis.workspaceProfile.packageRefs],
+      aliasModel: analysis.aliasModel,
       targetFramework: request.targetFramework,
       targetProjectStrategy: request.targetProjectStrategy,
       stateStrategy: request.stateStrategy,

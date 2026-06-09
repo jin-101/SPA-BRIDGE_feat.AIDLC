@@ -67,6 +67,7 @@ export type NormalizedTargetDraftBundle = {
   schemaVersion: 1;
   targetFramework: TargetFramework;
   projectStrategy: TargetProjectStrategyId;
+  aliasModel: ReactTargetDraftSet['aliasModel'];
   targetRoot: string;
   projectName: string;
   stateStrategy: TargetStateStrategy;
@@ -129,6 +130,9 @@ export type TargetGenerationSummary = {
   totalReviewItems: number;
   totalDiagnostics: number;
   totalTraces: number;
+  totalAliases: number;
+  totalGeneratedAliases: number;
+  unresolvedAliases: number;
 };
 
 export type TargetGenerationResult = {

@@ -3,6 +3,7 @@ import type { AnalysisError, AngularAnalysisResult, SourceAngularAnalysisRequest
 export declare class SourceAngularAnalysisService {
     private readonly pathGuard;
     private readonly workspaceProfiler;
+    private readonly aliasAnalyzer;
     private readonly inventoryBuilder;
     private readonly tsParser;
     private readonly templateParser;

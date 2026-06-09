@@ -37,6 +37,40 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
     schemaVersion: 1,
     targetFramework: 'react',
     projectStrategy: 'vite-react-typescript',
+    aliasModel: {
+      schemaVersion: 1,
+      baseUrl: '/workspace/spa-bridge/src',
+      configFiles: ['/workspace/spa-bridge/tsconfig.json'],
+      paths: [
+        {
+          id: 'alias-app',
+          aliasPattern: '@app/*',
+          targetPatterns: ['app/*'],
+          resolvedTargets: ['/workspace/spa-bridge/src/app'],
+          sourceConfigPath: '/workspace/spa-bridge/tsconfig.json',
+          status: 'supported',
+        },
+      ],
+      workspaceProjects: [
+        {
+          id: 'project-demo',
+          projectName: 'demo',
+          projectRoot: '/workspace/spa-bridge',
+          sourceRoot: '/workspace/spa-bridge/src',
+          projectType: 'application',
+          status: 'supported',
+        },
+      ],
+      assetRoots: ['/workspace/spa-bridge/src/assets'],
+      diagnostics: [],
+      summary: {
+        totalAliases: 2,
+        supportedAliases: 2,
+        unresolvedAliases: 0,
+        unsafeAliases: 0,
+        externalAliases: 0,
+      },
+    },
     components: [
       {
         id: 'component-1',
@@ -167,6 +201,12 @@ describe('TargetGenerationService', () => {
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/routes.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/state/local/index.ts'))).toBe(true);
+    const tsconfigFile = result.writePlan.files.find((file) => file.path.endsWith('tsconfig.json'));
+    const viteConfigFile = result.writePlan.files.find((file) => file.path.endsWith('vite.config.ts'));
+    expect(tsconfigFile?.content).toContain('"@app/*"');
+    expect(tsconfigFile?.content).toContain('"src/app/*"');
+    expect(viteConfigFile?.content).toContain("'@app': path.resolve(__dirname, 'src/app')");
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/metadata/alias-mapping.json'))).toBe(true);
     const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
     expect(componentFile?.content).toContain("useState('Hello')");
     expect(componentFile?.content).toContain('selectPassenger');

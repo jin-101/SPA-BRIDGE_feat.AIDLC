@@ -32,11 +32,12 @@ export class DraftBuilder {
     addTrace(trace) {
         this.traces.push(trace);
     }
-    finalize(targetFramework, projectStrategy) {
+    finalize(targetFramework, projectStrategy, aliasModel) {
         return {
             schemaVersion: 1,
             targetFramework,
             projectStrategy,
+            aliasModel,
             components: sortById(this.components),
             templates: sortById(this.templates),
             services: sortById(this.services),

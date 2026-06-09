@@ -20,6 +20,46 @@ export type AngularWorkspaceProfile = {
     configFiles: string[];
     packageRefs: string[];
 };
+export type AliasResolutionStatus = 'supported' | 'unresolved' | 'external' | 'unsafe';
+export type PathAliasMapping = {
+    id: string;
+    aliasPattern: string;
+    targetPatterns: string[];
+    resolvedTargets: string[];
+    sourceConfigPath: string;
+    status: AliasResolutionStatus;
+};
+export type AngularWorkspaceProjectAlias = {
+    id: string;
+    projectName: string;
+    projectRoot: string;
+    sourceRoot?: string;
+    projectType?: string;
+    status: AliasResolutionStatus;
+};
+export type AliasDiagnostic = {
+    code: string;
+    severity: Diagnostic['severity'];
+    message: string;
+    sourcePath?: string;
+    aliasPattern?: string;
+};
+export type SourceAliasModel = {
+    schemaVersion: 1;
+    baseUrl?: string;
+    configFiles: string[];
+    paths: PathAliasMapping[];
+    workspaceProjects: AngularWorkspaceProjectAlias[];
+    assetRoots: string[];
+    diagnostics: AliasDiagnostic[];
+    summary: {
+        totalAliases: number;
+        supportedAliases: number;
+        unresolvedAliases: number;
+        unsafeAliases: number;
+        externalAliases: number;
+    };
+};
 export type FileInventoryRecord = {
     id: string;
     path: string;
@@ -134,6 +174,7 @@ export type AnalysisArtifactRefs = {
 export type AngularAnalysisResult = {
     status: AnalysisStatus;
     workspaceProfile: AngularWorkspaceProfile;
+    aliasModel: SourceAliasModel;
     inventory: SourceInventory;
     typeScriptSummaries: TypeScriptParseSummary[];
     templateSummaries: TemplateParseSummary[];
@@ -147,6 +188,8 @@ export type AngularAnalysisResult = {
         totalSymbols: number;
         totalRoutes: number;
         totalDiagnostics: number;
+        totalAliases: number;
+        unresolvedAliases: number;
     };
 };
 export type AnalysisError = {

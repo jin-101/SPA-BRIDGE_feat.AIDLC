@@ -5,9 +5,9 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: OPERATIONS Placeholder
-- **Last Completed**: React Runtime Parity Conversion Requirements Expansion
-- **Next Step**: Run against a real Angular repository and review generated React output
+- **Current Stage**: V2-GAP-UOW-02 Functional Design Questions
+- **Last Completed**: V2-GAP-UOW-01 Code Generation Review Approval
+- **Next Step**: Answer V2-GAP-UOW-02 functional design questions for advanced template conversion
 
 ## Workspace State
 - **Existing Code**: No
@@ -110,6 +110,13 @@
 - [x] CONSTRUCTION - Semantic Component Logic Conversion Wiring
 - [x] CONSTRUCTION - Complex Angular Pattern Conversion Coverage Expansion
 - [x] CONSTRUCTION - React Runtime Parity Conversion Requirements Expansion
+- [x] CONSTRUCTION - V2 Gap Brownfield Workflow Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-01 Functional Design Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-01 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-01 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-01 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-01 Code Generation Review Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-02 Functional Design Planning
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -216,6 +223,7 @@
 - **UOW-10 Functional Design**: Functional design artifacts generated on 2026-06-08T00:27:05Z and approved by the user. Advanced to NFR Requirements Planning.
 - **UOW-10 NFR Requirements Planning**: Started on 2026-06-08T00:31:20Z. CLI NFR requirements plan created for `packages/cli` and awaiting answers.
 - **UOW-10 NFR Requirements**: Artifacts generated on 2026-06-08T00:33:41Z and are awaiting explicit approval.
+- **V2-GAP-UOW-01 Code Generation**: Implemented dependency alias and path mapping on 2026-06-09T00:18:04Z. Added source alias extraction, transformation carry-through, target `tsconfig.json` and Vite `resolve.alias` generation, CLI alias summary reporting, and documentation summaries. Workspace `npm run build` and `npm test` passed.
 - **UOW-10 NFR Requirements Approval**: Approved by user on 2026-06-08T00:34:56Z.
 - **UOW-10 NFR Design Planning**: Started on 2026-06-08T00:34:56Z. CLI NFR design plan created for `packages/cli` and awaiting answers.
 - **UOW-10 NFR Design**: Artifacts generated on 2026-06-08T00:37:33Z and are awaiting explicit approval.
@@ -240,9 +248,10 @@
 - **Local-first AI Refinement Wiring**: Implemented default Ollama EXAONE 3.5 local provider refinement and optional OpenAI-compatible external provider fallback on 2026-06-08T04:42:53Z. External provider use requires explicit opt-in and security readiness. Workspace build and test verification passed.
 - **Complex Angular Pattern Conversion Coverage Expansion**: Expanded conversion coverage for Angular templates, styles, assets, routing, service DI shape, local/store state scaffolding, and component JSX output on 2026-06-08T05:22:35Z. CLI conversion now copies Angular style files and template asset references into the React target and writes a resource-copy summary. Workspace build/test verification passed.
 - **React Runtime Parity Conversion Requirements Expansion**: Added source package dependency carry-over with Angular-specific filtering, selector-based custom Angular tag conversion to React component imports/tags, source-path-preserving component output paths, EventEmitter-to-callback-prop conversion, and nested route component imports on 2026-06-08T23:14:55Z. Workspace build/test verification passed.
+- **V2 Gap Brownfield Workflow Planning**: Started focused brownfield development based on `requirements_v2_gap_implementation_spec.md` on 2026-06-08T23:37:34Z. Created the V2 gap workflow plan, V2 gap units of work, and V2-GAP-UOW-01 dependency alias/path mapping functional design plan. Awaiting approval to continue to code generation planning.
 
 ## Execution Plan Summary
-- **Recommended Next Stage**: Run a real Angular repository conversion and review output quality
-- **Stages to Execute**: None in AI-DLC; use the CLI against target input repositories
+- **Recommended Next Stage**: Approve V2-GAP-UOW-01 functional design and continue to code generation planning
+- **Stages to Execute**: V2 gap brownfield construction units V2-GAP-UOW-01 through V2-GAP-UOW-07
 - **Stages to Skip**: Reverse Engineering (no existing code)
 - **Risk Level**: Medium

@@ -12,6 +12,7 @@ import {
 } from '@spa-bridge/core-model';
 
 import { AnalysisArtifactMapper } from '../model/artifact-mapper.js';
+import { AliasAnalyzer } from '../aliases/alias-analyzer.js';
 import { GraphBuilder } from '../graph/graph-builder.js';
 import { PathGuard } from '../path/path-guard.js';
 import { RouteAnalyzer } from '../routes/route-analyzer.js';
@@ -43,6 +44,7 @@ const toSourceRef = (filePath: string, symbol?: string) => ({
 export class SourceAngularAnalysisService {
   private readonly pathGuard = new PathGuard();
   private readonly workspaceProfiler = new WorkspaceProfiler(this.pathGuard);
+  private readonly aliasAnalyzer = new AliasAnalyzer(this.pathGuard);
   private readonly inventoryBuilder = new SourceInventoryBuilder();
   private readonly tsParser = new TypeScriptParserAdapter();
   private readonly templateParser = new AngularTemplateParserAdapter();
@@ -68,11 +70,23 @@ export class SourceAngularAnalysisService {
     }
 
     const workspaceProfile = profileResult.value;
+    const aliasModel = await this.aliasAnalyzer.analyze(workspaceProfile.projectRoot, workspaceProfile.sourceRoot);
     const inventory = inventoryResult.value;
     const typeScriptSummaries: TypeScriptParseSummary[] = [];
     const templateSummaries: TemplateParseSummary[] = [];
     const routeSummaries: RouteSummary[] = [];
     const diagnostics: Diagnostic[] = [];
+    diagnostics.push(
+      ...aliasModel.diagnostics.map((diagnostic) =>
+        this.diagnosticBuilder.build({
+          code: diagnostic.code,
+          severity: diagnostic.severity,
+          message: diagnostic.message,
+          sourcePaths: diagnostic.sourcePath ? [diagnostic.sourcePath] : [workspaceProfile.projectRoot],
+          tags: ['alias', 'path-mapping'],
+        }),
+      ),
+    );
 
     const fileLookup = new Map(inventory.files.map((record) => [record.path, record]));
 
@@ -227,6 +241,7 @@ export class SourceAngularAnalysisService {
     return ok({
       status,
       workspaceProfile,
+      aliasModel,
       inventory: {
         ...inventory,
         files: inventory.files.map((record) => ({ ...record })),
@@ -243,6 +258,8 @@ export class SourceAngularAnalysisService {
         totalSymbols: typeScriptSummaries.reduce((total, summary) => total + summary.symbols.length, 0),
         totalRoutes: routeSummaries.length,
         totalDiagnostics: normalizedDiagnostics.length,
+        totalAliases: aliasModel.summary.totalAliases,
+        unresolvedAliases: aliasModel.summary.unresolvedAliases,
       },
     });
   }

@@ -6,6 +6,7 @@ export class ReactDraftNormalizer {
             schemaVersion: 1,
             targetFramework: 'react',
             projectStrategy: request.strategyId ?? draftSet.projectStrategy,
+            aliasModel: draftSet.aliasModel,
             targetRoot: request.targetRoot,
             projectName: request.projectName ?? draftSet.projectStrategy,
             stateStrategy: request.selectedStateStrategy ?? 'unknown',

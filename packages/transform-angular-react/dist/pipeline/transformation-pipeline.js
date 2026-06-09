@@ -122,14 +122,14 @@ export class TransformationPipeline {
         for (const rule of planResult.value.orderedRules) {
             registerContribution(rule.transform(context), rule.ruleId);
         }
-        let draftSet = draftBuilder.finalize(context.targetFramework, context.targetProjectStrategy);
+        let draftSet = draftBuilder.finalize(context.targetFramework, context.targetProjectStrategy, context.aliasModel);
         for (const draft of collectDrafts(draftSet)) {
             const source = draft.sourceRef ?? { kind: 'source', path: context.sourceModelRef.entryFile };
             for (const ref of draft.generatedRefs) {
                 registerTrace(source, ref, 'transformation-pipeline');
             }
         }
-        draftSet = draftBuilder.finalize(context.targetFramework, context.targetProjectStrategy);
+        draftSet = draftBuilder.finalize(context.targetFramework, context.targetProjectStrategy, context.aliasModel);
         const draftValidationResult = this.draftValidator.validate(draftSet);
         if (!draftValidationResult.ok) {
             return draftValidationResult;

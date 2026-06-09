@@ -10,6 +10,7 @@ import type {
   ReactTemplateDraft,
   TransformationTargetFramework,
   TargetProjectStrategy,
+  TransformationContext,
 } from '../types.js';
 
 const sortById = <T extends { id: string }>(items: T[]): T[] => [...items].sort((left, right) => left.id.localeCompare(right.id));
@@ -56,11 +57,16 @@ export class DraftBuilder {
     this.traces.push(trace);
   }
 
-  finalize(targetFramework: TransformationTargetFramework, projectStrategy: TargetProjectStrategy): ReactTargetDraftSet {
+  finalize(
+    targetFramework: TransformationTargetFramework,
+    projectStrategy: TargetProjectStrategy,
+    aliasModel: TransformationContext['aliasModel'],
+  ): ReactTargetDraftSet {
     return {
       schemaVersion: 1,
       targetFramework,
       projectStrategy,
+      aliasModel,
       components: sortById(this.components),
       templates: sortById(this.templates),
       services: sortById(this.services),

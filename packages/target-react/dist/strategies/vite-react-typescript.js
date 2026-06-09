@@ -1,3 +1,4 @@
+import path from 'node:path';
 const baseDependencies = {
     react: '18.2.0',
     'react-dom': '18.2.0',
@@ -35,7 +36,51 @@ const buildPackageJson = (request, manifest) => JSON.stringify({
     dependencies: manifest.dependencies,
     devDependencies: manifest.devDependencies,
 }, null, 2) + '\n';
-const buildTsconfig = () => JSON.stringify({
+const stripWildcard = (value) => value.replace(/\/?\*+$/g, '');
+const isSafeTargetPath = (value) => value.length > 0 && !path.isAbsolute(value) && !value.split(/[\\/]+/).includes('..');
+const normalizeTargetPath = (sourcePath, normalizedDrafts) => {
+    const absoluteSourcePath = path.resolve(sourcePath);
+    const projects = normalizedDrafts.aliasModel.workspaceProjects.filter((project) => project.status === 'supported');
+    for (const project of projects) {
+        if (project.sourceRoot) {
+            const relative = path.relative(project.sourceRoot, absoluteSourcePath);
+            if (relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative))) {
+                return path.posix.join('src', relative.split(path.sep).join('/'));
+            }
+        }
+        const projectRelative = path.relative(project.projectRoot, absoluteSourcePath);
+        if (projectRelative === '' || (!projectRelative.startsWith('..') && !path.isAbsolute(projectRelative))) {
+            return projectRelative.split(path.sep).join('/');
+        }
+    }
+    return undefined;
+};
+const buildAliasMappings = (normalizedDrafts) => {
+    const mappings = [];
+    for (const mapping of normalizedDrafts.aliasModel.paths) {
+        if (mapping.status !== 'supported') {
+            continue;
+        }
+        const aliasBase = stripWildcard(mapping.aliasPattern);
+        const tsconfigTargets = mapping.resolvedTargets
+            .map((target) => normalizeTargetPath(target, normalizedDrafts))
+            .filter((target) => !!target && isSafeTargetPath(target))
+            .map((target) => `${target}${mapping.aliasPattern.endsWith('/*') ? '/*' : ''}`)
+            .sort((left, right) => left.localeCompare(right));
+        const viteTarget = tsconfigTargets[0] ? stripWildcard(tsconfigTargets[0]) : undefined;
+        if (!viteTarget || !isSafeTargetPath(viteTarget)) {
+            continue;
+        }
+        mappings.push({
+            alias: aliasBase,
+            tsconfigKey: mapping.aliasPattern,
+            tsconfigTargets,
+            viteTarget,
+        });
+    }
+    return mappings.sort((left, right) => left.alias.localeCompare(right.alias));
+};
+const buildTsconfig = (aliasMappings) => JSON.stringify({
     compilerOptions: {
         target: 'ES2022',
         useDefineForClassFields: true,
@@ -53,6 +98,12 @@ const buildTsconfig = () => JSON.stringify({
         isolatedModules: true,
         noEmit: true,
         types: ['vite/client'],
+        ...(aliasMappings.length > 0
+            ? {
+                baseUrl: '.',
+                paths: Object.fromEntries(aliasMappings.map((mapping) => [mapping.tsconfigKey, mapping.tsconfigTargets])),
+            }
+            : {}),
     },
     include: ['src'],
 }, null, 2) + '\n';
@@ -65,13 +116,40 @@ const buildTsconfigNode = () => JSON.stringify({
     },
     include: ['vite.config.ts'],
 }, null, 2) + '\n';
-const buildViteConfig = () => `import { defineConfig } from 'vite';
+const buildViteConfig = (aliasMappings) => {
+    const aliasBlock = aliasMappings.length > 0
+        ? `,
+  resolve: {
+    alias: {
+${aliasMappings.map((mapping) => `      '${mapping.alias}': path.resolve(__dirname, '${mapping.viteTarget}')`).join(',\n')}
+    },
+  }`
+        : '';
+    return `import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vite';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react()]${aliasBlock},
 });
 `;
+};
+const buildAliasMetadata = (normalizedDrafts, aliasMappings) => JSON.stringify({
+    schemaVersion: 1,
+    generatedAliases: aliasMappings,
+    sourceSummary: normalizedDrafts.aliasModel.summary,
+    unsupportedAliases: normalizedDrafts.aliasModel.paths
+        .filter((mapping) => mapping.status !== 'supported')
+        .map((mapping) => ({
+        aliasPattern: mapping.aliasPattern,
+        status: mapping.status,
+        sourceConfigPath: mapping.sourceConfigPath,
+    }))
+        .sort((left, right) => left.aliasPattern.localeCompare(right.aliasPattern)),
+}, null, 2) + '\n';
 const buildIndexHtml = (projectName) => `<!doctype html>
 <html lang="en">
   <head>
@@ -129,16 +207,18 @@ const buildStrategy = (id, defaultStrategy) => ({
     },
     createScaffoldFiles: ({ request, normalizedDrafts, dependencyManifest }) => {
         const projectName = normalizedDrafts.projectName || request.projectName || 'spa-bridge-react-target';
+        const aliasMappings = buildAliasMappings(normalizedDrafts);
         return [
             makeFile('package.json', 'scaffold', buildPackageJson({ ...request, projectName }, dependencyManifest)),
-            makeFile('tsconfig.json', 'scaffold', buildTsconfig()),
+            makeFile('tsconfig.json', 'scaffold', buildTsconfig(aliasMappings)),
             makeFile('tsconfig.node.json', 'scaffold', buildTsconfigNode()),
-            makeFile('vite.config.ts', 'scaffold', buildViteConfig()),
+            makeFile('vite.config.ts', 'scaffold', buildViteConfig(aliasMappings)),
             makeFile('index.html', 'scaffold', buildIndexHtml(projectName)),
             makeFile('src/main.tsx', 'scaffold', buildMainTsx()),
             makeFile('src/App.tsx', 'scaffold', buildAppTsx(projectName)),
             makeFile('src/styles.css', 'scaffold', buildStyles()),
             makeFile('src/source-styles.ts', 'scaffold', '/* Angular source style imports are added by the CLI resource copier. */\n'),
+            makeFile('src/metadata/alias-mapping.json', 'metadata', buildAliasMetadata(normalizedDrafts, aliasMappings)),
         ];
     },
 });

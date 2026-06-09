@@ -1,5 +1,5 @@
 import type { Diagnostic, GeneratedArtifactRef, ManualReviewItem, SourceRef, TraceLink } from '@spa-bridge/core-model';
-import type { AngularAnalysisResult } from '@spa-bridge/source-angular';
+import type { AngularAnalysisResult, SourceAliasModel } from '@spa-bridge/source-angular';
 export type TransformationTargetFramework = 'react';
 export type TargetProjectStrategy = 'vite-react-typescript' | 'react-default';
 export type StateStrategyKind = 'service' | 'signals' | 'store' | 'local' | 'unknown';
@@ -101,6 +101,7 @@ export type TransformationContext = {
     correlationId: string;
     sourceModelRef: TransformationAnalysis['sourceModelBoundary']['sourceModelRef'];
     packageRefs: string[];
+    aliasModel: SourceAliasModel;
     targetFramework: TransformationTargetFramework;
     targetProjectStrategy: TargetProjectStrategy;
     stateStrategy: StateStrategyKind;
@@ -193,6 +194,7 @@ export type ReactTargetDraftSet = {
     schemaVersion: 1;
     targetFramework: TransformationTargetFramework;
     projectStrategy: TargetProjectStrategy;
+    aliasModel: SourceAliasModel;
     components: ReactComponentDraft[];
     templates: ReactTemplateDraft[];
     services: ReactServiceDraft[];

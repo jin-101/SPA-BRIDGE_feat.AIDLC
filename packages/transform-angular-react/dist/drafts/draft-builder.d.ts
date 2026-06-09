@@ -1,5 +1,5 @@
 import type { ManualReviewItem, Diagnostic, TraceLink } from '@spa-bridge/core-model';
-import type { ReactComponentDraft, ReactRouteDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft, TransformationTargetFramework, TargetProjectStrategy } from '../types.js';
+import type { ReactComponentDraft, ReactRouteDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft, TransformationTargetFramework, TargetProjectStrategy, TransformationContext } from '../types.js';
 export declare class DraftBuilder {
     private readonly components;
     private readonly templates;
@@ -17,6 +17,6 @@ export declare class DraftBuilder {
     addDiagnostic(diagnostic: Diagnostic): void;
     addReviewItem(item: ManualReviewItem): void;
     addTrace(trace: TraceLink): void;
-    finalize(targetFramework: TransformationTargetFramework, projectStrategy: TargetProjectStrategy): ReactTargetDraftSet;
+    finalize(targetFramework: TransformationTargetFramework, projectStrategy: TargetProjectStrategy, aliasModel: TransformationContext['aliasModel']): ReactTargetDraftSet;
 }
 //# sourceMappingURL=draft-builder.d.ts.map

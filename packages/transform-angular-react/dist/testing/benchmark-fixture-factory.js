@@ -13,6 +13,40 @@ const createFileRecord = (id, filePath, relativePath, role, kind) => ({
     relatedPaths: [],
     parseStatus: 'parsed',
 });
+const createAliasModel = (projectRoot, sourceRoot) => ({
+    schemaVersion: 1,
+    baseUrl: sourceRoot,
+    configFiles: [path.join(projectRoot, 'tsconfig.json')],
+    paths: [
+        {
+            id: 'alias-app',
+            aliasPattern: '@app/*',
+            targetPatterns: ['app/*'],
+            resolvedTargets: [path.join(sourceRoot, 'app')],
+            sourceConfigPath: path.join(projectRoot, 'tsconfig.json'),
+            status: 'supported',
+        },
+    ],
+    workspaceProjects: [
+        {
+            id: 'project-spa-bridge-demo',
+            projectName: 'spa-bridge-demo',
+            projectRoot,
+            sourceRoot,
+            projectType: 'application',
+            status: 'supported',
+        },
+    ],
+    assetRoots: [path.join(sourceRoot, 'assets')],
+    diagnostics: [],
+    summary: {
+        totalAliases: 2,
+        supportedAliases: 2,
+        unresolvedAliases: 0,
+        unsafeAliases: 0,
+        externalAliases: 0,
+    },
+});
 const createComponentSummary = (componentName, sourcePath, serviceName, templatePath, stylePath) => ({
     sourcePath,
     symbols: [
@@ -321,6 +355,7 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
     return {
         status: 'succeeded',
         workspaceProfile,
+        aliasModel: createAliasModel(projectRoot, sourceRoot),
         inventory: {
             schemaVersion: 1,
             workspaceProfileId: `workspace-${workspaceProfile.projectName}`,
@@ -348,6 +383,8 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
             totalSymbols: typeScriptSummaries.reduce((total, summary) => total + summary.symbols.length, 0),
             totalRoutes: routeSummaries.length,
             totalDiagnostics: diagnostics.length,
+            totalAliases: 2,
+            unresolvedAliases: 0,
         },
     };
 };

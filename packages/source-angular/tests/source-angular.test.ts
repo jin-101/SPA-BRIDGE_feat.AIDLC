@@ -25,8 +25,38 @@ const makeTempProject = async (): Promise<string> => {
       defaultProject: 'spa-bridge',
       projects: {
         'spa-bridge': {
+          root: '',
           sourceRoot: 'src',
           projectType: 'application',
+        },
+        'shared-lib': {
+          root: 'projects/shared-lib',
+          sourceRoot: 'projects/shared-lib/src',
+          projectType: 'library',
+        },
+      },
+    }),
+  );
+  await fs.mkdir(path.join(root, 'projects', 'shared-lib', 'src'), { recursive: true });
+  await fs.writeFile(
+    path.join(root, 'tsconfig.base.json'),
+    JSON.stringify({
+      compilerOptions: {
+        baseUrl: 'src',
+        paths: {
+          '@app/*': ['app/*'],
+        },
+      },
+    }),
+  );
+  await fs.writeFile(
+    path.join(root, 'tsconfig.json'),
+    JSON.stringify({
+      extends: './tsconfig.base.json',
+      compilerOptions: {
+        paths: {
+          '@shared/*': ['../projects/shared-lib/src/*'],
+          '@unsafe/*': ['../outside/*'],
         },
       },
     }),
@@ -232,6 +262,9 @@ describe('Source analysis service', () => {
       expect(result.value.workspaceProfile.projectRoot).toBe(path.resolve(root));
       expect(result.value.inventory.files.length).toBeGreaterThan(0);
       expect(result.value.summary.totalFiles).toBeGreaterThan(0);
+      expect(result.value.aliasModel.paths.map((mapping) => mapping.aliasPattern)).toContain('@shared/*');
+      expect(result.value.aliasModel.workspaceProjects.map((project) => project.projectName)).toContain('shared-lib');
+      expect(result.value.summary.totalAliases).toBeGreaterThan(0);
       expect(result.value.artifacts.graphRef.kind).toBe('generated');
     }
   });

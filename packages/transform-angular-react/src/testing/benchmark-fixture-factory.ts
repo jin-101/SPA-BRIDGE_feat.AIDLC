@@ -9,6 +9,7 @@ import type {
   GraphEdge,
   GraphNode,
   RouteSummary,
+  SourceAliasModel,
   TemplateParseSummary,
   TypeScriptParseSummary,
 } from '@spa-bridge/source-angular';
@@ -39,6 +40,41 @@ const createFileRecord = (
   evidence: [relativePath],
   relatedPaths: [],
   parseStatus: 'parsed',
+});
+
+const createAliasModel = (projectRoot: string, sourceRoot: string): SourceAliasModel => ({
+  schemaVersion: 1,
+  baseUrl: sourceRoot,
+  configFiles: [path.join(projectRoot, 'tsconfig.json')],
+  paths: [
+    {
+      id: 'alias-app',
+      aliasPattern: '@app/*',
+      targetPatterns: ['app/*'],
+      resolvedTargets: [path.join(sourceRoot, 'app')],
+      sourceConfigPath: path.join(projectRoot, 'tsconfig.json'),
+      status: 'supported',
+    },
+  ],
+  workspaceProjects: [
+    {
+      id: 'project-spa-bridge-demo',
+      projectName: 'spa-bridge-demo',
+      projectRoot,
+      sourceRoot,
+      projectType: 'application',
+      status: 'supported',
+    },
+  ],
+  assetRoots: [path.join(sourceRoot, 'assets')],
+  diagnostics: [],
+  summary: {
+    totalAliases: 2,
+    supportedAliases: 2,
+    unresolvedAliases: 0,
+    unsafeAliases: 0,
+    externalAliases: 0,
+  },
 });
 
 const createComponentSummary = (
@@ -385,6 +421,7 @@ export const createBenchmarkAngularAnalysisFixture = (options: BenchmarkFixtureO
   return {
     status: 'succeeded',
     workspaceProfile,
+    aliasModel: createAliasModel(projectRoot, sourceRoot),
     inventory: {
       schemaVersion: 1,
       workspaceProfileId: `workspace-${workspaceProfile.projectName}`,
@@ -412,6 +449,8 @@ export const createBenchmarkAngularAnalysisFixture = (options: BenchmarkFixtureO
       totalSymbols: typeScriptSummaries.reduce((total, summary) => total + summary.symbols.length, 0),
       totalRoutes: routeSummaries.length,
       totalDiagnostics: diagnostics.length,
+      totalAliases: 2,
+      unresolvedAliases: 0,
     },
   };
 };
