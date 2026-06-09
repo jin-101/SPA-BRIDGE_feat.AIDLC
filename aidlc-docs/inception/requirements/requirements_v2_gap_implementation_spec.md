@@ -8,8 +8,9 @@ The goal is to move SPA-Bridge closer to React runtime parity: a generated React
 
 ## Scope
 
-This document covers seven high-priority implementation areas:
+This document covers eight high-priority implementation areas:
 
+- Dependency compatibility filtering and React replacement mapping.
 - RxJS observable and subscription conversion.
 - NgRx action, reducer, selector, and effect conversion.
 - Angular reactive forms conversion.
@@ -29,6 +30,65 @@ The V2 gap implementation is acceptable only when:
 - Sensitive source snippets are not sent to external providers unless masking and explicit provider policy allow it.
 - Workspace-level `npm run build` and `npm test` continue to pass.
 - At least one example-based regression test and one property-based invariant are added for each major converter where practical.
+
+## V2-GAP-FR-000 Dependency Compatibility Filter And Replacement
+
+### Requirement
+
+SPA-Bridge must prevent Angular-only runtime packages from being copied into generated React projects when those packages cannot install or run in a React/Vite target.
+
+The converter must classify source dependencies before writing target `package.json`:
+
+- React-compatible dependencies that can be carried over unchanged.
+- Framework-neutral dependencies that can be carried over unchanged.
+- Angular-only dependencies that must be removed.
+- Angular wrapper dependencies that should be replaced with framework-neutral or React-specific packages.
+- Unknown dependencies that require manual review.
+
+### Source Patterns
+
+The converter must detect:
+
+- Angular namespace packages such as `@angular/*`.
+- NgRx packages such as `@ngrx/*`.
+- Angular CLI/build packages such as `@angular-devkit/*`, `@schematics/*`, `zone.js`, and Angular-only build tooling.
+- Angular wrapper packages such as `ngx-*`, `angularx-*`, and known Angular-specific wrappers.
+- Custom allowlisted migration mappings.
+
+### Target Behavior
+
+The converter should generate:
+
+- A target dependency manifest that excludes Angular-only packages.
+- Replacement dependencies for known React-compatible equivalents.
+- A dependency compatibility report showing carried, replaced, removed, and review-required packages.
+- Manual-review diagnostics for unknown package usage or code-level API differences.
+
+### Custom Package Mapping
+
+The custom package mapping below is supported as a package-level replacement:
+
+| Angular Source Package | React Target Package | Version Policy | Usage-Site Policy |
+|---|---|---|---|
+| `@wds/wc-angular-lib` | `@wds/wc-react-lib` | Preserve source version when identical compatible version exists, e.g. `0.1.43` -> `0.1.43` | Do not assume import/API parity. Generate usage-site review diagnostics unless import paths and component props/events can be verified by conversion rules. |
+
+This replacement must not blindly rewrite all usage sites as equivalent. The converter may replace the package dependency, but code references must be checked separately because React component exports, prop names, event names, wrapper initialization, styling, and peer dependency expectations may differ.
+
+### Acceptance Criteria
+
+- Generated React `package.json` does not include known Angular-only packages.
+- `@wds/wc-angular-lib@0.1.43` is replaced by `@wds/wc-react-lib@0.1.43` at dependency-manifest level.
+- Any source import or template usage that depends on `@wds/wc-angular-lib` is traced and either rewritten by an explicit rule or emitted as a manual-review item.
+- Dependency compatibility report lists package-level replacement rationale and usage-site review status.
+- `npm install` failures caused by Angular-only packages are reduced by default filtering and replacement.
+
+### Implementation Artifacts
+
+- Dependency compatibility classifier.
+- Replacement rule registry.
+- Target dependency manifest integration.
+- Dependency compatibility report.
+- Tests for Angular-only filtering, known replacements, custom WDS mapping, and unknown package diagnostics.
 
 ## V2-GAP-FR-001 RxJS Conversion
 
@@ -366,4 +426,3 @@ The V2 gap implementation is complete when:
 - A representative Angular sample using routes, forms, RxJS, NgRx, styles, assets, aliases, custom components, and animations produces a React project that installs and starts.
 - Manual review output clearly lists only genuinely unresolved or unsafe mappings.
 - Build and test verification passes for the SPA-Bridge workspace.
-

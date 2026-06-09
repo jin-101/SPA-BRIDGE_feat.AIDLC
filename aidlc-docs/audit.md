@@ -2932,3 +2932,35 @@ Check that --workspace is a real directory and --input points to an Angular proj
 **Context**: V2 gap brownfield construction - reactive forms conversion implementation completion
 
 ---
+
+## V2-GAP-UOW-04 Functional Design Start
+**Timestamp**: 2026-06-09T05:16:05Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Approved V2-GAP-UOW-03 code generation review and started V2-GAP-UOW-04 RxJS Conversion functional design planning."
+**Context**: V2 gap brownfield construction - transition from reactive forms conversion to RxJS conversion
+
+---
+
+## V2 Dependency Handling Question
+**Timestamp**: 2026-06-09T05:19:57Z
+**User Input**: "근데 답변하기 전에 하나 물어보고 싶은 것이 있어. 현재 상태로 conversion을 한번 해봤는데, npm install에서 오류가 나서 봤더니 앵귤러 환경에서만 작동하는 전용 패키지들 때문에 충돌이 있어서였어. 현재는 기존 앵귤러에 설치된 패키지를 그대로 모두 설치되는 식인거야? 아니면 react에 맞게 변환되어서 설치되는 거야?"
+**AI Response**: "Inspected current target dependency manifest generation and explained that source dependencies are partially filtered, not fully React-converted. Angular core packages are blocked, but Angular-specific third-party packages may still be carried and can cause npm install conflicts."
+**Context**: V2 gap brownfield construction - dependency policy clarification before V2-GAP-UOW-04 answers
+
+---
+
+## V2 Dependency Compatibility Workflow Insertion
+**Timestamp**: 2026-06-09T05:28:52Z
+**User Input**: "지금 바로 V2-GAP workflow에 “Dependency Compatibility Filter/Replacement”를 보강 항목으로 끼워 넣는데, 한가지 \"@wds/wc-angular-lib\" : \"0.1.43\" 이 패키지는 자체 개발된 패키지라서, 리엑트 전용은 \"@wds/wc-react-lib\": \"0.1.43\" 인데 그대로 바꿔도 될까? 사용하는 부분이 조금 다를 수도 있지 않을까해서 걱정되네."
+**AI Response**: "Inserted a V2 dependency compatibility and replacement unit into the brownfield workflow before RxJS conversion, and documented that `@wds/wc-angular-lib` may be package-level replaced by `@wds/wc-react-lib` only with usage-site compatibility checks and manual-review diagnostics."
+**Context**: V2 gap brownfield construction - dependency compatibility workflow insertion
+
+---
+
+## V2-GAP-UOW-00 Functional Design Answers
+**Timestamp**: 2026-06-09T06:06:46Z
+**User Input**: "답변 완료 했어."
+**AI Response**: "Reviewed V2-GAP-UOW-00 functional design answers. User selected deterministic dependency replacement as the foundation with shared Ollama-assisted fallback/rationale generation, interactive CLI safeguards, strict wrapper exclusion, WDS package replacement with usage-site review, and deterministic/PBT guardrails. No follow-up clarification was required."
+**Context**: V2 gap brownfield construction - dependency compatibility functional design answer analysis
+
+---

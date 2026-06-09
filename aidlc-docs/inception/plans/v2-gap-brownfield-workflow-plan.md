@@ -35,6 +35,22 @@ Use a focused brownfield construction loop:
 
 ## V2 Gap Units of Work
 
+### V2-GAP-UOW-00 Dependency Compatibility Filter and Replacement
+
+Requirement coverage:
+- V2-GAP-FR-000
+
+Primary packages:
+- `packages/target-react`
+- `packages/cli`
+- `packages/core-reporting`
+
+Goal:
+- Prevent Angular-only packages from being copied into generated React `package.json`, replace known Angular wrapper packages with React/framework-neutral equivalents, and emit compatibility reports/manual-review diagnostics for usage-site API differences.
+
+Special package mapping:
+- `@wds/wc-angular-lib@0.1.43` -> `@wds/wc-react-lib@0.1.43` as a dependency-manifest replacement, with usage-site review required unless explicit import/API conversion rules verify compatibility.
+
 ### V2-GAP-UOW-01 Dependency Alias and Path Mapping
 
 Requirement coverage:
@@ -134,10 +150,11 @@ Goal:
 1. V2-GAP-UOW-01 Dependency Alias and Path Mapping
 2. V2-GAP-UOW-02 Advanced Template Conversion
 3. V2-GAP-UOW-03 Reactive Forms Conversion
-4. V2-GAP-UOW-04 RxJS Conversion
-5. V2-GAP-UOW-05 NgRx Conversion
-6. V2-GAP-UOW-06 Animation Conversion
-7. V2-GAP-UOW-07 Generated React Self-Correction Loop
+4. V2-GAP-UOW-00 Dependency Compatibility Filter and Replacement
+5. V2-GAP-UOW-04 RxJS Conversion
+6. V2-GAP-UOW-05 NgRx Conversion
+7. V2-GAP-UOW-06 Animation Conversion
+8. V2-GAP-UOW-07 Generated React Self-Correction Loop
 
 ## Verification Strategy
 
@@ -174,7 +191,21 @@ Each V2 gap unit should include:
 - [x] Create V2-GAP-UOW-03 code generation plan.
 - [x] Implement V2-GAP-UOW-03.
 - [x] Verify V2-GAP-UOW-03 build/test.
+- [x] Receive explicit approval to start V2-GAP-UOW-04.
+- [x] Create V2-GAP-UOW-04 functional design plan.
+- [x] Insert V2-GAP-UOW-00 dependency compatibility filter and replacement before V2-GAP-UOW-04 execution.
+- [x] Create V2-GAP-UOW-00 functional design plan.
+- [x] Collect V2-GAP-UOW-00 functional design answers.
+- [x] Generate V2-GAP-UOW-00 functional design artifacts.
+- [ ] Create V2-GAP-UOW-00 code generation plan.
+- [ ] Implement V2-GAP-UOW-00.
+- [ ] Verify V2-GAP-UOW-00 build/test.
+- [ ] Collect V2-GAP-UOW-04 functional design answers.
+- [ ] Generate V2-GAP-UOW-04 functional design artifacts.
+- [ ] Create V2-GAP-UOW-04 code generation plan.
+- [ ] Implement V2-GAP-UOW-04.
+- [ ] Verify V2-GAP-UOW-04 build/test.
 
 ## Approval Gate
 
-Status: V2-GAP-UOW-03 code generation executed and awaiting review approval.
+Status: V2-GAP-UOW-00 functional design artifacts generated and awaiting approval.
