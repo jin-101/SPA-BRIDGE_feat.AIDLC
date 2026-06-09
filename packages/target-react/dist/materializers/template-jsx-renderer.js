@@ -24,6 +24,7 @@ const toReactEventName = (name) => {
     };
     return eventMap[name.toLowerCase()] ?? `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 };
+const toControlIdentifier = (name, context) => `${context.toIdentifier(name.split('.').at(-1) ?? name, 'control')}Control`;
 const parseNgFor = (expression) => {
     const itemMatch = expression.match(/let\s+([A-Za-z_$][\w$]*)\s+of\s+([^;]+)/);
     if (!itemMatch?.[1] || !itemMatch[2]) {
@@ -117,12 +118,33 @@ export class TemplateJsxRenderer {
         jsx = jsx
             .replace(/\s+class=/g, ' className=')
             .replace(/\s+for=/g, ' htmlFor=')
+            .replace(/\s+\[formGroup\]="([^"]+)"/g, '')
+            .replace(/\s+formGroupName=["']([^"']+)["']/g, '')
+            .replace(/\s+formArrayName=["']([^"']+)["']/g, (_match, name) => {
+            diagnostics.push(`form-array-review:${name}`);
+            return ` data-form-array="${name}"`;
+        })
+            .replace(/\s+\(ngSubmit\)="([^"]+)"/g, (_match, expression) => {
+            const transformed = context.transformExpression(expression.replace(/\$event/g, 'event'));
+            return ` onSubmit={(event) => { event.preventDefault(); ${stripTrailingSemicolon(transformed)}; }}`;
+        })
+            .replace(/\s+formControlName=["']([^"']+)["']/g, (_match, name) => ` {...${toControlIdentifier(name, context)}.inputProps}`)
             .replace(/\s+\[ngClass\]="([^"]+)"/g, (_match, expression) => ` ${transformNgClass(expression, context, helpers)}`)
             .replace(/\s+\[ngStyle\]="([^"]+)"/g, (_match, expression) => ` ${transformNgStyle(expression, context, helpers)}`)
             .replace(/\s+\[\((ngModel)\)\]="([^"]+)"/g, (_match, _name, model) => {
             const identifier = context.toIdentifier(model.replace(/^this\./, ''), 'value');
             diagnostics.push('ngmodel-form-handoff');
-            return ` value={${identifier} ?? ''} onChange={(event) => ${context.toStateSetter(identifier)}((event.target as HTMLInputElement).value)}`;
+            return ` {...${identifier}Control.inputProps}`;
+        })
+            .replace(/\s+\[ngModel\]="([^"]+)"/g, (_match, model) => {
+            const identifier = context.toIdentifier(model.replace(/^this\./, ''), 'value');
+            diagnostics.push('ngmodel-form-handoff');
+            return ` {...${identifier}Control.inputProps}`;
+        })
+            .replace(/\s+\(ngModelChange\)="([^"]+)"/g, (_match, expression) => {
+            const transformed = context.transformExpression(expression.replace(/\$event/g, 'event.target.value'));
+            diagnostics.push('ngmodel-change-handoff');
+            return ` onChange={(event) => ${stripTrailingSemicolon(transformed)}}`;
         })
             .replace(/\s+\[([A-Za-z0-9_.:-]+)\]="([^"]+)"/g, (_match, property, expression) => {
             if (property.startsWith('class.')) {

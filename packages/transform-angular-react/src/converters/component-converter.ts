@@ -13,7 +13,7 @@ export class ComponentConverter {
   ) {}
 
   convert(context: TransformationContext): RuleContribution {
-    const componentDrafts = context.components.map((component) => this.convertComponent(component, context.templates));
+    const componentDrafts = context.components.map((component) => this.convertComponent(component, context.templates, context.forms));
     const diagnostics: Diagnostic[] = [];
     const reviewItems = [];
     const traces: RuleContribution['traces'] = [];
@@ -62,8 +62,9 @@ export class ComponentConverter {
     return { componentDrafts, diagnostics, reviewItems, traces, mappingRequests };
   }
 
-  private convertComponent(component: NormalizedComponent, templates: NormalizedTemplate[]): ReactComponentDraft {
+  private convertComponent(component: NormalizedComponent, templates: NormalizedTemplate[], forms: TransformationContext['forms']): ReactComponentDraft {
     const matchingTemplates = templates.filter((template) => template.ownerComponentPath === component.sourceRef?.path);
+    const matchingForms = forms.filter((form) => form.ownerComponentPath === component.sourceRef?.path);
     const templateDraftId = matchingTemplates[0]?.id;
     const primaryTemplate = matchingTemplates[0];
     const hooks: ReactHookDraft[] = component.lifecycleHooks.map((hookName, index) => ({
@@ -98,6 +99,7 @@ export class ComponentConverter {
       templateRawText: primaryTemplate?.rawText,
       templateIr: primaryTemplate?.templateIr,
       templateExternalReferences: [...new Set(matchingTemplates.flatMap((template) => template.externalReferences))],
+      forms: matchingForms,
       serviceRefs: [...component.serviceRefs],
       styleUrls: [...component.styleUrls],
       sourceRelativePath: component.sourceRef?.path,

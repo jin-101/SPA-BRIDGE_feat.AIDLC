@@ -8,6 +8,7 @@ export type TemplateLogicContext = {
     transformTemplateExpression: (expression: string) => string;
     toStateSetter: (name: string) => string;
     toIdentifier: (name: string, fallback: string) => string;
+    formControlNames?: Set<string>;
 };
 export type ComponentRegistryEntry = {
     name: string;

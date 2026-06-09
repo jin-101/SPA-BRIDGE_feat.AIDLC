@@ -1,5 +1,44 @@
 import { createDiagnostic, ok } from '@spa-bridge/core-model';
 import { StableIdFactory } from '../model/stable-id-factory.js';
+const normalizeValidators = (validators) => validators.map((validator) => ({
+    id: validator.id,
+    kind: validator.kind,
+    arguments: [...validator.arguments],
+    reviewRequired: validator.reviewRequired,
+}));
+const normalizeFormControl = (control) => ({
+    id: control.id,
+    name: control.name,
+    path: control.path,
+    initialValue: control.initialValue,
+    valueType: control.valueType,
+    validators: normalizeValidators(control.validators),
+    asyncValidators: normalizeValidators(control.asyncValidators),
+});
+const normalizeFormGroup = (group) => ({
+    id: group.id,
+    name: group.name,
+    path: group.path,
+    controls: group.controls.map(normalizeFormControl).sort((left, right) => left.path.localeCompare(right.path)),
+    groups: group.groups.map(normalizeFormGroup).sort((left, right) => left.path.localeCompare(right.path)),
+    arrays: group.arrays.map(normalizeFormArray).sort((left, right) => left.path.localeCompare(right.path)),
+    validators: normalizeValidators(group.validators),
+});
+const normalizeFormArray = (array) => ({
+    id: array.id,
+    name: array.name,
+    path: array.path,
+    itemKind: array.itemKind,
+    initialItems: array.initialItems.map((item) => {
+        if ('controls' in item)
+            return normalizeFormGroup(item);
+        if ('initialItems' in item)
+            return normalizeFormArray(item);
+        return normalizeFormControl(item);
+    }),
+    complexity: array.complexity,
+    validators: normalizeValidators(array.validators),
+});
 const isComponentSymbol = (symbol) => symbol.decorators.some((decorator) => decorator.kind === 'Component');
 const isServiceSymbol = (symbol) => symbol.decorators.some((decorator) => decorator.kind === 'Injectable') || /service/i.test(symbol.name);
 const isStateSymbol = (symbol) => /store|selector|effect|reducer|state/i.test(symbol.name);
@@ -48,6 +87,19 @@ export class ContextNormalizer {
         const states = [];
         const routes = [];
         const templates = [];
+        const forms = analysis.formModels.map((form) => ({
+            id: form.id,
+            ownerComponentId: form.ownerComponentId,
+            ownerComponentPath: form.ownerComponentPath,
+            declarationKind: form.declarationKind,
+            rootControl: 'controls' in form.rootControl
+                ? normalizeFormGroup(form.rootControl)
+                : 'initialItems' in form.rootControl
+                    ? normalizeFormArray(form.rootControl)
+                    : normalizeFormControl(form.rootControl),
+            templateBindings: form.templateBindings.map((binding) => ({ ...binding })).sort((left, right) => left.id.localeCompare(right.id)),
+            submitIntents: form.submitIntents.map((intent) => ({ ...intent })).sort((left, right) => left.id.localeCompare(right.id)),
+        })).sort((left, right) => left.id.localeCompare(right.id));
         for (const summary of analysis.typeScriptSummaries) {
             const relatedFiles = analysis.inventory.files.filter((file) => file.path === summary.sourcePath || file.relativePath.endsWith(summary.sourcePath.split('/').pop() ?? ''));
             const sourceRef = relatedFiles[0] ? { kind: 'source', path: relatedFiles[0].path } : { kind: 'source', path: summary.sourcePath };
@@ -133,6 +185,7 @@ export class ContextNormalizer {
             diagnostics,
             components,
             templates,
+            forms,
             services,
             routes,
             states,

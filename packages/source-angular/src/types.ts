@@ -217,6 +217,92 @@ export type TemplateParseSummary = {
   parserMode: 'angular-compiler' | 'heuristic';
 };
 
+export type AngularValidatorKind =
+  | 'required'
+  | 'minLength'
+  | 'maxLength'
+  | 'pattern'
+  | 'email'
+  | 'min'
+  | 'max'
+  | 'custom'
+  | 'async'
+  | 'unknown';
+
+export type AngularValidatorModel = {
+  id: string;
+  kind: AngularValidatorKind;
+  arguments: string[];
+  sourceRef: SourceRef;
+  reviewRequired: boolean;
+};
+
+export type AngularFormControlModel = {
+  id: string;
+  name: string;
+  path: string;
+  initialValue?: string;
+  valueType: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'unknown';
+  validators: AngularValidatorModel[];
+  asyncValidators: AngularValidatorModel[];
+  sourceExpression?: string;
+};
+
+export type AngularFormArrayModel = {
+  id: string;
+  name: string;
+  path: string;
+  itemKind: 'control' | 'group' | 'array' | 'unknown';
+  initialItems: Array<AngularFormControlModel | AngularFormGroupModel | AngularFormArrayModel>;
+  mutatorRefs: string[];
+  complexity: 'simple' | 'review-required';
+  validators: AngularValidatorModel[];
+};
+
+export type AngularFormGroupModel = {
+  id: string;
+  name: string;
+  path: string;
+  controls: AngularFormControlModel[];
+  groups: AngularFormGroupModel[];
+  arrays: AngularFormArrayModel[];
+  validators: AngularValidatorModel[];
+};
+
+export type FormTemplateBindingIntent = {
+  id: string;
+  kind: 'formGroup' | 'formControlName' | 'formArrayName' | 'ngModel' | 'ngModelChange' | 'unknown';
+  name?: string;
+  expression?: string;
+  sourcePath: string;
+};
+
+export type FormSubmitIntent = {
+  id: string;
+  expression: string;
+  sourcePath: string;
+};
+
+export type AngularFormDiagnostic = {
+  code: string;
+  severity: Diagnostic['severity'];
+  message: string;
+  sourceRef: SourceRef;
+};
+
+export type AngularFormModel = {
+  schemaVersion: 1;
+  id: string;
+  ownerComponentId: string;
+  ownerComponentPath: string;
+  sourceRef: SourceRef;
+  declarationKind: 'form-group' | 'form-control' | 'form-array' | 'form-builder' | 'template-driven';
+  rootControl: AngularFormGroupModel | AngularFormControlModel | AngularFormArrayModel;
+  templateBindings: FormTemplateBindingIntent[];
+  submitIntents: FormSubmitIntent[];
+  diagnostics: AngularFormDiagnostic[];
+};
+
 export type RouteSummary = {
   id: string;
   sourcePath: string;
@@ -279,6 +365,7 @@ export type AngularAnalysisResult = {
   inventory: SourceInventory;
   typeScriptSummaries: TypeScriptParseSummary[];
   templateSummaries: TemplateParseSummary[];
+  formModels: AngularFormModel[];
   routeSummaries: RouteSummary[];
   graph: AngularDependencyGraph;
   diagnostics: Diagnostic[];
@@ -291,6 +378,9 @@ export type AngularAnalysisResult = {
     totalDiagnostics: number;
     totalAliases: number;
     unresolvedAliases: number;
+    totalForms: number;
+    totalFormControls: number;
+    totalFormDiagnostics: number;
   };
 };
 

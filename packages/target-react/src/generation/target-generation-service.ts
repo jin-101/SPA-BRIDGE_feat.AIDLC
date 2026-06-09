@@ -18,6 +18,7 @@ import { selectTargetStrategy } from '../strategy/target-strategy-selection-poli
 import { createReactDefaultStrategy, createViteReactTypeScriptStrategy } from '../strategies/vite-react-typescript.js';
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -54,6 +55,7 @@ export class TargetGenerationService {
     private readonly normalizer = new ReactDraftNormalizer(),
     private readonly dependencyBuilder = new DependencyManifestBuilder(),
     private readonly componentMaterializer = new ComponentMaterializer(),
+    private readonly formRuntimeMaterializer = new FormRuntimeMaterializer(),
     private readonly serviceMaterializer = new ServiceMaterializer(),
     private readonly routeAdapter = new RoutingOutputAdapter(),
     private readonly stateAdapters = new StateOutputAdapters(),
@@ -85,6 +87,7 @@ export class TargetGenerationService {
 
     const generatedFiles: GeneratedFileSpec[] = [
       ...scaffoldFiles,
+      ...this.formRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.forms.length > 0)),
       ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
       ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
       ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),

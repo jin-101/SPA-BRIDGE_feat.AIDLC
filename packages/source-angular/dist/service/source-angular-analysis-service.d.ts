@@ -4,6 +4,7 @@ export declare class SourceAngularAnalysisService {
     private readonly pathGuard;
     private readonly workspaceProfiler;
     private readonly aliasAnalyzer;
+    private readonly formExtractor;
     private readonly inventoryBuilder;
     private readonly tsParser;
     private readonly templateParser;
@@ -12,6 +13,7 @@ export declare class SourceAngularAnalysisService {
     private readonly diagnosticBuilder;
     private readonly artifactMapper;
     analyze(request: SourceAngularAnalysisRequest): Promise<Result<AngularAnalysisResult, AnalysisError>>;
+    private countControls;
     private findOwningComponent;
 }
 //# sourceMappingURL=source-angular-analysis-service.d.ts.map

@@ -84,6 +84,7 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         templateDraftId: 'template-1',
         templateRawText: '<article class="panel"><button (click)="selectPassenger(title)">{{ title }}</button><img src="assets/logo.png"></article>',
         templateExternalReferences: ['assets/logo.png'],
+        forms: [],
         serviceRefs: ['service-1'],
         styleUrls: ['./main-panel.less'],
         propertyInitializers: [
@@ -245,6 +246,7 @@ describe('Support utilities', () => {
       transformTemplateExpression: (expression: string) => expression.replace(/\bthis\./g, ''),
       toStateSetter: (name: string) => `set${name.charAt(0).toUpperCase()}${name.slice(1)}`,
       toIdentifier: (name: string, fallback: string) => name.replace(/[^A-Za-z0-9_$]/g, '') || fallback,
+      formControlNames: new Set<string>(),
     };
     const result = renderer.render(
       [
@@ -269,6 +271,59 @@ describe('Support utilities', () => {
     expect(content).toContain('formatUppercasePipe(item.name)');
     expect(result.helpers).toContain('formatUppercasePipe');
     expect(result.usedSelectors).toEqual(['ke-konbini-pres']);
+  });
+
+  it('generates local form helpers and controlled form bindings', () => {
+    const request = createFixtureRequest();
+    request.draftSet.components[0] = {
+      ...request.draftSet.components[0]!,
+      templateRawText: '<form [formGroup]="profileForm" (ngSubmit)="submit()"><input formControlName="email" /></form>',
+      forms: [
+        {
+          id: 'form-1',
+          ownerComponentId: 'component-1',
+          ownerComponentPath: '/workspace/spa-bridge/src/app/main-panel.ts',
+          declarationKind: 'form-builder',
+          rootControl: {
+            id: 'form-group-1',
+            name: 'profileForm',
+            path: 'profileForm',
+            controls: [
+              {
+                id: 'control-email',
+                name: 'email',
+                path: 'profileForm.email',
+                initialValue: "''",
+                valueType: 'string',
+                validators: [{ id: 'validator-required', kind: 'required', arguments: [], reviewRequired: false }],
+                asyncValidators: [],
+              },
+            ],
+            groups: [],
+            arrays: [],
+            validators: [],
+          },
+          templateBindings: [],
+          submitIntents: [{ id: 'submit-1', expression: 'submit()', sourcePath: '/workspace/spa-bridge/src/app/main-panel.html' }],
+        },
+      ],
+      methods: [
+        {
+          name: 'submit',
+          parameters: [],
+          bodyText: 'this.title = "submitted";',
+          isAsync: false,
+        },
+      ],
+    };
+
+    const result = expectOk(generateReactTarget(request));
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/utils/forms/useFormControl.ts'))).toBe(true);
+    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
+    expect(componentFile?.content).toContain('useFormControl');
+    expect(componentFile?.content).toContain('formValidators.required()');
+    expect(componentFile?.content).toContain('{...emailControl.inputProps}');
+    expect(componentFile?.content).toContain('event.preventDefault(); submit();');
   });
 
   it('selects the default strategy deterministically', () => {

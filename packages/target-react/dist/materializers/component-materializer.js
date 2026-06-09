@@ -27,7 +27,7 @@ const toReactEventName = (name) => {
     };
     return eventMap[name.toLowerCase()] ?? `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 };
-const needsReactImport = (component) => component.propertyInitializers.length > 0 || component.hooks.length > 0;
+const needsReactImport = (component) => component.propertyInitializers.length > 0 || component.hooks.length > 0 || component.forms.length > 0;
 const normalizeInitializer = (initializer) => {
     if (!initializer || initializer.trim().length === 0) {
         return 'undefined';
@@ -154,6 +154,85 @@ const toRelativeImport = (fromPath, toPath) => {
     return `${prefix}${toParts.join('/')}`;
 };
 const propertyDecorators = (property) => Array.isArray(property.decorators) ? property.decorators : [];
+const isFormProperty = (component, propertyName) => component.forms.some((form) => form.rootControl.name === propertyName);
+const collectControls = (form) => {
+    const visit = (node) => {
+        if ('controls' in node) {
+            return [
+                ...node.controls,
+                ...node.groups.flatMap(visit),
+                ...node.arrays.flatMap(visit),
+            ];
+        }
+        if ('initialItems' in node) {
+            return node.initialItems.flatMap(visit);
+        }
+        return [node];
+    };
+    return visit(form.rootControl);
+};
+const validatorFactory = (validator) => {
+    const firstArg = validator.arguments[0];
+    switch (validator.kind) {
+        case 'required':
+            return 'formValidators.required()';
+        case 'minLength':
+            return `formValidators.minLength(${firstArg ?? 0})`;
+        case 'maxLength':
+            return `formValidators.maxLength(${firstArg ?? 0})`;
+        case 'pattern':
+            return `formValidators.pattern(${firstArg ?? "''"})`;
+        case 'email':
+            return 'formValidators.email()';
+        case 'min':
+            return `formValidators.min(${firstArg ?? 0})`;
+        case 'max':
+            return `formValidators.max(${firstArg ?? 0})`;
+        default:
+            return undefined;
+    }
+};
+const renderInitialValue = (control) => {
+    const value = control.initialValue?.trim();
+    if (!value || /^this\./.test(value) || /new\s+/.test(value)) {
+        return "''";
+    }
+    return value;
+};
+const renderFormLines = (component) => {
+    if (component.forms.length === 0) {
+        return [];
+    }
+    const lines = [];
+    const emittedControls = new Set();
+    for (const form of component.forms) {
+        for (const control of collectControls(form)) {
+            const controlIdentifier = `${toIdentifier(control.name, 'control')}Control`;
+            if (emittedControls.has(controlIdentifier))
+                continue;
+            emittedControls.add(controlIdentifier);
+            const validatorCalls = control.validators.map(validatorFactory).filter((value) => Boolean(value));
+            const reviewValidators = [...control.validators, ...control.asyncValidators].filter((validator) => validator.reviewRequired);
+            if (reviewValidators.length > 0) {
+                lines.push(`  /* AIDLC_MANUAL_REVIEW_FORM: validators for '${control.path}' need manual parity review. */`);
+            }
+            lines.push(`  const ${controlIdentifier} = useFormControl(${renderInitialValue(control)}, [${validatorCalls.join(', ')}]);`);
+        }
+        const rootName = toIdentifier(form.rootControl.name, 'form');
+        if ('controls' in form.rootControl) {
+            const controlEntries = collectControls(form)
+                .filter((control) => !control.path.includes('['))
+                .map((control) => `    ${toIdentifier(control.name, 'control')}: ${toIdentifier(control.name, 'control')}Control,`);
+            lines.push(`  const ${rootName} = useFormGroup({`);
+            lines.push(...controlEntries);
+            lines.push('  });');
+        }
+        if ('initialItems' in form.rootControl) {
+            lines.push(`  const ${rootName} = useFormArray([]);`);
+        }
+    }
+    return lines.length > 0 ? [...lines, ''] : [];
+};
 export class ComponentMaterializer {
     templateRenderer;
     constructor(templateRenderer = new TemplateJsxRenderer()) {
@@ -175,8 +254,9 @@ export class ComponentMaterializer {
         });
         const imports = [
             ...(needsReactImport(component) ? ["import { useEffect, useState } from 'react';"] : []),
+            ...(component.forms.length > 0 ? [`import { useFormArray, useFormControl, useFormGroup, validators as formValidators } from '${toRelativeImport(componentPath, 'src/utils/forms/index')}';`] : []),
             ...styleImports,
-            ...(needsReactImport(component) || styleImports.length > 0 ? [''] : []),
+            ...(needsReactImport(component) || styleImports.length > 0 || component.forms.length > 0 ? [''] : []),
         ];
         const logicContext = {
             stateNames: new Set(component.propertyInitializers.filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input')).map((property) => property.name)),
@@ -185,7 +265,7 @@ export class ComponentMaterializer {
             propNames: new Set(component.props),
         };
         const stateLines = component.propertyInitializers
-            .filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input'))
+            .filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input') && !isFormProperty(component, property.name))
             .map((property) => {
             const id = toIdentifier(property.name, 'value');
             return `  const [${id}, ${toStateSetter(id)}] = useState(${normalizeInitializer(property.initializer)});`;
@@ -238,6 +318,7 @@ export class ComponentMaterializer {
             transformTemplateExpression: (expression) => transformTemplateExpression(expression, logicContext),
             toStateSetter,
             toIdentifier,
+            formControlNames: new Set(component.forms.flatMap((form) => collectControls(form).map((control) => control.name))),
         };
         const template = this.templateRenderer.render(component.templateRawText, component.templateIr, templateLogicContext, context.selectorRegistry);
         const customComponentImports = template.usedSelectors
@@ -266,6 +347,7 @@ export class ComponentMaterializer {
             ...readonlyLines,
             ...eventEmitterLines,
             ...(stateLines.length > 0 || readonlyLines.length > 0 || eventEmitterLines.length > 0 ? [''] : []),
+            ...renderFormLines(component),
             ...lifecycleLines,
             ...(lifecycleLines.length > 0 ? [''] : []),
             ...methodLines,

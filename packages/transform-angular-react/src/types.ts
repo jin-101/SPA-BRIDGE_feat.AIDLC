@@ -85,6 +85,67 @@ export type NormalizedTemplate = {
   diagnostics: Diagnostic[];
 };
 
+export type NormalizedValidator = {
+  id: string;
+  kind: 'required' | 'minLength' | 'maxLength' | 'pattern' | 'email' | 'min' | 'max' | 'custom' | 'async' | 'unknown';
+  arguments: string[];
+  reviewRequired: boolean;
+};
+
+export type NormalizedFormControl = {
+  id: string;
+  name: string;
+  path: string;
+  initialValue?: string;
+  valueType: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'unknown';
+  validators: NormalizedValidator[];
+  asyncValidators: NormalizedValidator[];
+};
+
+export type NormalizedFormArray = {
+  id: string;
+  name: string;
+  path: string;
+  itemKind: 'control' | 'group' | 'array' | 'unknown';
+  initialItems: Array<NormalizedFormControl | NormalizedFormGroup | NormalizedFormArray>;
+  complexity: 'simple' | 'review-required';
+  validators: NormalizedValidator[];
+};
+
+export type NormalizedFormGroup = {
+  id: string;
+  name: string;
+  path: string;
+  controls: NormalizedFormControl[];
+  groups: NormalizedFormGroup[];
+  arrays: NormalizedFormArray[];
+  validators: NormalizedValidator[];
+};
+
+export type NormalizedFormBindingIntent = {
+  id: string;
+  kind: 'formGroup' | 'formControlName' | 'formArrayName' | 'ngModel' | 'ngModelChange' | 'unknown';
+  name?: string;
+  expression?: string;
+  sourcePath: string;
+};
+
+export type NormalizedFormSubmitIntent = {
+  id: string;
+  expression: string;
+  sourcePath: string;
+};
+
+export type NormalizedFormModel = {
+  id: string;
+  ownerComponentId: string;
+  ownerComponentPath: string;
+  declarationKind: 'form-group' | 'form-control' | 'form-array' | 'form-builder' | 'template-driven';
+  rootControl: NormalizedFormGroup | NormalizedFormControl | NormalizedFormArray;
+  templateBindings: NormalizedFormBindingIntent[];
+  submitIntents: NormalizedFormSubmitIntent[];
+};
+
 export type NormalizedService = {
   id: string;
   name: string;
@@ -132,6 +193,7 @@ export type TransformationContext = {
   diagnostics: Diagnostic[];
   components: NormalizedComponent[];
   templates: NormalizedTemplate[];
+  forms: NormalizedFormModel[];
   services: NormalizedService[];
   routes: NormalizedRoute[];
   states: NormalizedState[];
@@ -161,6 +223,7 @@ export type ReactComponentDraft = {
   templateRawText?: string;
   templateIr?: TemplateIr;
   templateExternalReferences: string[];
+  forms: NormalizedFormModel[];
   serviceRefs: string[];
   styleUrls: string[];
   sourceRelativePath?: string;

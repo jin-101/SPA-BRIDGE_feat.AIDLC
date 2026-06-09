@@ -10,6 +10,7 @@ import { createDiagnostic } from '@spa-bridge/core-model';
 import { PathGuard } from '../src/path/path-guard.js';
 import { SourceInventoryBuilder, classifyFile } from '../src/scanner/source-inventory-builder.js';
 import { TypeScriptParserAdapter } from '../src/parser/typescript-parser-adapter.js';
+import { FormModelExtractor } from '../src/forms/form-model-extractor.js';
 import { AngularTemplateParserAdapter } from '../src/templates/angular-template-parser-adapter.js';
 import { GraphBuilder } from '../src/graph/graph-builder.js';
 import { SafeDiagnosticBuilder } from '../src/diagnostics/safe-diagnostic-builder.js';
@@ -182,6 +183,46 @@ describe('Parser adapters', () => {
       expect(parsed.value.templateIr?.rootNodes.some((node) => node.directives.some((directive) => directive.kind === 'if'))).toBe(true);
     }
   });
+
+  test('extracts reactive form models without executing validators', async () => {
+    const tsParser = new TypeScriptParserAdapter();
+    const templateParser = new AngularTemplateParserAdapter();
+    const extractor = new FormModelExtractor();
+    const parsedTs = tsParser.parse(
+      '/tmp/profile.component.ts',
+      `
+        import { Component } from '@angular/core';
+        import { FormBuilder, Validators } from '@angular/forms';
+
+        @Component({ selector: 'app-profile', templateUrl: './profile.component.html' })
+        export class ProfileComponent {
+          profileForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
+            passengers: this.fb.array([])
+          });
+          constructor(private fb: FormBuilder) {}
+          submit() {}
+        }
+      `,
+    );
+    const parsedTemplate = await templateParser.parse(
+      '/tmp/profile.component.html',
+      `<form [formGroup]="profileForm" (ngSubmit)="submit()"><input formControlName="email" /></form>`,
+      '/tmp/profile.component.ts',
+    );
+
+    expect(parsedTs.ok).toBe(true);
+    expect(parsedTemplate.ok).toBe(true);
+    if (parsedTs.ok && parsedTemplate.ok) {
+      const forms = extractor.extract([parsedTs.value], [parsedTemplate.value]);
+      expect(forms).toHaveLength(1);
+      expect(forms[0]?.declarationKind).toBe('form-builder');
+      expect(forms[0]?.templateBindings.some((binding) => binding.kind === 'formControlName' && binding.name === 'email')).toBe(true);
+      const root = forms[0]?.rootControl;
+      expect(root && 'controls' in root ? root.controls[0]?.validators.map((validator) => validator.kind) : []).toEqual(['required', 'email']);
+      expect(forms[0]?.submitIntents[0]?.expression).toBe('submit()');
+    }
+  });
 });
 
 describe('Graph and diagnostics', () => {
@@ -248,6 +289,39 @@ describe('Property-based invariants', () => {
         expect(cloned.symbols.length).toBe(summary.symbols.length);
         expect(cloned.hasParseErrors).toBe(summary.hasParseErrors);
       }),
+    );
+  });
+
+  test('reactive form extraction is deterministic for generated control names', () => {
+    fc.assert(
+      fc.property(fc.array(fc.constantFrom('email', 'firstName', 'lastName', 'phone'), { minLength: 1, maxLength: 4 }), (names) => {
+        const uniqueNames = [...new Set(names)];
+        const controls = uniqueNames.map((name) => `${name}: ['', [Validators.required]]`).join(', ');
+        const sourceText = `
+          import { Component } from '@angular/core';
+          import { FormBuilder, Validators } from '@angular/forms';
+          @Component({ selector: 'app-profile', template: '<form [formGroup]="profileForm"></form>' })
+          export class ProfileComponent {
+            profileForm = this.fb.group({ ${controls} });
+            constructor(private fb: FormBuilder) {}
+          }
+        `;
+        const parser = new TypeScriptParserAdapter();
+        const parsed = parser.parse('/tmp/profile.component.ts', sourceText);
+        expect(parsed.ok).toBe(true);
+        if (parsed.ok) {
+          const extractor = new FormModelExtractor();
+          const first = extractor.extract([parsed.value], []);
+          const second = extractor.extract([parsed.value], []);
+          expect(first).toStrictEqual(second);
+          const root = first[0]?.rootControl;
+          expect(root && 'controls' in root ? root.controls.map((control) => control.name) : []).toEqual([...uniqueNames].sort());
+        }
+      }),
+      {
+        numRuns: 20,
+        seed: 20260609,
+      },
     );
   });
 });

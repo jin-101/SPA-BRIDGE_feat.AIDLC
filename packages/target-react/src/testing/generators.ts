@@ -89,6 +89,7 @@ const createDraftSetArbitrary = (): fc.Arbitrary<ReactTargetDraftSet> =>
           templateDraftId: fc.option(identifierArbitrary, { nil: undefined }),
           templateRawText: fc.option(fc.constant('<button (click)="select()"> {{ title }} </button>'), { nil: undefined }),
           templateExternalReferences: fc.array(fc.constantFrom('assets/logo.png', './local.png'), { maxLength: 2 }),
+          forms: fc.constant([]),
           serviceRefs: fc.array(identifierArbitrary, { maxLength: 3 }),
           styleUrls: fc.array(fc.constantFrom('./component.less', './component.css'), { maxLength: 1 }),
           propertyInitializers: fc.array(

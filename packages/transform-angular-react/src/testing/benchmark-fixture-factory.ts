@@ -430,6 +430,7 @@ export const createBenchmarkAngularAnalysisFixture = (options: BenchmarkFixtureO
     },
     typeScriptSummaries,
     templateSummaries,
+    formModels: [],
     routeSummaries,
     graph,
     diagnostics,
@@ -451,6 +452,9 @@ export const createBenchmarkAngularAnalysisFixture = (options: BenchmarkFixtureO
       totalDiagnostics: diagnostics.length,
       totalAliases: 2,
       unresolvedAliases: 0,
+      totalForms: 0,
+      totalFormControls: 0,
+      totalFormDiagnostics: 0,
     },
   };
 };

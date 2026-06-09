@@ -364,6 +364,7 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
         },
         typeScriptSummaries,
         templateSummaries,
+        formModels: [],
         routeSummaries,
         graph,
         diagnostics,
@@ -385,6 +386,9 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
             totalDiagnostics: diagnostics.length,
             totalAliases: 2,
             unresolvedAliases: 0,
+            totalForms: 0,
+            totalFormControls: 0,
+            totalFormDiagnostics: 0,
         },
     };
 };

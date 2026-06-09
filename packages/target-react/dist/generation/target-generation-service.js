@@ -5,6 +5,7 @@ import { selectTargetStrategy } from '../strategy/target-strategy-selection-poli
 import { createReactDefaultStrategy, createViteReactTypeScriptStrategy } from '../strategies/vite-react-typescript.js';
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -35,6 +36,7 @@ export class TargetGenerationService {
     normalizer;
     dependencyBuilder;
     componentMaterializer;
+    formRuntimeMaterializer;
     serviceMaterializer;
     routeAdapter;
     stateAdapters;
@@ -45,12 +47,13 @@ export class TargetGenerationService {
     manualReviewFactory;
     reviewStubGenerator;
     privacyGuard;
-    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard()) {
+    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard()) {
         this.registry = registry;
         this.validator = validator;
         this.normalizer = normalizer;
         this.dependencyBuilder = dependencyBuilder;
         this.componentMaterializer = componentMaterializer;
+        this.formRuntimeMaterializer = formRuntimeMaterializer;
         this.serviceMaterializer = serviceMaterializer;
         this.routeAdapter = routeAdapter;
         this.stateAdapters = stateAdapters;
@@ -78,6 +81,7 @@ export class TargetGenerationService {
         });
         const generatedFiles = [
             ...scaffoldFiles,
+            ...this.formRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.forms.length > 0)),
             ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
             ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
             ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),

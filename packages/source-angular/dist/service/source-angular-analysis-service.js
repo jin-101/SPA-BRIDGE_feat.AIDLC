@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import { AngularSourceModelBoundarySchema, ok, } from '@spa-bridge/core-model';
 import { AnalysisArtifactMapper } from '../model/artifact-mapper.js';
 import { AliasAnalyzer } from '../aliases/alias-analyzer.js';
+import { FormModelExtractor } from '../forms/form-model-extractor.js';
 import { GraphBuilder } from '../graph/graph-builder.js';
 import { PathGuard } from '../path/path-guard.js';
 import { RouteAnalyzer } from '../routes/route-analyzer.js';
@@ -23,6 +24,7 @@ export class SourceAngularAnalysisService {
     pathGuard = new PathGuard();
     workspaceProfiler = new WorkspaceProfiler(this.pathGuard);
     aliasAnalyzer = new AliasAnalyzer(this.pathGuard);
+    formExtractor = new FormModelExtractor();
     inventoryBuilder = new SourceInventoryBuilder();
     tsParser = new TypeScriptParserAdapter();
     templateParser = new AngularTemplateParserAdapter();
@@ -177,6 +179,14 @@ export class SourceAngularAnalysisService {
         }
         const graphResult = this.graphBuilder.finalize();
         diagnostics.push(...graphResult.diagnostics);
+        const formModels = this.formExtractor.extract(typeScriptSummaries, templateSummaries);
+        diagnostics.push(...formModels.flatMap((form) => form.diagnostics.map((diagnostic) => this.diagnosticBuilder.build({
+            code: diagnostic.code,
+            severity: diagnostic.severity,
+            message: diagnostic.message,
+            sourcePaths: [diagnostic.sourceRef.path],
+            tags: ['forms', 'manual-review'],
+        }))));
         const normalizedDiagnostics = this.diagnosticBuilder.normalize(diagnostics);
         const artifactRefs = this.artifactMapper.buildArtifactRefs(request.outputDir ?? path.join(workspaceProfile.projectRoot, '.spa-bridge', 'analysis'), workspaceProfile);
         const sourceModelBoundary = AngularSourceModelBoundarySchema.parse(this.artifactMapper.buildSourceModelBoundary(workspaceProfile, workspaceProfile.entryFiles[0] ?? path.join(workspaceProfile.sourceRoot, 'main.ts')));
@@ -196,6 +206,7 @@ export class SourceAngularAnalysisService {
             },
             typeScriptSummaries,
             templateSummaries,
+            formModels,
             routeSummaries,
             graph: graphResult.graph,
             diagnostics: normalizedDiagnostics,
@@ -208,8 +219,22 @@ export class SourceAngularAnalysisService {
                 totalDiagnostics: normalizedDiagnostics.length,
                 totalAliases: aliasModel.summary.totalAliases,
                 unresolvedAliases: aliasModel.summary.unresolvedAliases,
+                totalForms: formModels.length,
+                totalFormControls: formModels.reduce((total, form) => total + this.countControls(form.rootControl), 0),
+                totalFormDiagnostics: formModels.reduce((total, form) => total + form.diagnostics.length, 0),
             },
         });
+    }
+    countControls(control) {
+        if ('controls' in control) {
+            return control.controls.length
+                + control.groups.reduce((total, group) => total + this.countControls(group), 0)
+                + control.arrays.reduce((total, array) => total + this.countControls(array), 0);
+        }
+        if ('initialItems' in control) {
+            return control.initialItems.reduce((total, item) => total + this.countControls(item), 0);
+        }
+        return 1;
     }
     findOwningComponent(relativePath, files) {
         const normalized = relativePath.replace(/\\/g, '/');

@@ -167,7 +167,14 @@ Each V2 gap unit should include:
 - [x] Create V2-GAP-UOW-02 code generation plan.
 - [x] Implement V2-GAP-UOW-02.
 - [x] Verify V2-GAP-UOW-02 build/test.
+- [x] Receive explicit approval to start V2-GAP-UOW-03.
+- [x] Create V2-GAP-UOW-03 functional design plan.
+- [x] Collect V2-GAP-UOW-03 functional design answers.
+- [x] Generate V2-GAP-UOW-03 functional design artifacts.
+- [x] Create V2-GAP-UOW-03 code generation plan.
+- [x] Implement V2-GAP-UOW-03.
+- [x] Verify V2-GAP-UOW-03 build/test.
 
 ## Approval Gate
 
-Status: V2-GAP-UOW-02 code generation executed and awaiting review approval.
+Status: V2-GAP-UOW-03 code generation executed and awaiting review approval.

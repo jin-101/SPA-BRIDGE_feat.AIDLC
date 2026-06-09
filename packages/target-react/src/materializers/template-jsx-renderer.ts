@@ -9,6 +9,7 @@ export type TemplateLogicContext = {
   transformTemplateExpression: (expression: string) => string;
   toStateSetter: (name: string) => string;
   toIdentifier: (name: string, fallback: string) => string;
+  formControlNames?: Set<string>;
 };
 
 export type ComponentRegistryEntry = {
@@ -52,6 +53,9 @@ const toReactEventName = (name: string): string => {
   };
   return eventMap[name.toLowerCase()] ?? `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 };
+
+const toControlIdentifier = (name: string, context: TemplateLogicContext): string =>
+  `${context.toIdentifier(name.split('.').at(-1) ?? name, 'control')}Control`;
 
 const parseNgFor = (expression: string): { item: string; iterable: string; index: string; trackBy?: string } | undefined => {
   const itemMatch = expression.match(/let\s+([A-Za-z_$][\w$]*)\s+of\s+([^;]+)/);
@@ -167,12 +171,33 @@ export class TemplateJsxRenderer {
     jsx = jsx
       .replace(/\s+class=/g, ' className=')
       .replace(/\s+for=/g, ' htmlFor=')
+      .replace(/\s+\[formGroup\]="([^"]+)"/g, '')
+      .replace(/\s+formGroupName=["']([^"']+)["']/g, '')
+      .replace(/\s+formArrayName=["']([^"']+)["']/g, (_match, name: string) => {
+        diagnostics.push(`form-array-review:${name}`);
+        return ` data-form-array="${name}"`;
+      })
+      .replace(/\s+\(ngSubmit\)="([^"]+)"/g, (_match, expression: string) => {
+        const transformed = context.transformExpression(expression.replace(/\$event/g, 'event'));
+        return ` onSubmit={(event) => { event.preventDefault(); ${stripTrailingSemicolon(transformed)}; }}`;
+      })
+      .replace(/\s+formControlName=["']([^"']+)["']/g, (_match, name: string) => ` {...${toControlIdentifier(name, context)}.inputProps}`)
       .replace(/\s+\[ngClass\]="([^"]+)"/g, (_match, expression: string) => ` ${transformNgClass(expression, context, helpers)}`)
       .replace(/\s+\[ngStyle\]="([^"]+)"/g, (_match, expression: string) => ` ${transformNgStyle(expression, context, helpers)}`)
       .replace(/\s+\[\((ngModel)\)\]="([^"]+)"/g, (_match, _name: string, model: string) => {
         const identifier = context.toIdentifier(model.replace(/^this\./, ''), 'value');
         diagnostics.push('ngmodel-form-handoff');
-        return ` value={${identifier} ?? ''} onChange={(event) => ${context.toStateSetter(identifier)}((event.target as HTMLInputElement).value)}`;
+        return ` {...${identifier}Control.inputProps}`;
+      })
+      .replace(/\s+\[ngModel\]="([^"]+)"/g, (_match, model: string) => {
+        const identifier = context.toIdentifier(model.replace(/^this\./, ''), 'value');
+        diagnostics.push('ngmodel-form-handoff');
+        return ` {...${identifier}Control.inputProps}`;
+      })
+      .replace(/\s+\(ngModelChange\)="([^"]+)"/g, (_match, expression: string) => {
+        const transformed = context.transformExpression(expression.replace(/\$event/g, 'event.target.value'));
+        diagnostics.push('ngmodel-change-handoff');
+        return ` onChange={(event) => ${stripTrailingSemicolon(transformed)}}`;
       })
       .replace(/\s+\[([A-Za-z0-9_.:-]+)\]="([^"]+)"/g, (_match, property: string, expression: string) => {
         if (property.startsWith('class.')) {

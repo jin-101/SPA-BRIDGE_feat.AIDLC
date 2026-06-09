@@ -1,8 +1,19 @@
 import { createDiagnostic, ok, type Diagnostic, type Result } from '@spa-bridge/core-model';
-import type { AngularAnalysisResult, FileInventoryRecord, TypeScriptParseSummary } from '@spa-bridge/source-angular';
+import type {
+  AngularAnalysisResult,
+  AngularFormArrayModel,
+  AngularFormControlModel,
+  AngularFormGroupModel,
+  FileInventoryRecord,
+  TypeScriptParseSummary,
+} from '@spa-bridge/source-angular';
 
 import type {
   NormalizedComponent,
+  NormalizedFormArray,
+  NormalizedFormControl,
+  NormalizedFormGroup,
+  NormalizedFormModel,
   NormalizedRoute,
   NormalizedService,
   NormalizedState,
@@ -16,6 +27,48 @@ import { StableIdFactory } from '../model/stable-id-factory.js';
 type TypeScriptSymbolSummary = TypeScriptParseSummary['symbols'][number];
 type DecoratorSummary = TypeScriptSymbolSummary['decorators'][number];
 type InventoryRecord = FileInventoryRecord;
+
+const normalizeValidators = (validators: AngularFormControlModel['validators']) =>
+  validators.map((validator) => ({
+    id: validator.id,
+    kind: validator.kind,
+    arguments: [...validator.arguments],
+    reviewRequired: validator.reviewRequired,
+  }));
+
+const normalizeFormControl = (control: AngularFormControlModel): NormalizedFormControl => ({
+  id: control.id,
+  name: control.name,
+  path: control.path,
+  initialValue: control.initialValue,
+  valueType: control.valueType,
+  validators: normalizeValidators(control.validators),
+  asyncValidators: normalizeValidators(control.asyncValidators),
+});
+
+const normalizeFormGroup = (group: AngularFormGroupModel): NormalizedFormGroup => ({
+  id: group.id,
+  name: group.name,
+  path: group.path,
+  controls: group.controls.map(normalizeFormControl).sort((left, right) => left.path.localeCompare(right.path)),
+  groups: group.groups.map(normalizeFormGroup).sort((left, right) => left.path.localeCompare(right.path)),
+  arrays: group.arrays.map(normalizeFormArray).sort((left, right) => left.path.localeCompare(right.path)),
+  validators: normalizeValidators(group.validators),
+});
+
+const normalizeFormArray = (array: AngularFormArrayModel): NormalizedFormArray => ({
+  id: array.id,
+  name: array.name,
+  path: array.path,
+  itemKind: array.itemKind,
+  initialItems: array.initialItems.map((item) => {
+    if ('controls' in item) return normalizeFormGroup(item);
+    if ('initialItems' in item) return normalizeFormArray(item);
+    return normalizeFormControl(item);
+  }),
+  complexity: array.complexity,
+  validators: normalizeValidators(array.validators),
+});
 
 const isComponentSymbol = (symbol: TypeScriptSymbolSummary): boolean =>
   symbol.decorators.some((decorator: DecoratorSummary) => decorator.kind === 'Component');
@@ -76,6 +129,19 @@ export class ContextNormalizer {
     const states: NormalizedState[] = [];
     const routes: NormalizedRoute[] = [];
     const templates: NormalizedTemplate[] = [];
+    const forms: NormalizedFormModel[] = analysis.formModels.map((form) => ({
+      id: form.id,
+      ownerComponentId: form.ownerComponentId,
+      ownerComponentPath: form.ownerComponentPath,
+      declarationKind: form.declarationKind,
+      rootControl: 'controls' in form.rootControl
+        ? normalizeFormGroup(form.rootControl)
+        : 'initialItems' in form.rootControl
+          ? normalizeFormArray(form.rootControl)
+          : normalizeFormControl(form.rootControl),
+      templateBindings: form.templateBindings.map((binding) => ({ ...binding })).sort((left, right) => left.id.localeCompare(right.id)),
+      submitIntents: form.submitIntents.map((intent) => ({ ...intent })).sort((left, right) => left.id.localeCompare(right.id)),
+    })).sort((left, right) => left.id.localeCompare(right.id));
 
     for (const summary of analysis.typeScriptSummaries) {
       const relatedFiles = analysis.inventory.files.filter((file: InventoryRecord) => file.path === summary.sourcePath || file.relativePath.endsWith(summary.sourcePath.split('/').pop() ?? ''));
@@ -167,6 +233,7 @@ export class ContextNormalizer {
       diagnostics,
       components,
       templates,
+      forms,
       services,
       routes,
       states,

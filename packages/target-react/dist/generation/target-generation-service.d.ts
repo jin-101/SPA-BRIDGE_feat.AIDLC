@@ -4,6 +4,7 @@ import { TargetGenerationRequestValidator } from '../validation/target-generatio
 import { TargetStrategyRegistry } from '../strategy/target-strategy-registry.js';
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -21,6 +22,7 @@ export declare class TargetGenerationService {
     private readonly normalizer;
     private readonly dependencyBuilder;
     private readonly componentMaterializer;
+    private readonly formRuntimeMaterializer;
     private readonly serviceMaterializer;
     private readonly routeAdapter;
     private readonly stateAdapters;
@@ -31,7 +33,7 @@ export declare class TargetGenerationService {
     private readonly manualReviewFactory;
     private readonly reviewStubGenerator;
     private readonly privacyGuard;
-    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard);
+    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard);
     generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
     private buildDependencyManifest;
     private filterSourceDependencies;

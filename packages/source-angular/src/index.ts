@@ -1,5 +1,6 @@
 export * from './diagnostics/safe-diagnostic-builder.js';
 export * from './aliases/alias-analyzer.js';
+export * from './forms/form-model-extractor.js';
 export * from './graph/graph-builder.js';
 export * from './model/artifact-mapper.js';
 export * from './model/stable-id-factory.js';
