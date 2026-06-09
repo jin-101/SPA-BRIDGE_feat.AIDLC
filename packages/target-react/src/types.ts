@@ -101,10 +101,71 @@ export type TargetConflict = {
   incomingKind?: TargetFileKind;
 };
 
+export type DependencyCompatibilityAction = 'carry' | 'replace' | 'remove' | 'review';
+export type DependencyCompatibilityRiskLevel = 'low' | 'medium' | 'high' | 'unknown';
+export type DependencySourceCategory =
+  | 'angular-core'
+  | 'angular-wrapper'
+  | 'ngrx'
+  | 'build-tool'
+  | 'framework-neutral'
+  | 'custom'
+  | 'unknown';
+
+export type DependencyReplacementRule = {
+  sourcePackage: string;
+  targetPackage: string;
+  versionPolicy: 'preserve' | 'fixed' | 'latest-compatible';
+  fixedVersion?: string;
+  rationale: string;
+  usageSiteReviewPolicy: 'always' | 'when-unverified' | 'none';
+  knownImportRewriteRules?: Array<{
+    sourceImport: string;
+    targetImport: string;
+  }>;
+};
+
+export type UsageSiteCompatibilityFinding = {
+  sourcePackage: string;
+  targetPackage?: string;
+  sourceRef?: SourceRef;
+  usageKind: 'import' | 'template-selector' | 'style' | 'module-provider' | 'dependency';
+  message: string;
+  suggestedCodeChange?: string;
+  manualReviewRequired: boolean;
+};
+
+export type DependencyCompatibilityDecision = {
+  packageName: string;
+  sourceVersion: string;
+  decision: DependencyCompatibilityAction;
+  targetPackageName?: string;
+  targetVersion?: string;
+  riskLevel: DependencyCompatibilityRiskLevel;
+  sourceCategory: DependencySourceCategory;
+  rationale: string;
+  usageSiteReviewRequired: boolean;
+  diagnostics: string[];
+};
+
+export type DependencyCompatibilityReport = {
+  schemaVersion: 1;
+  decisions: DependencyCompatibilityDecision[];
+  usageFindings: UsageSiteCompatibilityFinding[];
+  summary: {
+    carried: number;
+    replaced: number;
+    removed: number;
+    review: number;
+    total: number;
+  };
+};
+
 export type TargetDependencyManifest = {
   dependencies: Record<string, string>;
   devDependencies: Record<string, string>;
   rationale: Record<string, string>;
+  compatibilityReport?: DependencyCompatibilityReport;
 };
 
 export type TargetWritePlan = {
@@ -145,6 +206,7 @@ export type TargetGenerationResult = {
   manualReviewItems: ManualReviewItem[];
   traces: TraceLink[];
   dependencyManifest: TargetDependencyManifest;
+  dependencyCompatibilityReport: DependencyCompatibilityReport;
   scaffoldFiles: GeneratedFileSpec[];
 };
 

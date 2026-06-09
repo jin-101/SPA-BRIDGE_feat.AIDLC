@@ -5,9 +5,9 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: V2-GAP-UOW-00 Functional Design Review
-- **Last Completed**: V2-GAP-UOW-00 Functional Design Artifacts
-- **Next Step**: Review V2-GAP-UOW-00 dependency compatibility functional design and approve continuation to code generation planning
+- **Current Stage**: V2-GAP-UOW-00 Code Generation Review
+- **Last Completed**: V2-GAP-UOW-00 Code Generation
+- **Next Step**: Review V2-GAP-UOW-00 dependency compatibility implementation and approve continuation to V2-GAP-UOW-04 RxJS Conversion
 
 ## Workspace State
 - **Existing Code**: No
@@ -133,6 +133,10 @@
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Workflow Insertion
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Functional Design Planning
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-00 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-00 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-00 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-00 Build and Test
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -265,9 +269,10 @@
 - **Complex Angular Pattern Conversion Coverage Expansion**: Expanded conversion coverage for Angular templates, styles, assets, routing, service DI shape, local/store state scaffolding, and component JSX output on 2026-06-08T05:22:35Z. CLI conversion now copies Angular style files and template asset references into the React target and writes a resource-copy summary. Workspace build/test verification passed.
 - **React Runtime Parity Conversion Requirements Expansion**: Added source package dependency carry-over with Angular-specific filtering, selector-based custom Angular tag conversion to React component imports/tags, source-path-preserving component output paths, EventEmitter-to-callback-prop conversion, and nested route component imports on 2026-06-08T23:14:55Z. Workspace build/test verification passed.
 - **V2 Gap Brownfield Workflow Planning**: Started focused brownfield development based on `requirements_v2_gap_implementation_spec.md` on 2026-06-08T23:37:34Z. Created the V2 gap workflow plan, V2 gap units of work, and V2-GAP-UOW-01 dependency alias/path mapping functional design plan. Awaiting approval to continue to code generation planning.
+- **V2-GAP-UOW-00 Code Generation**: Implemented dependency compatibility filtering and replacement on 2026-06-09T06:22:36Z. Added deterministic package classification, WDS Angular-to-React package replacement, Angular-only package exclusion, compatibility report generation, review diagnostics, Ollama advisory boundary, and tests. Workspace `npm run build` and `npm test` passed.
 
 ## Execution Plan Summary
-- **Recommended Next Stage**: Approve V2-GAP-UOW-01 functional design and continue to code generation planning
+- **Recommended Next Stage**: Approve V2-GAP-UOW-00 review and resume V2-GAP-UOW-04 RxJS Conversion
 - **Stages to Execute**: V2 gap brownfield construction units V2-GAP-UOW-01 through V2-GAP-UOW-07
 - **Stages to Skip**: Reverse Engineering (no existing code)
 - **Risk Level**: Medium

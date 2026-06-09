@@ -1,0 +1,1 @@
+{"version":3,"file":"dependency-compatibility-report-materializer.d.ts","sourceRoot":"","sources":["../../src/dependencies/dependency-compatibility-report-materializer.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAmC,6BAA6B,EAAE,iBAAiB,EAAE,MAAM,aAAa,CAAC;AA4BrH,qBAAa,yCAAyC;IACpD,WAAW,CAAC,MAAM,EAAE,6BAA6B,GAAG,iBAAiB;CA+CtE"}

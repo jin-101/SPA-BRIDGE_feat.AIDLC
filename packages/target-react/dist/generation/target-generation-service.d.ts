@@ -12,6 +12,8 @@ import { WritePlanBuilder } from '../write-plan/write-plan-builder.js';
 import { TargetTraceBuilder } from '../traceability/target-trace-builder.js';
 import { TraceCoverageValidator } from '../traceability/trace-coverage-validator.js';
 import { DependencyManifestBuilder } from '../dependencies/dependency-manifest-builder.js';
+import { DependencyCompatibilityClassifier } from '../dependencies/dependency-compatibility-classifier.js';
+import { DependencyCompatibilityReportMaterializer } from '../dependencies/dependency-compatibility-report-materializer.js';
 import { TargetDiagnosticFactory } from '../diagnostics/target-diagnostic-factory.js';
 import { TargetManualReviewFactory } from '../review/target-manual-review-factory.js';
 import { ReviewStubGenerator } from '../review/review-stub-generator.js';
@@ -33,10 +35,12 @@ export declare class TargetGenerationService {
     private readonly manualReviewFactory;
     private readonly reviewStubGenerator;
     private readonly privacyGuard;
-    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard);
+    private readonly dependencyClassifier;
+    private readonly dependencyReportMaterializer;
+    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard, dependencyClassifier?: DependencyCompatibilityClassifier, dependencyReportMaterializer?: DependencyCompatibilityReportMaterializer);
     generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
     private buildDependencyManifest;
-    private filterSourceDependencies;
+    private withUsageFindings;
     private createManualReviewItems;
     private createGeneratedDiagnostics;
 }

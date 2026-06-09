@@ -13,6 +13,8 @@ import { WritePlanBuilder } from '../write-plan/write-plan-builder.js';
 import { TargetTraceBuilder } from '../traceability/target-trace-builder.js';
 import { TraceCoverageValidator } from '../traceability/trace-coverage-validator.js';
 import { DependencyManifestBuilder } from '../dependencies/dependency-manifest-builder.js';
+import { DependencyCompatibilityClassifier } from '../dependencies/dependency-compatibility-classifier.js';
+import { DependencyCompatibilityReportMaterializer } from '../dependencies/dependency-compatibility-report-materializer.js';
 import { TargetDiagnosticFactory } from '../diagnostics/target-diagnostic-factory.js';
 import { TargetManualReviewFactory } from '../review/target-manual-review-factory.js';
 import { ReviewStubGenerator } from '../review/review-stub-generator.js';
@@ -47,7 +49,9 @@ export class TargetGenerationService {
     manualReviewFactory;
     reviewStubGenerator;
     privacyGuard;
-    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard()) {
+    dependencyClassifier;
+    dependencyReportMaterializer;
+    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard(), dependencyClassifier = new DependencyCompatibilityClassifier(), dependencyReportMaterializer = new DependencyCompatibilityReportMaterializer()) {
         this.registry = registry;
         this.validator = validator;
         this.normalizer = normalizer;
@@ -64,6 +68,8 @@ export class TargetGenerationService {
         this.manualReviewFactory = manualReviewFactory;
         this.reviewStubGenerator = reviewStubGenerator;
         this.privacyGuard = privacyGuard;
+        this.dependencyClassifier = dependencyClassifier;
+        this.dependencyReportMaterializer = dependencyReportMaterializer;
     }
     generate(request) {
         const requestValidation = this.validator.validate(request);
@@ -74,6 +80,12 @@ export class TargetGenerationService {
         const normalizedDrafts = this.normalizer.normalize(requestValidation.value);
         const sourceRef = makeSourceRef(requestValidation.value);
         const dependencyManifest = this.buildDependencyManifest(strategy, normalizedDrafts, requestValidation.value);
+        const dependencyCompatibilityReport = dependencyManifest.compatibilityReport ?? {
+            schemaVersion: 1,
+            decisions: [],
+            usageFindings: [],
+            summary: { carried: 0, replaced: 0, removed: 0, review: 0, total: 0 },
+        };
         const scaffoldFiles = strategy.createScaffoldFiles({
             request: requestValidation.value,
             normalizedDrafts,
@@ -89,9 +101,10 @@ export class TargetGenerationService {
         ];
         const manualReviewItems = [
             ...normalizedDrafts.manualReviewItems,
-            ...this.createManualReviewItems(normalizedDrafts),
+            ...this.createManualReviewItems(normalizedDrafts, dependencyCompatibilityReport),
         ];
         const reviewStubs = this.reviewStubGenerator.build(manualReviewItems);
+        const dependencyCompatibilityFile = this.dependencyReportMaterializer.materialize(dependencyCompatibilityReport);
         const ecosystemMetadata = this.privacyGuard.sanitize(targetEcosystemMetadataCatalog);
         const metadataFile = createFileSpec({
             path: 'src/metadata/ecosystem-metadata.json',
@@ -100,7 +113,7 @@ export class TargetGenerationService {
             overwrite: true,
             status: 'metadata',
         });
-        const allFiles = [...generatedFiles, ...reviewStubs, metadataFile];
+        const allFiles = [...generatedFiles, ...reviewStubs, dependencyCompatibilityFile, metadataFile];
         const writePlanResult = this.writePlanBuilder.build({
             runId: requestValidation.value.runId,
             correlationId: requestValidation.value.correlationId,
@@ -152,30 +165,52 @@ export class TargetGenerationService {
             manualReviewItems,
             traces: traceLinks,
             dependencyManifest,
+            dependencyCompatibilityReport,
             scaffoldFiles,
         });
     }
     buildDependencyManifest(strategy, drafts, request) {
         const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true);
-        const sourceDependencies = this.filterSourceDependencies(request.sourceDependencies ?? {});
-        const sourceDevDependencies = this.filterSourceDependencies(request.sourceDevDependencies ?? {});
+        const dependencyClassification = this.dependencyClassifier.classify(request.sourceDependencies ?? {});
+        const devDependencyClassification = this.dependencyClassifier.classify(request.sourceDevDependencies ?? {});
+        const sourceDependencies = this.dependencyClassifier.toDependencyRecord(dependencyClassification.decisions);
+        const sourceDevDependencies = this.dependencyClassifier.toDependencyRecord(devDependencyClassification.decisions);
+        const compatibilityReport = this.withUsageFindings(this.dependencyClassifier.combineReports(dependencyClassification.report, devDependencyClassification.report), makeSourceRef(request));
         return {
             dependencies: { ...sourceDependencies, ...strategy.exactDependencies, ...manifest.dependencies },
             devDependencies: { ...sourceDevDependencies, ...manifest.devDependencies },
             rationale: {
-                ...Object.fromEntries(Object.keys(sourceDependencies).map((name) => [name, 'Carried over from the Angular source package because generated React code may still reference this runtime library.'])),
-                ...Object.fromEntries(Object.keys(sourceDevDependencies).map((name) => [name, 'Carried over from the Angular source package devDependencies when it is not Angular-specific.'])),
+                ...Object.fromEntries(compatibilityReport.decisions
+                    .filter((decision) => decision.decision === 'carry' || decision.decision === 'replace')
+                    .map((decision) => [decision.targetPackageName ?? decision.packageName, decision.rationale])),
                 ...manifest.rationale,
             },
+            compatibilityReport,
         };
     }
-    filterSourceDependencies(dependencies) {
-        const blocked = [/^@angular\//, /^@ngrx\//, /^@angular-devkit\//, /^@schematics\//, /^zone\.js$/, /^typescript$/, /^webpack$/];
-        return Object.fromEntries(Object.entries(dependencies)
-            .filter(([name]) => !blocked.some((pattern) => pattern.test(name)))
-            .sort(([left], [right]) => left.localeCompare(right)));
+    withUsageFindings(report, sourceRef) {
+        const usageFindings = report.decisions
+            .filter((decision) => decision.usageSiteReviewRequired || decision.decision === 'replace' || decision.decision === 'review')
+            .map((decision) => ({
+            sourcePackage: decision.packageName,
+            targetPackage: decision.targetPackageName,
+            sourceRef,
+            usageKind: 'dependency',
+            message: decision.decision === 'replace'
+                ? `${decision.packageName} was replaced with ${decision.targetPackageName}; imports, props, events, and custom element usage require review.`
+                : `${decision.packageName} was excluded from the target manifest and requires an explicit React-compatible replacement if used by generated code.`,
+            suggestedCodeChange: decision.packageName === '@wds/wc-angular-lib'
+                ? "Replace package imports with '@wds/wc-react-lib' only after confirming component props/events API compatibility."
+                : undefined,
+            manualReviewRequired: true,
+        }))
+            .sort((left, right) => left.sourcePackage.localeCompare(right.sourcePackage));
+        return {
+            ...report,
+            usageFindings,
+        };
     }
-    createManualReviewItems(drafts) {
+    createManualReviewItems(drafts, dependencyReport) {
         const items = [];
         for (const route of drafts.routes) {
             if (route.guardRefs.length > 0 || route.lazyTarget || route.children.length > 0) {
@@ -186,6 +221,11 @@ export class TargetGenerationService {
             if (state.strategy === 'unknown') {
                 items.push(this.manualReviewFactory.create(`state-${state.id}`, `Review state mapping for ${state.name}`, 'State strategy should be selected explicitly for target materialization.'));
             }
+        }
+        for (const decision of dependencyReport.decisions.filter((candidate) => candidate.usageSiteReviewRequired || candidate.decision === 'review')) {
+            items.push(this.manualReviewFactory.create(`dependency-${decision.packageName.replace(/[^A-Za-z0-9_-]/g, '-')}`, `Review dependency compatibility for ${decision.packageName}`, decision.targetPackageName
+                ? `${decision.packageName} is replaced with ${decision.targetPackageName}; verify usage-site imports, props, events, and runtime behavior.`
+                : `${decision.packageName} is not installed automatically; choose a React-compatible replacement if generated code requires it.`));
         }
         return items;
     }

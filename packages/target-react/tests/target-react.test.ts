@@ -5,6 +5,8 @@ import { createDiagnostic } from '@spa-bridge/core-model';
 
 import {
   DependencyManifestBuilder,
+  DependencyAdvisoryBoundary,
+  DependencyCompatibilityClassifier,
   ReviewStubGenerator,
   TargetGenerationRequestValidator,
   TargetPathGuard,
@@ -342,6 +344,58 @@ describe('Support utilities', () => {
     expect(manifest.devDependencies.vite).toBe('5.4.11');
   });
 
+  it('filters Angular-only dependencies and replaces the WDS Angular package', () => {
+    const request = createFixtureRequest();
+    request.sourceDependencies = {
+      '@angular/core': '15.2.10',
+      '@wds/wc-angular-lib': '0.1.43',
+      'angularx-qrcode': '15.0.1',
+      dayjs: '1.11.20',
+      rxjs: '6.6.7',
+    };
+    request.sourceDevDependencies = {
+      '@angular-devkit/build-angular': '15.2.10',
+      webpack: '5.76.1',
+    };
+
+    const result = expectOk(generateReactTarget(request));
+
+    expect(result.dependencyManifest.dependencies['@angular/core']).toBeUndefined();
+    expect(result.dependencyManifest.dependencies['@wds/wc-angular-lib']).toBeUndefined();
+    expect(result.dependencyManifest.dependencies['@wds/wc-react-lib']).toBe('0.1.43');
+    expect(result.dependencyManifest.dependencies['angularx-qrcode']).toBeUndefined();
+    expect(result.dependencyManifest.dependencies.dayjs).toBe('1.11.20');
+    expect(result.dependencyManifest.dependencies.rxjs).toBe('6.6.7');
+    expect(result.dependencyManifest.devDependencies.webpack).toBeUndefined();
+    expect(result.dependencyCompatibilityReport.summary.replaced).toBe(1);
+    expect(result.manualReviewItems.some((item) => item.id === 'dependency--wds-wc-angular-lib')).toBe(true);
+
+    const reportFile = result.writePlan.files.find((file) => file.path.endsWith('src/review/dependency-compatibility.md'));
+    expect(reportFile?.content).toContain('@wds/wc-angular-lib');
+    expect(reportFile?.content).toContain('@wds/wc-react-lib');
+    expect(reportFile?.content).toContain('angularx-qrcode');
+    expect(reportFile?.content).toContain('WDS Custom Package Compatibility');
+  });
+
+  it('parses dependency advisory responses defensively without overriding registry behavior', () => {
+    const advisory = new DependencyAdvisoryBoundary();
+
+    expect(advisory.parseAdvisoryJson('not-json')).toStrictEqual({ schemaVersion: 1, candidates: [] });
+    expect(
+      advisory.parseAdvisoryJson(
+        JSON.stringify({
+          candidates: [
+            { packageName: 'dayjs', recommendedAction: 'carry', confidence: 0.95 },
+            { packageName: '@angular/core', recommendedAction: 'carry', confidence: 0.4 },
+          ],
+        }),
+      ),
+    ).toStrictEqual({
+      schemaVersion: 1,
+      candidates: [{ packageName: 'dayjs', recommendedAction: 'carry', confidence: 0.95 }],
+    });
+  });
+
   it('rejects target paths outside the target root', () => {
     const guard = new TargetPathGuard();
     const result = guard.ensureContained('/workspace/spa-bridge/generated', '../escape.ts');
@@ -379,6 +433,40 @@ describe('Support utilities', () => {
 });
 
 describe('Property-based target generation', () => {
+  it('keeps dependency classification deterministic and target package names unique', () => {
+    const classifier = new DependencyCompatibilityClassifier();
+    const packageNameArbitrary = fc.constantFrom(
+      '@angular/core',
+      '@ngrx/store',
+      '@wds/wc-angular-lib',
+      'angularx-qrcode',
+      'ngx-lottie',
+      'dayjs',
+      'mapbox-gl',
+      'custom-runtime-lib',
+    );
+
+    fc.assert(
+      fc.property(fc.dictionary(packageNameArbitrary, fc.constantFrom('0.1.43', '1.0.0', '15.2.10')), (dependencies) => {
+        const first = classifier.classify(dependencies);
+        const second = classifier.classify(dependencies);
+        const targetNames = first.decisions
+          .filter((decision) => decision.decision === 'carry' || decision.decision === 'replace')
+          .map((decision) => decision.targetPackageName ?? decision.packageName);
+
+        expect(first).toStrictEqual(second);
+        expect(first.decisions).toHaveLength(Object.keys(dependencies).length);
+        expect(new Set(targetNames).size).toBe(targetNames.length);
+        expect(classifier.toDependencyRecord(first.decisions)['@angular/core']).toBeUndefined();
+        expect(classifier.toDependencyRecord(first.decisions)['@ngrx/store']).toBeUndefined();
+      }),
+      {
+        numRuns: 30,
+        seed: 20260609,
+      },
+    );
+  });
+
   it('keeps generated write plans deterministic across repeated runs', () => {
     fc.assert(
       fc.property(targetGenerationRequestArbitrary, (request) => {
