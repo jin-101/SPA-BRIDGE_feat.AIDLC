@@ -134,7 +134,7 @@ B) Continue improving regex-only string replacement in the component materialize
 C) Defer template conversion to AI refinement only
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This gives deterministic behavior and makes diagnostics/test coverage much stronger.
 
@@ -146,7 +146,7 @@ B) Preserve `data-ng-if` markers and require manual conversion
 C) Drop the directive but keep the inner markup
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It best matches the desired React runtime behavior.
 
@@ -158,7 +158,7 @@ B) Preserve `data-ng-for` markers and require manual conversion
 C) Generate placeholder comments only
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It is the expected React equivalent for repeated DOM rendering.
 
@@ -170,7 +170,7 @@ B) Preserve both as literal custom elements
 C) Drop both wrappers and keep only text children
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This keeps React output valid while preserving branch/projection intent.
 
@@ -182,7 +182,7 @@ B) Leave all pipe expressions as raw Angular text
 C) Remove pipe segments from expressions
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It improves display parity without pretending RxJS async behavior is solved here.
 
@@ -194,7 +194,7 @@ B) Leave custom tags as kebab-case HTML tags
 C) Replace unknown custom tags with placeholder divs
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This matches your requirement that converted React code should call component names, not Angular selectors.
 
@@ -206,7 +206,7 @@ B) Preserve Angular attributes as comments
 C) Drop dynamic classes and styles
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. Visual parity depends heavily on dynamic classes and styles.
 
@@ -218,7 +218,7 @@ B) Ignore template refs
 C) Convert every template ref to a string prop
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. Some refs map cleanly, but many need usage-aware conversion.
 
@@ -230,7 +230,7 @@ B) Guess the closest React syntax without diagnostics
 C) Fail the entire conversion run
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This keeps the generated project usable while making real gaps visible.
 
@@ -242,7 +242,7 @@ B) Only example-based snapshot tests
 C) No blocking tests until all V2 gaps are done
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It covers the highest-risk behavior and aligns with the enabled PBT extension.
 
@@ -252,10 +252,10 @@ Recommendation: A. It covers the highest-risk behavior and aligns with the enabl
 - [x] Define functional design scope.
 - [x] Define proposed template conversion model.
 - [x] Generate functional design questions.
-- [ ] Collect user answers.
-- [ ] Analyze answers for ambiguity.
-- [ ] Generate functional design artifacts.
-- [ ] Present functional design completion for approval.
+- [x] Collect user answers.
+- [x] Analyze answers for ambiguity.
+- [x] Generate functional design artifacts.
+- [x] Present functional design completion for approval.
 
 ## Security Baseline Compliance
 
@@ -276,4 +276,4 @@ Required properties:
 
 ## Approval Gate
 
-Status: Awaiting user answers for V2-GAP-UOW-02 functional design questions.
+Status: Functional design artifacts generated. Awaiting approval to continue to code generation planning.

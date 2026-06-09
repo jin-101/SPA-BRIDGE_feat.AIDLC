@@ -9,6 +9,7 @@ export * from './routes/route-analyzer.js';
 export * from './scanner/source-inventory-builder.js';
 export * from './service/source-angular-analysis-service.js';
 export * from './templates/angular-template-parser-adapter.js';
+export * from './templates/template-ir-builder.js';
 export * from './testing/generators.js';
 export * from './types.js';
 export * from './workspace/workspace-profiler.js';

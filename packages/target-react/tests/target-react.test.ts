@@ -10,6 +10,7 @@ import {
   TargetPathGuard,
   TargetStrategyRegistry,
   TargetGenerationService,
+  TemplateJsxRenderer,
   createViteReactTypeScriptStrategy,
   generateReactTarget,
   targetGenerationRequestArbitrary,
@@ -233,6 +234,43 @@ describe('TargetGenerationService', () => {
 });
 
 describe('Support utilities', () => {
+  it('renders advanced Angular template constructs into JSX intent', () => {
+    const renderer = new TemplateJsxRenderer();
+    const logicContext = {
+      stateNames: new Set<string>(),
+      propertyNames: new Set<string>(),
+      methodNames: new Set(['select']),
+      propNames: new Set<string>(),
+      transformExpression: (expression: string) => expression.replace(/\bthis\./g, ''),
+      transformTemplateExpression: (expression: string) => expression.replace(/\bthis\./g, ''),
+      toStateSetter: (name: string) => `set${name.charAt(0).toUpperCase()}${name.slice(1)}`,
+      toIdentifier: (name: string, fallback: string) => name.replace(/[^A-Za-z0-9_$]/g, '') || fallback,
+    };
+    const result = renderer.render(
+      [
+        '<ng-container>',
+        '<article *ngIf="ready">',
+        '<ke-konbini-pres [passenger]="passenger" (selected)="select($event)"></ke-konbini-pres>',
+        '</article>',
+        '<li *ngFor="let item of items; index as i">{{ item.name | uppercase }}</li>',
+        '</ng-container>',
+      ].join(''),
+      undefined,
+      logicContext,
+      new Map([['ke-konbini-pres', { name: 'KeKonbiniPres', path: 'src/app/ke-konbini-pres/KeKonbiniPres.tsx' }]]),
+    );
+
+    const content = result.lines.join('\n');
+    expect(content).toContain('{ready &&');
+    expect(content).toContain('(items ?? []).map((item, i)');
+    expect(content).toContain('<KeKonbiniPres');
+    expect(content).toContain('passenger={passenger}');
+    expect(content).toContain('onSelected={(event) => select(event)}');
+    expect(content).toContain('formatUppercasePipe(item.name)');
+    expect(result.helpers).toContain('formatUppercasePipe');
+    expect(result.usedSelectors).toEqual(['ke-konbini-pres']);
+  });
+
   it('selects the default strategy deterministically', () => {
     const registry = new TargetStrategyRegistry();
     registry.register(createViteReactTypeScriptStrategy());

@@ -6,6 +6,7 @@ export * from './strategy/target-strategy-selection-policy.js';
 export * from './strategies/vite-react-typescript.js';
 export * from './drafts/react-draft-normalizer.js';
 export * from './materializers/component-materializer.js';
+export * from './materializers/template-jsx-renderer.js';
 export * from './materializers/service-materializer.js';
 export * from './routing/routing-output-adapter.js';
 export * from './state/state-output-adapters.js';

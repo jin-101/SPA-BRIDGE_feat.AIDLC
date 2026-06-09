@@ -5,7 +5,7 @@ import type {
   SourceRef,
   TraceLink,
 } from '@spa-bridge/core-model';
-import type { AngularAnalysisResult, SourceAliasModel } from '@spa-bridge/source-angular';
+import type { AngularAnalysisResult, SourceAliasModel, TemplateIr } from '@spa-bridge/source-angular';
 
 export type TransformationTargetFramework = 'react';
 export type TargetProjectStrategy = 'vite-react-typescript' | 'react-default';
@@ -81,6 +81,7 @@ export type NormalizedTemplate = {
   pipes: string[];
   externalReferences: string[];
   rawText?: string;
+  templateIr?: TemplateIr;
   diagnostics: Diagnostic[];
 };
 
@@ -158,6 +159,7 @@ export type ReactComponentDraft = {
   imports: string[];
   templateDraftId?: string;
   templateRawText?: string;
+  templateIr?: TemplateIr;
   templateExternalReferences: string[];
   serviceRefs: string[];
   styleUrls: string[];
@@ -177,6 +179,7 @@ export type ReactTemplateDraft = {
   events: string[];
   forms: string[];
   rawText?: string;
+  templateIr?: TemplateIr;
   externalReferences: string[];
   reviewItemIds: string[];
   generatedRefs: GeneratedArtifactRef[];

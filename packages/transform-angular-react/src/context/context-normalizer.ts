@@ -65,6 +65,7 @@ export class ContextNormalizer {
         pipes: [...template.bindings.pipes],
         externalReferences: [...template.bindings.externalReferences],
         rawText: template.rawText,
+        templateIr: template.templateIr,
         diagnostics: [...template.diagnostics],
       });
       templateByOwner.set(ownerPath, ownerTemplates);

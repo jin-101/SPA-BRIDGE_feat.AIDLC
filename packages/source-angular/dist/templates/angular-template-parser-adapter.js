@@ -1,4 +1,5 @@
 import { createDiagnostic, err, ok } from '@spa-bridge/core-model';
+import { TemplateIrBuilder } from './template-ir-builder.js';
 const heuristicParse = (templateText) => {
     const propertyBindings = [...templateText.matchAll(/\[([^\]]+)\]=/g)].map((match) => match[1] ?? '').filter(Boolean);
     const eventBindings = [...templateText.matchAll(/\(([^)]+)\)=/g)].map((match) => match[1] ?? '').filter(Boolean);
@@ -16,6 +17,10 @@ const heuristicParse = (templateText) => {
     };
 };
 export class AngularTemplateParserAdapter {
+    irBuilder;
+    constructor(irBuilder = new TemplateIrBuilder()) {
+        this.irBuilder = irBuilder;
+    }
     async parse(sourcePath, templateText, ownerPath) {
         if (!templateText.trim()) {
             return err({
@@ -24,6 +29,7 @@ export class AngularTemplateParserAdapter {
             });
         }
         const bindings = heuristicParse(templateText);
+        const templateIr = this.irBuilder.build(sourcePath, templateText);
         const diagnostics = templateText.includes('{{') && !templateText.includes('}}')
             ? [
                 createDiagnostic({
@@ -46,6 +52,7 @@ export class AngularTemplateParserAdapter {
             sourcePath,
             ownerPath,
             bindings,
+            templateIr,
             rawText: templateText.slice(0, 4_000),
             diagnostics,
             parserMode: 'heuristic',

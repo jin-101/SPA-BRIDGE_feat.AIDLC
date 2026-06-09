@@ -96,6 +96,7 @@ export class ComponentConverter {
       imports: [...new Set([...component.serviceRefs])],
       templateDraftId,
       templateRawText: primaryTemplate?.rawText,
+      templateIr: primaryTemplate?.templateIr,
       templateExternalReferences: [...new Set(matchingTemplates.flatMap((template) => template.externalReferences))],
       serviceRefs: [...component.serviceRefs],
       styleUrls: [...component.styleUrls],

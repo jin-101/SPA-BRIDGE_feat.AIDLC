@@ -1,0 +1,1 @@
+{"version":3,"file":"template-ir-builder.d.ts","sourceRoot":"","sources":["../../src/templates/template-ir-builder.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAKV,UAAU,EAGX,MAAM,aAAa,CAAC;AAmHrB,qBAAa,iBAAiB;IAC5B,KAAK,CAAC,UAAU,EAAE,MAAM,EAAE,YAAY,EAAE,MAAM,GAAG,UAAU;CAiE5D"}

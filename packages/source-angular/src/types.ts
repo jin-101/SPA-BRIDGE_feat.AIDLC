@@ -152,10 +152,66 @@ export type TemplateBindingSummary = {
   externalReferences: string[];
 };
 
+export type TemplateNodeKind = 'element' | 'text' | 'interpolation' | 'projection' | 'deferred-fragment';
+export type TemplateDirectiveKind = 'if' | 'for' | 'container' | 'template' | 'projection' | 'class' | 'style' | 'form' | 'unknown';
+
+export type TemplateDirective = {
+  kind: TemplateDirectiveKind;
+  name: string;
+  expression?: string;
+  localVariables: Record<string, string>;
+};
+
+export type TemplateBinding = {
+  name: string;
+  expression: string;
+  bindingKind: 'property' | 'attribute' | 'class' | 'style' | 'two-way' | 'unknown';
+};
+
+export type TemplateEvent = {
+  name: string;
+  expression: string;
+};
+
+export type TemplatePipeUsage = {
+  name: string;
+  expression: string;
+  arguments: string[];
+};
+
+export type TemplateConversionDiagnostic = {
+  code: string;
+  severity: Diagnostic['severity'];
+  message: string;
+  nodeId?: string;
+};
+
+export type TemplateIrNode = {
+  id: string;
+  kind: TemplateNodeKind;
+  tagName?: string;
+  text?: string;
+  expression?: string;
+  attributes: Record<string, string>;
+  directives: TemplateDirective[];
+  bindings: TemplateBinding[];
+  events: TemplateEvent[];
+  pipes: TemplatePipeUsage[];
+  children: TemplateIrNode[];
+};
+
+export type TemplateIr = {
+  schemaVersion: 1;
+  sourcePath: string;
+  rootNodes: TemplateIrNode[];
+  diagnostics: TemplateConversionDiagnostic[];
+};
+
 export type TemplateParseSummary = {
   sourcePath: string;
   ownerPath?: string;
   bindings: TemplateBindingSummary;
+  templateIr?: TemplateIr;
   rawText?: string;
   diagnostics: Diagnostic[];
   parserMode: 'angular-compiler' | 'heuristic';

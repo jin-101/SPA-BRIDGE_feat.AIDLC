@@ -3,6 +3,7 @@ import type { ReactComponentDraft } from '@spa-bridge/transform-angular-react';
 
 import { createFileSpec } from '../write-plan/generated-file-spec-factory.js';
 import type { GeneratedFileSpec } from '../types.js';
+import { TemplateJsxRenderer, type ComponentRegistryEntry, type TemplateLogicContext } from './template-jsx-renderer.js';
 
 const toComponentName = (name: string): string => name.replace(/[^A-Za-z0-9]/g, '');
 const toIdentifier = (name: string, fallback: string): string => {
@@ -54,11 +55,6 @@ type ComponentLogicContext = {
   propertyNames: Set<string>;
   methodNames: Set<string>;
   propNames: Set<string>;
-};
-
-type ComponentRegistryEntry = {
-  name: string;
-  path: string;
 };
 
 type ComponentMaterializerContext = {
@@ -168,16 +164,6 @@ const renderConvertedBody = (bodyText: string, context: ComponentLogicContext): 
   return convertedLines.length > 0 ? convertedLines : ['    // Original Angular method body could not be converted safely.'];
 };
 
-const rewriteAssetPath = (value: string): string => {
-  if (/^(https?:|data:|\/)/i.test(value)) {
-    return value;
-  }
-  if (value.startsWith('assets/')) {
-    return `/${value}`;
-  }
-  return value;
-};
-
 const toSourceRelativeComponentPath = (component: ReactComponentDraft): string => {
   const sourcePath = component.sourceRef?.path ?? component.sourceRelativePath ?? component.name;
   const normalized = sourcePath.replace(/\\/g, '/');
@@ -211,66 +197,9 @@ const toRelativeImport = (fromPath: string, toPath: string): string => {
 const propertyDecorators = (property: ReactComponentDraft['propertyInitializers'][number]): string[] =>
   Array.isArray(property.decorators) ? property.decorators : [];
 
-const convertAngularTemplateToJsx = (
-  templateText: string | undefined,
-  context: ComponentLogicContext,
-  selectorRegistry: Map<string, ComponentRegistryEntry>,
-): { lines: string[]; usedSelectors: string[] } => {
-  if (!templateText?.trim()) {
-    return { lines: [], usedSelectors: [] };
-  }
-
-  const usedSelectors = new Set<string>();
-  let jsx = templateText
-    .slice(0, 8_000)
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\s+\*ngIf="([^"]+)"/g, (_match, expression: string) => ` data-ng-if="${transformTemplateExpression(expression, context)}"`)
-    .replace(/\s+\*ngFor="([^"]+)"/g, (_match, expression: string) => ` data-ng-for="${expression.replace(/"/g, '&quot;')}"`)
-    .replace(/\s+class=/g, ' className=')
-    .replace(/\s+for=/g, ' htmlFor=')
-    .replace(/\s+\[\((ngModel)\)\]="([^"]+)"/g, (_match, _name: string, model: string) => {
-      const identifier = toIdentifier(model.replace(/^this\./, ''), 'value');
-      return ` value={${identifier} ?? ''} onChange={(event) => ${toStateSetter(identifier)}((event.target as HTMLInputElement).value)}`;
-    })
-    .replace(/\s+\[([A-Za-z0-9_.:-]+)\]="([^"]+)"/g, (_match, property: string, expression: string) => {
-      const prop = property === 'class' ? 'className' : property;
-      return ` ${prop}={${transformTemplateExpression(expression, context)}}`;
-    })
-    .replace(/\s+\(([A-Za-z0-9_.:-]+)\)="([^"]+)"/g, (_match, eventName: string, expression: string) => {
-      const transformed = transformExpression(expression.replace(/\$event/g, 'event'), context);
-      return ` ${toReactEventName(eventName)}={(event) => ${stripTrailingSemicolon(transformed)}}`;
-    })
-    .replace(/\{\{\s*([^}]+?)\s*\}\}/g, (_match, expression: string) => `{${transformTemplateExpression(expression, context)}}`)
-    .replace(/\s(src|href)=["']([^"']+)["']/g, (_match, attr: string, value: string) => ` ${attr}="${rewriteAssetPath(value)}"`)
-    .replace(/<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>]*?)(?<!\/)>/g, '<$1$2 />');
-
-  for (const [selector, entry] of [...selectorRegistry.entries()].sort(([left], [right]) => right.length - left.length)) {
-    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const tagPattern = new RegExp(`(<\\/?\\s*)${escaped}(?=[\\s>/])`, 'gi');
-    if (tagPattern.test(jsx)) {
-      usedSelectors.add(selector);
-      jsx = jsx.replace(tagPattern, `$1${entry.name}`);
-    }
-  }
-
-  if (!jsx.trim().startsWith('<')) {
-    jsx = `<>{${JSON.stringify(jsx.trim())}}</>`;
-  }
-
-  return {
-    lines: [
-      '      {/* Converted from Angular template. Review data-ng-* markers for structural directives. */}',
-      ...jsx
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .map((line) => `      ${line}`),
-    ],
-    usedSelectors: [...usedSelectors].sort(),
-  };
-};
-
 export class ComponentMaterializer {
+  constructor(private readonly templateRenderer = new TemplateJsxRenderer()) {}
+
   materialize(component: ReactComponentDraft, sourceRefs: SourceRef[] = [], context: ComponentMaterializerContext = { selectorRegistry: new Map() }): GeneratedFileSpec[] {
     const safeName = toComponentName(component.name) || 'Component';
     const componentPath = toSourceRelativeComponentPath(component);
@@ -344,7 +273,14 @@ export class ComponentMaterializer {
         .filter((method) => !['ngOnInit', 'ngOnDestroy', 'ngOnChanges', 'ngAfterViewInit', 'ngAfterContentInit'].includes(method.name))
         .map((method) => toIdentifier(method.name, 'handler')),
     ];
-    const template = convertAngularTemplateToJsx(component.templateRawText, logicContext, context.selectorRegistry);
+    const templateLogicContext: TemplateLogicContext = {
+      ...logicContext,
+      transformExpression: (expression) => transformExpression(expression, logicContext),
+      transformTemplateExpression: (expression) => transformTemplateExpression(expression, logicContext),
+      toStateSetter,
+      toIdentifier,
+    };
+    const template = this.templateRenderer.render(component.templateRawText, component.templateIr, templateLogicContext, context.selectorRegistry);
     const customComponentImports = template.usedSelectors
       .map((selector) => context.selectorRegistry.get(selector))
       .filter((entry): entry is ComponentRegistryEntry => !!entry && entry.name !== safeName)
@@ -375,6 +311,7 @@ export class ComponentMaterializer {
       ...lifecycleLines,
       ...(lifecycleLines.length > 0 ? [''] : []),
       ...methodLines,
+      ...this.renderTemplateHelpers(template.helpers),
       ...usedIdentifiers.map((identifier) => `  void ${identifier};`),
       ...(usedIdentifiers.length > 0 ? [''] : []),
       '  return (',
@@ -418,5 +355,36 @@ export class ComponentMaterializer {
         .map((component) => [component.selector as string, { name: toComponentName(component.name) || 'Component', path: toSourceRelativeComponentPath(component) }]),
     );
     return components.flatMap((component) => this.materialize(component, [sourceRef], { selectorRegistry }));
+  }
+
+  private renderTemplateHelpers(helpers: string[]): string[] {
+    const lines: string[] = [];
+    if (helpers.includes('applyClassMap')) {
+      lines.push(
+        '  const applyClassMap = (value: unknown): string => {',
+        "    if (typeof value === 'string') return value;",
+        '    if (Array.isArray(value)) return value.filter(Boolean).join(\' \');',
+        "    if (value && typeof value === 'object') return Object.entries(value as Record<string, unknown>).filter(([, enabled]) => Boolean(enabled)).map(([name]) => name).join(' ');",
+        "    return '';",
+        '  };',
+        '',
+      );
+    }
+    if (helpers.includes('applyStyleMap')) {
+      lines.push(
+        '  const applyStyleMap = (value: unknown) => {',
+        "    return value && typeof value === 'object' ? (value as Record<string, string | number>) : {};",
+        '  };',
+        '',
+      );
+    }
+    for (const helper of helpers.filter((name) => name.startsWith('format') && name.endsWith('Pipe'))) {
+      if (helper === 'formatUnknownPipe') {
+        lines.push(`  const ${helper} = (_pipeName: string, value: unknown): string => String(value ?? '');`, '');
+      } else {
+        lines.push(`  const ${helper} = (value: unknown): string => String(value ?? '');`, '');
+      }
+    }
+    return lines;
   }
 }

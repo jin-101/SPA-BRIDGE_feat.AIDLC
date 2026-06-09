@@ -179,6 +179,7 @@ describe('Parser adapters', () => {
       expect(parsed.value.bindings.eventBindings).toContain('click');
       expect(parsed.value.bindings.propertyBindings).toContain('disabled');
       expect(parsed.value.bindings.structuralDirectives).toContain('ngIf');
+      expect(parsed.value.templateIr?.rootNodes.some((node) => node.directives.some((directive) => directive.kind === 'if'))).toBe(true);
     }
   });
 });

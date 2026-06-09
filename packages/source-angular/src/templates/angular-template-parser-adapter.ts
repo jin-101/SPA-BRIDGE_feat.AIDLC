@@ -1,6 +1,7 @@
 import { createDiagnostic, err, ok, type Result } from '@spa-bridge/core-model';
 
 import type { AnalysisError, TemplateParseSummary } from '../types.js';
+import { TemplateIrBuilder } from './template-ir-builder.js';
 
 const heuristicParse = (templateText: string) => {
   const propertyBindings = [...templateText.matchAll(/\[([^\]]+)\]=/g)].map((match) => match[1] ?? '').filter(Boolean);
@@ -20,6 +21,8 @@ const heuristicParse = (templateText: string) => {
 };
 
 export class AngularTemplateParserAdapter {
+  constructor(private readonly irBuilder = new TemplateIrBuilder()) {}
+
   async parse(sourcePath: string, templateText: string, ownerPath?: string): Promise<Result<TemplateParseSummary, AnalysisError>> {
     if (!templateText.trim()) {
       return err({
@@ -29,6 +32,7 @@ export class AngularTemplateParserAdapter {
     }
 
     const bindings = heuristicParse(templateText);
+    const templateIr = this.irBuilder.build(sourcePath, templateText);
     const diagnostics = templateText.includes('{{') && !templateText.includes('}}')
       ? [
           createDiagnostic({
@@ -52,6 +56,7 @@ export class AngularTemplateParserAdapter {
       sourcePath,
       ownerPath,
       bindings,
+      templateIr,
       rawText: templateText.slice(0, 4_000),
       diagnostics,
       parserMode: 'heuristic',
