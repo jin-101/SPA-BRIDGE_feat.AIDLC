@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
@@ -11,6 +12,8 @@ import { PathGuard } from '../src/path/path-guard.js';
 import { SourceInventoryBuilder, classifyFile } from '../src/scanner/source-inventory-builder.js';
 import { TypeScriptParserAdapter } from '../src/parser/typescript-parser-adapter.js';
 import { FormModelExtractor } from '../src/forms/form-model-extractor.js';
+import { RxjsModelExtractor } from '../src/rxjs/rxjs-model-extractor.js';
+import { NgrxModelExtractor } from '../src/ngrx/ngrx-model-extractor.js';
 import { AngularTemplateParserAdapter } from '../src/templates/angular-template-parser-adapter.js';
 import { GraphBuilder } from '../src/graph/graph-builder.js';
 import { SafeDiagnosticBuilder } from '../src/diagnostics/safe-diagnostic-builder.js';
@@ -223,6 +226,101 @@ describe('Parser adapters', () => {
       expect(forms[0]?.submitIntents[0]?.expression).toBe('submit()');
     }
   });
+
+  test('extracts RxJS streams, subjects, subscriptions, cleanup, and async pipe bindings without execution', async () => {
+    const tsParser = new TypeScriptParserAdapter();
+    const templateParser = new AngularTemplateParserAdapter();
+    const extractor = new RxjsModelExtractor();
+    const parsedTs = tsParser.parse(
+      '/tmp/flights.component.ts',
+      `
+        import { Component } from '@angular/core';
+        import { BehaviorSubject, Observable } from 'rxjs';
+        import { map, takeUntil } from 'rxjs/operators';
+
+        @Component({ selector: 'app-flights', templateUrl: './flights.component.html' })
+        export class FlightsComponent {
+          destroy$ = new BehaviorSubject(false);
+          flights$: Observable<string[]> = this.service.flights().pipe(map((items) => items), takeUntil(this.destroy$));
+          selected = '';
+          ngOnInit() {
+            this.flights$.subscribe((items) => this.selected = items[0]);
+          }
+          ngOnDestroy() {
+            this.destroy$.next(true);
+            this.destroy$.complete();
+          }
+        }
+      `,
+    );
+    const parsedTemplate = await templateParser.parse(
+      '/tmp/flights.component.html',
+      `<span>{{ flights$ | async }}</span>`,
+      '/tmp/flights.component.ts',
+    );
+
+    expect(parsedTs.ok).toBe(true);
+    expect(parsedTemplate.ok).toBe(true);
+    if (parsedTs.ok && parsedTemplate.ok) {
+      const model = extractor.extract([parsedTs.value], [parsedTemplate.value]);
+      expect(model.streams.some((stream) => stream.memberName === 'flights$')).toBe(true);
+      expect(model.subjects.some((subject) => subject.memberName === 'destroy$' && subject.cleanupRole === 'destroy-signal')).toBe(true);
+      expect(model.subscriptions.some((subscription) => subscription.cleanupEvidence === 'ngOnDestroy-unsubscribe' || subscription.cleanupEvidence === 'takeUntil' || subscription.cleanupEvidence === 'none')).toBe(true);
+      expect(model.operatorChains.some((chain) => chain.hasCleanupOperator)).toBe(true);
+      expect(model.asyncPipeBindings.some((binding) => binding.expressionText === 'flights$' && !binding.reviewRequired)).toBe(true);
+    }
+  });
+
+  test('extracts NgRx actions, reducers, selectors, effects, entity adapters, and component store usage without execution', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'source-ngrx-'));
+    const sourcePath = path.join(root, 'flights.component.ts');
+    const sourceText = `
+      import { Component } from '@angular/core';
+      import { Store, createAction, createReducer, createSelector, createFeatureSelector, on, props } from '@ngrx/store';
+      import { createEffect, ofType } from '@ngrx/effects';
+      import { createEntityAdapter } from '@ngrx/entity';
+      import { map, switchMap } from 'rxjs/operators';
+
+      export const loadFlights = createAction('[Flights] Load', props<{ routeId: string }>());
+      export const loadFlightsSuccess = createAction('[Flights] Load Success', props<{ items: string[] }>());
+      export const adapter = createEntityAdapter<string>();
+      export const initialState = adapter.getInitialState({ loading: false });
+      export const flightsReducer = createReducer(
+        initialState,
+        on(loadFlights, (state) => ({ ...state, loading: true })),
+        on(loadFlightsSuccess, (state, action) => ({ ...state, items: action.items }))
+      );
+      export const selectFlightsFeature = createFeatureSelector('flights');
+      export const selectFlights = createSelector(selectFlightsFeature, (state) => state);
+
+      @Component({ selector: 'app-flights', template: '' })
+      export class FlightsComponent {
+        flights$ = this.store.select(selectFlights);
+        readonly load$ = createEffect(() => this.actions$.pipe(ofType(loadFlights), switchMap(() => this.api.load()), map(loadFlightsSuccess)));
+        constructor(private store: Store) {}
+        refresh() {
+          this.store.dispatch(loadFlights({ routeId: 'A' }));
+        }
+      }
+    `;
+    await fs.writeFile(sourcePath, sourceText);
+    const parser = new TypeScriptParserAdapter();
+    const parsed = parser.parse(sourcePath, sourceText);
+
+    expect(parsed.ok).toBe(true);
+    if (parsed.ok) {
+      const model = new NgrxModelExtractor().extract([parsed.value]);
+      expect(model.actions.map((action) => action.name)).toContain('loadFlights');
+      expect(model.actions.find((action) => action.name === 'loadFlights')?.payloadProperties).toEqual(['routeId']);
+      expect(model.reducers[0]?.handlers.map((handler) => handler.actionNames).flat()).toContain('loadFlights');
+      expect(model.selectors.map((selector) => selector.name)).toContain('selectFlights');
+      expect(model.effects.map((effect) => effect.name)).toContain('load$');
+      expect(model.effects[0]?.operatorIntents).toContain('switchMap');
+      expect(model.entityAdapters.map((adapterModel) => adapterModel.name)).toContain('adapter');
+      expect(model.componentUsages[0]?.selectedSelectors).toContain('selectFlights');
+      expect(model.componentUsages[0]?.dispatchedActions).toContain('loadFlights');
+    }
+  });
 });
 
 describe('Graph and diagnostics', () => {
@@ -321,6 +419,88 @@ describe('Property-based invariants', () => {
       {
         numRuns: 20,
         seed: 20260609,
+      },
+    );
+  });
+
+  test('RxJS extraction is deterministic for generated stream names and operators', () => {
+    const extractor = new RxjsModelExtractor();
+    fc.assert(
+      fc.property(fc.constantFrom('data$', 'items$', 'selected$'), fc.constantFrom('map', 'filter', 'takeUntil'), (streamName, operator) => {
+        const summary = {
+          sourcePath: '/tmp/rx.component.ts',
+          symbols: [
+            {
+              id: 'component-rx',
+              path: '/tmp/rx.component.ts',
+              name: 'RxComponent',
+              symbolKind: 'class' as const,
+              decorators: [{ kind: 'Component', metadata: {}, rawMetadataKeys: [] }],
+              members: [],
+              imports: ['rxjs'],
+              exports: [],
+              constructorDependencies: [],
+              lifecycleHooks: ['ngOnInit'],
+              references: [],
+              styleUrls: [],
+              propertyInitializers: [
+                {
+                  name: streamName,
+                  initializer: `this.service.load().pipe(${operator}((value) => value))`,
+                  readonly: false,
+                  decorators: [],
+                  typeText: 'Observable<unknown>',
+                  isEventEmitter: false,
+                },
+              ],
+              methods: [
+                {
+                  name: 'ngOnInit',
+                  parameters: [],
+                  bodyText: `this.${streamName}.subscribe((value) => this.value = value);`,
+                  isAsync: false,
+                },
+              ],
+            },
+          ],
+          diagnostics: [],
+          hasParseErrors: false,
+        };
+
+        expect(extractor.extract([summary], [])).toStrictEqual(extractor.extract([summary], []));
+      }),
+      {
+        numRuns: 20,
+        seed: 20260611,
+      },
+    );
+  });
+
+  test('NgRx extraction is deterministic and keeps valid action identifiers', () => {
+    fc.assert(
+      fc.property(fc.constantFrom('loadFlights', 'saveBooking', 'resetState'), fc.constantFrom('routeId', 'bookingId', 'status'), (actionName, payloadName) => {
+        const root = fsSync.mkdtempSync(path.join(os.tmpdir(), 'ngrx-pbt-'));
+        const sourcePath = path.join(root, 'state.ts');
+        const sourceText = `
+          import { createAction, props } from '@ngrx/store';
+          export const ${actionName} = createAction('[Feature] ${actionName}', props<{ ${payloadName}: string }>());
+        `;
+        fsSync.writeFileSync(sourcePath, sourceText);
+        const parser = new TypeScriptParserAdapter();
+        const parsed = parser.parse(sourcePath, sourceText);
+        expect(parsed.ok).toBe(true);
+        if (parsed.ok) {
+          const extractor = new NgrxModelExtractor();
+          const first = extractor.extract([parsed.value]);
+          const second = extractor.extract([parsed.value]);
+          expect(first).toStrictEqual(second);
+          expect(first.actions[0]?.name).toMatch(/^[A-Za-z_$][\w$]*$/);
+          expect(first.actions[0]?.payloadProperties).toEqual([payloadName]);
+        }
+      }),
+      {
+        numRuns: 20,
+        seed: 20260611,
       },
     );
   });

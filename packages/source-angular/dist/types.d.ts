@@ -246,6 +246,151 @@ export type AngularFormModel = {
     submitIntents: FormSubmitIntent[];
     diagnostics: AngularFormDiagnostic[];
 };
+export type AngularRxOperatorKind = 'projection' | 'filter' | 'side-effect' | 'flattening' | 'error-handling' | 'timing' | 'sharing' | 'cleanup' | 'unknown';
+export type AngularRxOperatorModel = {
+    id: string;
+    name: string;
+    argumentText?: string;
+    operatorKind: AngularRxOperatorKind;
+    reviewRequired: boolean;
+};
+export type AngularRxOperatorChain = {
+    id: string;
+    sourceExpression: string;
+    operators: AngularRxOperatorModel[];
+    hasFlattening: boolean;
+    hasErrorHandling: boolean;
+    hasCleanupOperator: boolean;
+    conversionSafety: 'safe' | 'review-required' | 'unsupported';
+};
+export type AngularRxStreamModel = {
+    id: string;
+    ownerId: string;
+    ownerKind: 'component' | 'service' | 'store-effect' | 'unknown';
+    sourceRef: SourceRef;
+    memberName: string;
+    valueName: string;
+    typeText?: string;
+    initializerText?: string;
+    operatorChainIds: string[];
+    asyncPipeBindingIds: string[];
+    diagnostics: string[];
+};
+export type AngularRxSubjectModel = {
+    id: string;
+    subjectKind: 'Subject' | 'BehaviorSubject' | 'ReplaySubject' | 'AsyncSubject' | 'unknown';
+    memberName: string;
+    initialValueText?: string;
+    nextCallRefs: SourceRef[];
+    errorCallRefs: SourceRef[];
+    completeCallRefs: SourceRef[];
+    cleanupRole: 'destroy-signal' | 'state-source' | 'event-source' | 'unknown';
+    reviewRequired: boolean;
+};
+export type AngularRxSubscriptionModel = {
+    id: string;
+    ownerId: string;
+    sourceExpression: string;
+    nextCallbackText?: string;
+    errorCallbackText?: string;
+    completeCallbackText?: string;
+    assignmentTarget?: string;
+    cleanupEvidence: 'takeUntil' | 'subscription-add' | 'ngOnDestroy-unsubscribe' | 'none' | 'unknown';
+    operatorChainId?: string;
+    sideEffectLevel: 'none' | 'state-assignment' | 'method-call' | 'external-effect' | 'unknown';
+};
+export type AngularAsyncPipeBinding = {
+    id: string;
+    ownerComponentId: string;
+    templateSourceRef: SourceRef;
+    expressionText: string;
+    streamId?: string;
+    bindingKind: 'interpolation' | 'property' | 'attribute' | 'structural' | 'unknown';
+    fallbackValueText?: string;
+    reviewRequired: boolean;
+};
+export type AngularRxModel = {
+    schemaVersion: 1;
+    streams: AngularRxStreamModel[];
+    subjects: AngularRxSubjectModel[];
+    subscriptions: AngularRxSubscriptionModel[];
+    operatorChains: AngularRxOperatorChain[];
+    asyncPipeBindings: AngularAsyncPipeBinding[];
+    diagnostics: Diagnostic[];
+};
+export type AngularNgrxActionModel = {
+    id: string;
+    name: string;
+    actionType: string;
+    sourceRef: SourceRef;
+    payloadProperties: string[];
+    sourceExpression?: string;
+};
+export type AngularNgrxReducerHandlerModel = {
+    id: string;
+    actionNames: string[];
+    reducerExpression: string;
+    reviewRequired: boolean;
+};
+export type AngularNgrxReducerModel = {
+    id: string;
+    name: string;
+    featureName: string;
+    initialStateRef?: string;
+    sourceRef: SourceRef;
+    handlers: AngularNgrxReducerHandlerModel[];
+};
+export type AngularNgrxSelectorModel = {
+    id: string;
+    name: string;
+    featureName?: string;
+    dependencies: string[];
+    projectorExpression?: string;
+    sourceRef: SourceRef;
+    reviewRequired: boolean;
+};
+export type AngularNgrxEffectModel = {
+    id: string;
+    name: string;
+    sourceRef: SourceRef;
+    ofTypeActions: string[];
+    dispatch: boolean;
+    operatorIntents: string[];
+    serviceCallRefs: string[];
+    safety: 'safe' | 'review-required' | 'unsupported';
+};
+export type AngularNgrxEntityAdapterModel = {
+    id: string;
+    name: string;
+    entityType?: string;
+    sourceRef: SourceRef;
+    selectIdExpression?: string;
+    sortComparerExpression?: string;
+    helperRefs: string[];
+    reviewRequired: boolean;
+};
+export type AngularNgrxComponentUsageModel = {
+    id: string;
+    ownerComponentPath: string;
+    ownerComponentName?: string;
+    sourceRef: SourceRef;
+    storeDependencyName: string;
+    selectedSelectors: string[];
+    dispatchedActions: string[];
+    usageKind: 'select' | 'dispatch' | 'mixed' | 'injected-only';
+    reviewRequired: boolean;
+};
+export type AngularNgrxModel = {
+    schemaVersion: 1;
+    actions: AngularNgrxActionModel[];
+    reducers: AngularNgrxReducerModel[];
+    selectors: AngularNgrxSelectorModel[];
+    effects: AngularNgrxEffectModel[];
+    entityAdapters: AngularNgrxEntityAdapterModel[];
+    componentUsages: AngularNgrxComponentUsageModel[];
+    hasRouterStore: boolean;
+    diagnostics: Diagnostic[];
+};
 export type RouteSummary = {
     id: string;
     sourcePath: string;
@@ -294,6 +439,8 @@ export type AngularAnalysisResult = {
     typeScriptSummaries: TypeScriptParseSummary[];
     templateSummaries: TemplateParseSummary[];
     formModels: AngularFormModel[];
+    rxjsModel: AngularRxModel;
+    ngrxModel: AngularNgrxModel;
     routeSummaries: RouteSummary[];
     graph: AngularDependencyGraph;
     diagnostics: Diagnostic[];
@@ -309,6 +456,18 @@ export type AngularAnalysisResult = {
         totalForms: number;
         totalFormControls: number;
         totalFormDiagnostics: number;
+        totalRxStreams: number;
+        totalRxSubjects: number;
+        totalRxSubscriptions: number;
+        totalAsyncPipeBindings: number;
+        totalRxDiagnostics: number;
+        totalNgrxActions: number;
+        totalNgrxReducers: number;
+        totalNgrxSelectors: number;
+        totalNgrxEffects: number;
+        totalNgrxEntityAdapters: number;
+        totalNgrxComponentUsages: number;
+        totalNgrxDiagnostics: number;
     };
 };
 export type AnalysisError = {

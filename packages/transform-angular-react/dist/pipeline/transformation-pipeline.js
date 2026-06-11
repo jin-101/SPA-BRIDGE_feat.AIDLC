@@ -24,8 +24,8 @@ const summarizeDraftSet = (draftSet) => ({
     totalTemplates: draftSet.templates.length,
     totalServices: draftSet.services.length,
     totalRoutes: draftSet.routes.length,
-    totalStateArtifacts: draftSet.state.length,
-    totalDrafts: draftSet.components.length + draftSet.templates.length + draftSet.services.length + draftSet.routes.length + draftSet.state.length,
+    totalStateArtifacts: draftSet.state.length + draftSet.reduxToolkit.length,
+    totalDrafts: draftSet.components.length + draftSet.templates.length + draftSet.services.length + draftSet.routes.length + draftSet.state.length + draftSet.reduxToolkit.length,
     totalDiagnostics: draftSet.diagnostics.length,
     totalReviewItems: draftSet.manualReviewItems.length,
     totalTraces: draftSet.traces.length,
@@ -100,6 +100,9 @@ export class TransformationPipeline {
             }
             for (const state of contribution.stateDrafts ?? []) {
                 draftBuilder.addState(state);
+            }
+            for (const reduxToolkit of contribution.reduxToolkitDrafts ?? []) {
+                draftBuilder.addReduxToolkitDraft(reduxToolkit);
             }
             for (const hook of contribution.hooks ?? []) {
                 const source = hook.sourceRef ?? { kind: 'source', path: context.sourceModelRef.entryFile };

@@ -4,6 +4,14 @@ import type {
   AngularFormArrayModel,
   AngularFormControlModel,
   AngularFormGroupModel,
+  AngularRxOperatorChain,
+  AngularRxStreamModel,
+  AngularNgrxActionModel,
+  AngularNgrxReducerModel,
+  AngularNgrxSelectorModel,
+  AngularNgrxEffectModel,
+  AngularNgrxEntityAdapterModel,
+  AngularNgrxComponentUsageModel,
   FileInventoryRecord,
   TypeScriptParseSummary,
 } from '@spa-bridge/source-angular';
@@ -14,6 +22,8 @@ import type {
   NormalizedFormControl,
   NormalizedFormGroup,
   NormalizedFormModel,
+  NormalizedRxOperatorChain,
+  NormalizedRxStreamModel,
   NormalizedRoute,
   NormalizedService,
   NormalizedState,
@@ -68,6 +78,96 @@ const normalizeFormArray = (array: AngularFormArrayModel): NormalizedFormArray =
   }),
   complexity: array.complexity,
   validators: normalizeValidators(array.validators),
+});
+
+const normalizeRxStream = (stream: AngularRxStreamModel): NormalizedRxStreamModel => ({
+  id: stream.id,
+  ownerId: stream.ownerId,
+  ownerKind: stream.ownerKind,
+  sourceRef: stream.sourceRef,
+  memberName: stream.memberName,
+  valueName: stream.valueName,
+  typeText: stream.typeText,
+  initializerText: stream.initializerText,
+  operatorChainIds: [...stream.operatorChainIds],
+  asyncPipeBindingIds: [...stream.asyncPipeBindingIds],
+  diagnostics: [...stream.diagnostics],
+});
+
+const normalizeRxOperatorChain = (chain: AngularRxOperatorChain): NormalizedRxOperatorChain => ({
+  id: chain.id,
+  sourceExpression: chain.sourceExpression,
+  operators: chain.operators.map((operator) => ({ ...operator })).sort((left, right) => left.id.localeCompare(right.id)),
+  hasFlattening: chain.hasFlattening,
+  hasErrorHandling: chain.hasErrorHandling,
+  hasCleanupOperator: chain.hasCleanupOperator,
+  conversionSafety: chain.conversionSafety,
+});
+
+const normalizeNgrxAction = (action: AngularNgrxActionModel) => ({
+  id: action.id,
+  name: action.name,
+  actionType: action.actionType,
+  sourceRef: action.sourceRef,
+  payloadProperties: [...action.payloadProperties].sort((left, right) => left.localeCompare(right)),
+});
+
+const normalizeNgrxReducer = (reducer: AngularNgrxReducerModel) => ({
+  id: reducer.id,
+  name: reducer.name,
+  featureName: reducer.featureName,
+  initialStateRef: reducer.initialStateRef,
+  sourceRef: reducer.sourceRef,
+  handlers: reducer.handlers.map((handler) => ({
+    id: handler.id,
+    actionNames: [...handler.actionNames].sort((left, right) => left.localeCompare(right)),
+    reducerExpression: handler.reducerExpression,
+    reviewRequired: handler.reviewRequired,
+  })).sort((left, right) => left.id.localeCompare(right.id)),
+});
+
+const normalizeNgrxSelector = (selector: AngularNgrxSelectorModel) => ({
+  id: selector.id,
+  name: selector.name,
+  featureName: selector.featureName,
+  dependencies: [...selector.dependencies].sort((left, right) => left.localeCompare(right)),
+  projectorExpression: selector.projectorExpression,
+  sourceRef: selector.sourceRef,
+  reviewRequired: selector.reviewRequired,
+});
+
+const normalizeNgrxEffect = (effect: AngularNgrxEffectModel) => ({
+  id: effect.id,
+  name: effect.name,
+  sourceRef: effect.sourceRef,
+  ofTypeActions: [...effect.ofTypeActions].sort((left, right) => left.localeCompare(right)),
+  dispatch: effect.dispatch,
+  operatorIntents: [...effect.operatorIntents].sort((left, right) => left.localeCompare(right)),
+  serviceCallRefs: [...effect.serviceCallRefs].sort((left, right) => left.localeCompare(right)),
+  safety: effect.safety,
+});
+
+const normalizeNgrxEntityAdapter = (adapter: AngularNgrxEntityAdapterModel) => ({
+  id: adapter.id,
+  name: adapter.name,
+  entityType: adapter.entityType,
+  sourceRef: adapter.sourceRef,
+  selectIdExpression: adapter.selectIdExpression,
+  sortComparerExpression: adapter.sortComparerExpression,
+  helperRefs: [...adapter.helperRefs].sort((left, right) => left.localeCompare(right)),
+  reviewRequired: adapter.reviewRequired,
+});
+
+const normalizeNgrxComponentUsage = (usage: AngularNgrxComponentUsageModel) => ({
+  id: usage.id,
+  ownerComponentPath: usage.ownerComponentPath,
+  ownerComponentName: usage.ownerComponentName,
+  sourceRef: usage.sourceRef,
+  storeDependencyName: usage.storeDependencyName,
+  selectedSelectors: [...usage.selectedSelectors].sort((left, right) => left.localeCompare(right)),
+  dispatchedActions: [...usage.dispatchedActions].sort((left, right) => left.localeCompare(right)),
+  usageKind: usage.usageKind,
+  reviewRequired: usage.reviewRequired,
 });
 
 const isComponentSymbol = (symbol: TypeScriptSymbolSummary): boolean =>
@@ -246,6 +346,43 @@ export class ContextNormalizer {
           confidence: edge.confidence,
         }),
       ),
+      rxStreams: analysis.rxjsModel.streams.map(normalizeRxStream).sort((left, right) => left.id.localeCompare(right.id)),
+      rxSubjects: analysis.rxjsModel.subjects.map((subject) => ({
+        id: subject.id,
+        subjectKind: subject.subjectKind,
+        memberName: subject.memberName,
+        initialValueText: subject.initialValueText,
+        cleanupRole: subject.cleanupRole,
+        reviewRequired: subject.reviewRequired,
+      })).sort((left, right) => left.id.localeCompare(right.id)),
+      rxSubscriptions: analysis.rxjsModel.subscriptions.map((subscription) => ({
+        id: subscription.id,
+        ownerId: subscription.ownerId,
+        sourceExpression: subscription.sourceExpression,
+        nextCallbackText: subscription.nextCallbackText,
+        assignmentTarget: subscription.assignmentTarget,
+        cleanupEvidence: subscription.cleanupEvidence,
+        operatorChainId: subscription.operatorChainId,
+        sideEffectLevel: subscription.sideEffectLevel,
+      })).sort((left, right) => left.id.localeCompare(right.id)),
+      rxOperatorChains: analysis.rxjsModel.operatorChains.map(normalizeRxOperatorChain).sort((left, right) => left.id.localeCompare(right.id)),
+      asyncPipeBindings: analysis.rxjsModel.asyncPipeBindings.map((binding) => ({
+        id: binding.id,
+        ownerComponentId: binding.ownerComponentId,
+        templateSourceRef: binding.templateSourceRef,
+        expressionText: binding.expressionText,
+        streamId: binding.streamId,
+        bindingKind: binding.bindingKind,
+        fallbackValueText: binding.fallbackValueText,
+        reviewRequired: binding.reviewRequired,
+      })).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxActions: analysis.ngrxModel.actions.map(normalizeNgrxAction).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxReducers: analysis.ngrxModel.reducers.map(normalizeNgrxReducer).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxSelectors: analysis.ngrxModel.selectors.map(normalizeNgrxSelector).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxEffects: analysis.ngrxModel.effects.map(normalizeNgrxEffect).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxEntityAdapters: analysis.ngrxModel.entityAdapters.map(normalizeNgrxEntityAdapter).sort((left, right) => left.id.localeCompare(right.id)),
+      ngrxComponentUsages: analysis.ngrxModel.componentUsages.map(normalizeNgrxComponentUsage).sort((left, right) => left.id.localeCompare(right.id)),
+      hasNgrxRouterStore: analysis.ngrxModel.hasRouterStore,
     };
 
     return ok(normalizedContext);

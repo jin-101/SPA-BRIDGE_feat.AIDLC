@@ -5,6 +5,8 @@ import { TargetStrategyRegistry } from '../strategy/target-strategy-registry.js'
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
 import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
+import { RxjsRuntimeMaterializer } from '../materializers/rxjs-runtime-materializer.js';
+import { ReduxToolkitMaterializer } from '../materializers/redux-toolkit-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -25,6 +27,8 @@ export declare class TargetGenerationService {
     private readonly dependencyBuilder;
     private readonly componentMaterializer;
     private readonly formRuntimeMaterializer;
+    private readonly rxjsRuntimeMaterializer;
+    private readonly reduxToolkitMaterializer;
     private readonly serviceMaterializer;
     private readonly routeAdapter;
     private readonly stateAdapters;
@@ -37,7 +41,7 @@ export declare class TargetGenerationService {
     private readonly privacyGuard;
     private readonly dependencyClassifier;
     private readonly dependencyReportMaterializer;
-    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard, dependencyClassifier?: DependencyCompatibilityClassifier, dependencyReportMaterializer?: DependencyCompatibilityReportMaterializer);
+    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, rxjsRuntimeMaterializer?: RxjsRuntimeMaterializer, reduxToolkitMaterializer?: ReduxToolkitMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard, dependencyClassifier?: DependencyCompatibilityClassifier, dependencyReportMaterializer?: DependencyCompatibilityReportMaterializer);
     generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
     private buildDependencyManifest;
     private withUsageFindings;

@@ -50,7 +50,7 @@ const renderPipeExpression = (expression, context, helpers, diagnostics) => {
         const [pipeName = pipe, ...args] = pipe.split(':').map((part) => part.trim());
         if (pipeName === 'async') {
             diagnostics.push('async-pipe-handoff');
-            current = `String(${current} ?? '')`;
+            current = context.transformTemplateExpression(`${base} | async`);
             continue;
         }
         if (!knownDisplayPipes.has(pipeName)) {

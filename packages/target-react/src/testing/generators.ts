@@ -90,6 +90,7 @@ const createDraftSetArbitrary = (): fc.Arbitrary<ReactTargetDraftSet> =>
           templateRawText: fc.option(fc.constant('<button (click)="select()"> {{ title }} </button>'), { nil: undefined }),
           templateExternalReferences: fc.array(fc.constantFrom('assets/logo.png', './local.png'), { maxLength: 2 }),
           forms: fc.constant([]),
+          rxHooks: fc.constant([]),
           serviceRefs: fc.array(identifierArbitrary, { maxLength: 3 }),
           styleUrls: fc.array(fc.constantFrom('./component.less', './component.css'), { maxLength: 1 }),
           propertyInitializers: fc.array(
@@ -207,6 +208,7 @@ const createDraftSetArbitrary = (): fc.Arbitrary<ReactTargetDraftSet> =>
       services: [...draftSet.services].sort((left, right) => left.id.localeCompare(right.id)),
       routes: [...draftSet.routes].sort((left, right) => left.id.localeCompare(right.id)),
       state: [...draftSet.state].sort((left, right) => left.id.localeCompare(right.id)),
+      reduxToolkit: [],
       manualReviewItems: [...draftSet.manualReviewItems].sort((left, right) => left.id.localeCompare(right.id)),
       diagnostics: [...draftSet.diagnostics].sort((left, right) => left.code.localeCompare(right.code)) as ReactTargetDraftSet['diagnostics'],
       traces: [...draftSet.traces].sort((left, right) => left.id.localeCompare(right.id)) as ReactTargetDraftSet['traces'],

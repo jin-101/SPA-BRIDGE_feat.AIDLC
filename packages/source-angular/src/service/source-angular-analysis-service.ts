@@ -17,6 +17,8 @@ import { FormModelExtractor } from '../forms/form-model-extractor.js';
 import { GraphBuilder } from '../graph/graph-builder.js';
 import { PathGuard } from '../path/path-guard.js';
 import { RouteAnalyzer } from '../routes/route-analyzer.js';
+import { RxjsModelExtractor } from '../rxjs/rxjs-model-extractor.js';
+import { NgrxModelExtractor } from '../ngrx/ngrx-model-extractor.js';
 import { SafeDiagnosticBuilder } from '../diagnostics/safe-diagnostic-builder.js';
 import { SourceInventoryBuilder } from '../scanner/source-inventory-builder.js';
 import { TypeScriptParserAdapter } from '../parser/typescript-parser-adapter.js';
@@ -50,6 +52,8 @@ export class SourceAngularAnalysisService {
   private readonly workspaceProfiler = new WorkspaceProfiler(this.pathGuard);
   private readonly aliasAnalyzer = new AliasAnalyzer(this.pathGuard);
   private readonly formExtractor = new FormModelExtractor();
+  private readonly rxjsExtractor = new RxjsModelExtractor();
+  private readonly ngrxExtractor = new NgrxModelExtractor();
   private readonly inventoryBuilder = new SourceInventoryBuilder();
   private readonly tsParser = new TypeScriptParserAdapter();
   private readonly templateParser = new AngularTemplateParserAdapter();
@@ -229,6 +233,10 @@ export class SourceAngularAnalysisService {
     const graphResult = this.graphBuilder.finalize();
     diagnostics.push(...graphResult.diagnostics);
     const formModels = this.formExtractor.extract(typeScriptSummaries, templateSummaries);
+    const rxjsModel = this.rxjsExtractor.extract(typeScriptSummaries, templateSummaries);
+    const ngrxModel = this.ngrxExtractor.extract(typeScriptSummaries);
+    diagnostics.push(...rxjsModel.diagnostics);
+    diagnostics.push(...ngrxModel.diagnostics);
     diagnostics.push(
       ...formModels.flatMap((form) =>
         form.diagnostics.map((diagnostic) =>
@@ -268,6 +276,8 @@ export class SourceAngularAnalysisService {
       typeScriptSummaries,
       templateSummaries,
       formModels,
+      rxjsModel,
+      ngrxModel,
       routeSummaries,
       graph: graphResult.graph,
       diagnostics: normalizedDiagnostics,
@@ -283,6 +293,18 @@ export class SourceAngularAnalysisService {
         totalForms: formModels.length,
         totalFormControls: formModels.reduce((total, form) => total + this.countControls(form.rootControl), 0),
         totalFormDiagnostics: formModels.reduce((total, form) => total + form.diagnostics.length, 0),
+        totalRxStreams: rxjsModel.streams.length,
+        totalRxSubjects: rxjsModel.subjects.length,
+        totalRxSubscriptions: rxjsModel.subscriptions.length,
+        totalAsyncPipeBindings: rxjsModel.asyncPipeBindings.length,
+        totalRxDiagnostics: rxjsModel.diagnostics.length,
+        totalNgrxActions: ngrxModel.actions.length,
+        totalNgrxReducers: ngrxModel.reducers.length,
+        totalNgrxSelectors: ngrxModel.selectors.length,
+        totalNgrxEffects: ngrxModel.effects.length,
+        totalNgrxEntityAdapters: ngrxModel.entityAdapters.length,
+        totalNgrxComponentUsages: ngrxModel.componentUsages.length,
+        totalNgrxDiagnostics: ngrxModel.diagnostics.length,
       },
     });
   }

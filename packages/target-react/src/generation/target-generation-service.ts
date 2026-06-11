@@ -21,6 +21,8 @@ import { createReactDefaultStrategy, createViteReactTypeScriptStrategy } from '.
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
 import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
+import { RxjsRuntimeMaterializer } from '../materializers/rxjs-runtime-materializer.js';
+import { ReduxToolkitMaterializer } from '../materializers/redux-toolkit-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -60,6 +62,8 @@ export class TargetGenerationService {
     private readonly dependencyBuilder = new DependencyManifestBuilder(),
     private readonly componentMaterializer = new ComponentMaterializer(),
     private readonly formRuntimeMaterializer = new FormRuntimeMaterializer(),
+    private readonly rxjsRuntimeMaterializer = new RxjsRuntimeMaterializer(),
+    private readonly reduxToolkitMaterializer = new ReduxToolkitMaterializer(),
     private readonly serviceMaterializer = new ServiceMaterializer(),
     private readonly routeAdapter = new RoutingOutputAdapter(),
     private readonly stateAdapters = new StateOutputAdapters(),
@@ -100,6 +104,8 @@ export class TargetGenerationService {
     const generatedFiles: GeneratedFileSpec[] = [
       ...scaffoldFiles,
       ...this.formRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.forms.length > 0)),
+      ...this.rxjsRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.rxHooks.length > 0)),
+      ...this.reduxToolkitMaterializer.materialize(normalizedDrafts.reduxToolkit, [sourceRef]),
       ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
       ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
       ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),
@@ -186,7 +192,7 @@ export class TargetGenerationService {
   }
 
   private buildDependencyManifest(strategy: TargetStrategyDescriptor, drafts: NormalizedTargetDraftBundle, request: TargetGenerationRequest): TargetDependencyManifest {
-    const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true);
+    const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true, drafts.reduxToolkit.length > 0);
     const dependencyClassification = this.dependencyClassifier.classify(request.sourceDependencies ?? {});
     const devDependencyClassification = this.dependencyClassifier.classify(request.sourceDevDependencies ?? {});
     const sourceDependencies = this.dependencyClassifier.toDependencyRecord(dependencyClassification.decisions);

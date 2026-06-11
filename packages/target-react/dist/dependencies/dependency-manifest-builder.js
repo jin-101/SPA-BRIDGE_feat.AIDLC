@@ -1,6 +1,6 @@
 import { targetDependencyAllowlist } from './target-dependency-allowlist.js';
 export class DependencyManifestBuilder {
-    build(stateStrategy, includeRouter = true) {
+    build(stateStrategy, includeRouter = true, includeReduxToolkit = stateStrategy === 'store') {
         const dependencies = {
             react: targetDependencyAllowlist.react,
             'react-dom': targetDependencyAllowlist['react-dom'],
@@ -17,8 +17,9 @@ export class DependencyManifestBuilder {
             vite: targetDependencyAllowlist.vite,
             less: targetDependencyAllowlist.less,
         };
-        if (stateStrategy === 'store') {
+        if (includeReduxToolkit) {
             dependencies['@reduxjs/toolkit'] = targetDependencyAllowlist['@reduxjs/toolkit'];
+            dependencies['react-redux'] = targetDependencyAllowlist['react-redux'];
         }
         const rationale = {
             react: 'Core UI runtime for the generated target project.',
@@ -32,8 +33,9 @@ export class DependencyManifestBuilder {
             vite: 'Deterministic dev-server and build pipeline.',
             less: 'LESS preprocessing support for Angular component styles carried into the React target.',
         };
-        if (stateStrategy === 'store') {
-            rationale['@reduxjs/toolkit'] = 'Optional store support for state conversions that require an explicit centralized store.';
+        if (includeReduxToolkit) {
+            rationale['@reduxjs/toolkit'] = 'Redux Toolkit runtime for converted NgRx actions, reducers, selectors, effects, and entity adapters.';
+            rationale['react-redux'] = 'Typed React hooks and Provider integration for converted NgRx store usage.';
         }
         return {
             dependencies,

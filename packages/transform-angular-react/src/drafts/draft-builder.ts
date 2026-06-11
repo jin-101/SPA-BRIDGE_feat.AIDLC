@@ -4,6 +4,7 @@ import type {
   ReactComponentDraft,
   ReactHookDraft,
   ReactRouteDraft,
+  ReactReduxToolkitDraft,
   ReactServiceDraft,
   ReactStateDraft,
   ReactTargetDraftSet,
@@ -21,6 +22,7 @@ export class DraftBuilder {
   private readonly services: ReactServiceDraft[] = [];
   private readonly routes: ReactRouteDraft[] = [];
   private readonly state: ReactStateDraft[] = [];
+  private readonly reduxToolkit: ReactReduxToolkitDraft[] = [];
   private readonly diagnostics: Diagnostic[] = [];
   private readonly reviewItems: ManualReviewItem[] = [];
   private readonly traces: TraceLink[] = [];
@@ -43,6 +45,10 @@ export class DraftBuilder {
 
   addState(draft: ReactStateDraft): void {
     this.state.push(draft);
+  }
+
+  addReduxToolkitDraft(draft: ReactReduxToolkitDraft): void {
+    this.reduxToolkit.push(draft);
   }
 
   addDiagnostic(diagnostic: Diagnostic): void {
@@ -72,6 +78,7 @@ export class DraftBuilder {
       services: sortById(this.services),
       routes: sortById(this.routes),
       state: sortById(this.state),
+      reduxToolkit: sortById(this.reduxToolkit),
       manualReviewItems: sortById(this.reviewItems),
       diagnostics: [...this.diagnostics].sort((left, right) => {
         if (left.severity !== right.severity) {

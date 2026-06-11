@@ -1,5 +1,5 @@
 import type { Diagnostic, GeneratedArtifactRef, ManualReviewItem, SourceRef, TraceLink } from '@spa-bridge/core-model';
-import type { ReactComponentDraft, ReactRouteDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft } from '@spa-bridge/transform-angular-react';
+import type { ReactComponentDraft, ReactReduxToolkitDraft, ReactRouteDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft } from '@spa-bridge/transform-angular-react';
 export type TargetFramework = 'react';
 export type TargetProjectStrategyId = 'vite-react-typescript' | 'react-default';
 export type TargetOverwritePolicy = 'preserve' | 'overwrite' | 'fail';
@@ -48,6 +48,7 @@ export type NormalizedTargetDraftBundle = {
     services: ReactServiceDraft[];
     routes: ReactRouteDraft[];
     state: ReactStateDraft[];
+    reduxToolkit: ReactReduxToolkitDraft[];
     manualReviewItems: ManualReviewItem[];
     diagnostics: Diagnostic[];
     traces: TraceLink[];

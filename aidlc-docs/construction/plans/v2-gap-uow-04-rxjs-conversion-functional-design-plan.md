@@ -109,7 +109,7 @@ B) Keep RxJS in generated React components with direct `.subscribe(...)` calls i
 C) Preserve RxJS references as comments only and require manual rewrite
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It provides runtime behavior while keeping subscription lifecycle centralized and reviewable.
 
@@ -121,7 +121,7 @@ B) Detect only `$`-suffixed property names and ignore type/initializer metadata
 C) Do not create stream IR until target generation
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. Runtime parity needs both source metadata and stable transformation traces.
 
@@ -133,7 +133,7 @@ B) Convert every Subject to plain `useState` and drop `next/error/complete` sema
 C) Mark all Subject usage unsupported
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It preserves visible behavior and still flags semantic gaps.
 
@@ -145,7 +145,7 @@ B) Convert subscriptions to one-shot async calls without cleanup
 C) Leave subscriptions inside generated React render functions
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This is the safest React lifecycle equivalent.
 
@@ -157,7 +157,7 @@ B) Drop all operators and subscribe to the original source only
 C) Attempt to inline every operator into React code regardless of complexity
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. It balances useful conversion with safety.
 
@@ -169,7 +169,7 @@ B) Convert all flattening operators to nested Promises
 C) Ignore flattening operators
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. These often encode business-critical async behavior and should not be guessed.
 
@@ -181,7 +181,7 @@ B) Ignore Angular cleanup because React unmount handles it automatically
 C) Preserve cleanup as comments only
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. Subscription cleanup is essential for parity and leak prevention.
 
@@ -193,7 +193,7 @@ B) Convert all async pipe expressions to `String(observable)` placeholders
 C) Leave the `async` pipe syntax unchanged
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. This directly addresses visible UI behavior.
 
@@ -205,7 +205,7 @@ B) Remove RxJS from generated React output and rewrite all streams to native Pro
 C) Add a new external React observable library by default
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. Source projects already use RxJS, and local hooks keep React integration clear.
 
@@ -217,7 +217,7 @@ B) Only example-based tests for one observable component
 C) No blocking tests until NgRx conversion is complete
 X) Other (please describe after [Answer]: tag below)
 
-[Answer]:
+[Answer]: A
 
 Recommendation: A. RxJS conversion is stateful and lifecycle-sensitive, so broad tests are worth it.
 
@@ -227,10 +227,10 @@ Recommendation: A. RxJS conversion is stateful and lifecycle-sensitive, so broad
 - [x] Define functional design scope.
 - [x] Define proposed RxJS conversion model.
 - [x] Generate functional design questions.
-- [ ] Collect user answers.
-- [ ] Analyze answers for ambiguity.
-- [ ] Generate functional design artifacts.
-- [ ] Present functional design completion for approval.
+- [x] Collect user answers.
+- [x] Analyze answers for ambiguity.
+- [x] Generate functional design artifacts.
+- [x] Present functional design completion for approval.
 
 ## Security Baseline Compliance
 
@@ -251,4 +251,4 @@ Required properties:
 
 ## Approval Gate
 
-Status: Functional design questions created. Awaiting user answers.
+Status: Functional design artifacts generated. Awaiting explicit approval to continue to code generation planning.

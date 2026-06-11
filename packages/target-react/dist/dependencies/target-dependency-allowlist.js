@@ -10,12 +10,13 @@ export const targetDependencyAllowlist = {
     vite: '5.4.11',
     less: '4.2.0',
     '@reduxjs/toolkit': '2.2.7',
+    'react-redux': '9.1.2',
     zustand: '5.0.6',
 };
 export const targetStateDependencyHints = {
     service: [],
     signals: [],
-    store: ['@reduxjs/toolkit'],
+    store: ['@reduxjs/toolkit', 'react-redux'],
     local: [],
     unknown: [],
 };

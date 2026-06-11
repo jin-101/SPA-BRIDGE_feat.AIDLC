@@ -5,9 +5,9 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: V2-GAP-UOW-00 Code Generation Review
-- **Last Completed**: V2-GAP-UOW-00 Code Generation
-- **Next Step**: Review V2-GAP-UOW-00 dependency compatibility implementation and approve continuation to V2-GAP-UOW-04 RxJS Conversion
+- **Current Stage**: V2-GAP-UOW-05 Code Generation Review
+- **Last Completed**: V2-GAP-UOW-05 Code Generation
+- **Next Step**: Review generated NgRx conversion code and approve continuation to V2-GAP-UOW-06
 
 ## Workspace State
 - **Existing Code**: No
@@ -137,6 +137,21 @@
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Code Generation Planning
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Code Generation
 - [x] CONSTRUCTION - V2-GAP-UOW-00 Build and Test
+- [x] CONSTRUCTION - V2-GAP-UOW-00 Code Generation Review Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Functional Design Answers
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Build and Test
+- [x] CONSTRUCTION - V2-GAP-UOW-04 Code Generation Review Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Functional Design Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Functional Design Answers
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-05 Build and Test
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -270,9 +285,20 @@
 - **React Runtime Parity Conversion Requirements Expansion**: Added source package dependency carry-over with Angular-specific filtering, selector-based custom Angular tag conversion to React component imports/tags, source-path-preserving component output paths, EventEmitter-to-callback-prop conversion, and nested route component imports on 2026-06-08T23:14:55Z. Workspace build/test verification passed.
 - **V2 Gap Brownfield Workflow Planning**: Started focused brownfield development based on `requirements_v2_gap_implementation_spec.md` on 2026-06-08T23:37:34Z. Created the V2 gap workflow plan, V2 gap units of work, and V2-GAP-UOW-01 dependency alias/path mapping functional design plan. Awaiting approval to continue to code generation planning.
 - **V2-GAP-UOW-00 Code Generation**: Implemented dependency compatibility filtering and replacement on 2026-06-09T06:22:36Z. Added deterministic package classification, WDS Angular-to-React package replacement, Angular-only package exclusion, compatibility report generation, review diagnostics, Ollama advisory boundary, and tests. Workspace `npm run build` and `npm test` passed.
+- **V2-GAP-UOW-00 Code Generation Review Approval**: Approved by user on 2026-06-11T05:36:03Z. Workflow resumed at V2-GAP-UOW-04 RxJS Conversion functional design answer collection.
+- **V2-GAP-UOW-04 Functional Design Answers**: User stated the final product goal is a generated React repository that installs and runs with `npm run dev` as closely as possible to the Angular source application. All V2-GAP-UOW-04 RxJS conversion questions were answered with A on 2026-06-11T06:21:41Z to prioritize runtime parity, generated hooks, cleanup, async pipe binding, and blocking tests.
+- **V2-GAP-UOW-04 Functional Design Artifacts**: Generated RxJS conversion functional design artifacts on 2026-06-11T06:23:21Z, covering source stream models, subject/subscription/operator entities, async pipe binding, generated React hook contracts, cleanup rules, diagnostics, and frontend integration.
+- **V2-GAP-UOW-04 Functional Design Approval**: Approved by user on 2026-06-11T06:27:18Z.
+- **V2-GAP-UOW-04 Code Generation Planning**: Created RxJS conversion code generation plan on 2026-06-11T06:27:18Z. Awaiting explicit approval before implementation.
+- **V2-GAP-UOW-04 Code Generation**: Implemented RxJS conversion on 2026-06-11T06:52:10Z. Added source RxJS extraction, async pipe binding detection, transformation carry-through, React RxJS runtime helper generation, component hook materialization, tests, documentation summaries, and workspace build/test verification.
+- **V2-GAP-UOW-04 Code Generation Review Approval**: Approved by user on 2026-06-11T06:54:12Z. Workflow advanced to V2-GAP-UOW-05 NgRx Conversion.
+- **V2-GAP-UOW-05 Functional Design Artifacts**: Generated NgRx conversion functional design artifacts on 2026-06-11T06:54:12Z, covering NgRx action/reducer/selector/effect/entity models, Redux Toolkit target output, component store hook rewrites, dependency policy, diagnostics, and frontend integration.
+- **V2-GAP-UOW-05 Functional Design Approval**: Approved by user on 2026-06-11T06:59:45Z.
+- **V2-GAP-UOW-05 Code Generation Planning**: Created NgRx conversion code generation plan on 2026-06-11T06:59:45Z. Awaiting explicit approval before implementation.
+- **V2-GAP-UOW-05 Code Generation**: Implemented NgRx conversion on 2026-06-11T07:03:36Z. Added source NgRx extraction, transformation carry-through, Redux Toolkit target materialization, component store usage rewrites, dependency manifest support, tests, documentation summaries, and workspace build/test verification.
 
 ## Execution Plan Summary
-- **Recommended Next Stage**: Approve V2-GAP-UOW-00 review and resume V2-GAP-UOW-04 RxJS Conversion
+- **Recommended Next Stage**: Approve V2-GAP-UOW-05 code generation review and continue to V2-GAP-UOW-06
 - **Stages to Execute**: V2 gap brownfield construction units V2-GAP-UOW-01 through V2-GAP-UOW-07
 - **Stages to Skip**: Reverse Engineering (no existing code)
 - **Risk Level**: Medium

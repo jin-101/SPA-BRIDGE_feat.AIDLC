@@ -121,6 +121,154 @@ export type NormalizedFormModel = {
     templateBindings: NormalizedFormBindingIntent[];
     submitIntents: NormalizedFormSubmitIntent[];
 };
+export type NormalizedRxOperator = {
+    id: string;
+    name: string;
+    argumentText?: string;
+    operatorKind: 'projection' | 'filter' | 'side-effect' | 'flattening' | 'error-handling' | 'timing' | 'sharing' | 'cleanup' | 'unknown';
+    reviewRequired: boolean;
+};
+export type NormalizedRxOperatorChain = {
+    id: string;
+    sourceExpression: string;
+    operators: NormalizedRxOperator[];
+    hasFlattening: boolean;
+    hasErrorHandling: boolean;
+    hasCleanupOperator: boolean;
+    conversionSafety: 'safe' | 'review-required' | 'unsupported';
+};
+export type NormalizedRxStreamModel = {
+    id: string;
+    ownerId: string;
+    ownerKind: 'component' | 'service' | 'store-effect' | 'unknown';
+    sourceRef?: SourceRef;
+    memberName: string;
+    valueName: string;
+    typeText?: string;
+    initializerText?: string;
+    operatorChainIds: string[];
+    asyncPipeBindingIds: string[];
+    diagnostics: string[];
+};
+export type NormalizedRxSubjectModel = {
+    id: string;
+    subjectKind: 'Subject' | 'BehaviorSubject' | 'ReplaySubject' | 'AsyncSubject' | 'unknown';
+    memberName: string;
+    initialValueText?: string;
+    cleanupRole: 'destroy-signal' | 'state-source' | 'event-source' | 'unknown';
+    reviewRequired: boolean;
+};
+export type NormalizedRxSubscriptionModel = {
+    id: string;
+    ownerId: string;
+    sourceExpression: string;
+    nextCallbackText?: string;
+    assignmentTarget?: string;
+    cleanupEvidence: 'takeUntil' | 'subscription-add' | 'ngOnDestroy-unsubscribe' | 'none' | 'unknown';
+    operatorChainId?: string;
+    sideEffectLevel: 'none' | 'state-assignment' | 'method-call' | 'external-effect' | 'unknown';
+};
+export type NormalizedAsyncPipeBinding = {
+    id: string;
+    ownerComponentId: string;
+    templateSourceRef?: SourceRef;
+    expressionText: string;
+    streamId?: string;
+    bindingKind: 'interpolation' | 'property' | 'attribute' | 'structural' | 'unknown';
+    fallbackValueText?: string;
+    reviewRequired: boolean;
+};
+export type ReactRxHookDraft = {
+    id: string;
+    ownerComponentId: string;
+    hookKind: 'useObservable' | 'useSubjectValue' | 'useSubscriptionEffect';
+    sourceStreamId: string;
+    valueName: string;
+    initialValueText: string;
+    dependencyExpressions: string[];
+    cleanupRequired: boolean;
+    reviewComments: string[];
+};
+export type NormalizedNgrxActionModel = {
+    id: string;
+    name: string;
+    actionType: string;
+    sourceRef?: SourceRef;
+    payloadProperties: string[];
+};
+export type NormalizedNgrxReducerHandlerModel = {
+    id: string;
+    actionNames: string[];
+    reducerExpression: string;
+    reviewRequired: boolean;
+};
+export type NormalizedNgrxReducerModel = {
+    id: string;
+    name: string;
+    featureName: string;
+    initialStateRef?: string;
+    sourceRef?: SourceRef;
+    handlers: NormalizedNgrxReducerHandlerModel[];
+};
+export type NormalizedNgrxSelectorModel = {
+    id: string;
+    name: string;
+    featureName?: string;
+    dependencies: string[];
+    projectorExpression?: string;
+    sourceRef?: SourceRef;
+    reviewRequired: boolean;
+};
+export type NormalizedNgrxEffectModel = {
+    id: string;
+    name: string;
+    sourceRef?: SourceRef;
+    ofTypeActions: string[];
+    dispatch: boolean;
+    operatorIntents: string[];
+    serviceCallRefs: string[];
+    safety: 'safe' | 'review-required' | 'unsupported';
+};
+export type NormalizedNgrxEntityAdapterModel = {
+    id: string;
+    name: string;
+    entityType?: string;
+    sourceRef?: SourceRef;
+    selectIdExpression?: string;
+    sortComparerExpression?: string;
+    helperRefs: string[];
+    reviewRequired: boolean;
+};
+export type NormalizedNgrxComponentUsageModel = {
+    id: string;
+    ownerComponentPath: string;
+    ownerComponentName?: string;
+    sourceRef?: SourceRef;
+    storeDependencyName: string;
+    selectedSelectors: string[];
+    dispatchedActions: string[];
+    usageKind: 'select' | 'dispatch' | 'mixed' | 'injected-only';
+    reviewRequired: boolean;
+};
+export type ReactReduxToolkitDraft = {
+    id: string;
+    featureName: string;
+    actions: NormalizedNgrxActionModel[];
+    reducer?: NormalizedNgrxReducerModel;
+    selectors: NormalizedNgrxSelectorModel[];
+    effects: NormalizedNgrxEffectModel[];
+    entityAdapters: NormalizedNgrxEntityAdapterModel[];
+    componentUsages: NormalizedNgrxComponentUsageModel[];
+    hasRouterStore: boolean;
+    reviewComments: string[];
+};
+export type ReactReduxUsageDraft = {
+    id: string;
+    ownerComponentId: string;
+    selectorRefs: string[];
+    actionRefs: string[];
+    reviewComments: string[];
+};
 export type NormalizedService = {
     id: string;
     name: string;
@@ -166,6 +314,18 @@ export type TransformationContext = {
     components: NormalizedComponent[];
     templates: NormalizedTemplate[];
     forms: NormalizedFormModel[];
+    rxStreams: NormalizedRxStreamModel[];
+    rxSubjects: NormalizedRxSubjectModel[];
+    rxSubscriptions: NormalizedRxSubscriptionModel[];
+    rxOperatorChains: NormalizedRxOperatorChain[];
+    asyncPipeBindings: NormalizedAsyncPipeBinding[];
+    ngrxActions: NormalizedNgrxActionModel[];
+    ngrxReducers: NormalizedNgrxReducerModel[];
+    ngrxSelectors: NormalizedNgrxSelectorModel[];
+    ngrxEffects: NormalizedNgrxEffectModel[];
+    ngrxEntityAdapters: NormalizedNgrxEntityAdapterModel[];
+    ngrxComponentUsages: NormalizedNgrxComponentUsageModel[];
+    hasNgrxRouterStore: boolean;
     services: NormalizedService[];
     routes: NormalizedRoute[];
     states: NormalizedState[];
@@ -194,6 +354,8 @@ export type ReactComponentDraft = {
     templateIr?: TemplateIr;
     templateExternalReferences: string[];
     forms: NormalizedFormModel[];
+    rxHooks: ReactRxHookDraft[];
+    reduxUsage?: ReactReduxUsageDraft;
     serviceRefs: string[];
     styleUrls: string[];
     sourceRelativePath?: string;
@@ -246,6 +408,7 @@ export type ReactStateDraft = {
     actions: string[];
     selectors: string[];
     effects: string[];
+    reduxToolkit?: ReactReduxToolkitDraft;
     reviewItemIds: string[];
     generatedRefs: GeneratedArtifactRef[];
 };
@@ -259,6 +422,7 @@ export type ReactTargetDraftSet = {
     services: ReactServiceDraft[];
     routes: ReactRouteDraft[];
     state: ReactStateDraft[];
+    reduxToolkit: ReactReduxToolkitDraft[];
     manualReviewItems: ManualReviewItem[];
     diagnostics: Diagnostic[];
     traces: TraceLink[];
@@ -310,6 +474,7 @@ export type RuleContribution = {
     serviceDrafts?: ReactServiceDraft[];
     routeDrafts?: ReactRouteDraft[];
     stateDrafts?: ReactStateDraft[];
+    reduxToolkitDrafts?: ReactReduxToolkitDraft[];
     hooks?: ReactHookDraft[];
     diagnostics?: Diagnostic[];
     reviewItems?: ManualReviewItem[];

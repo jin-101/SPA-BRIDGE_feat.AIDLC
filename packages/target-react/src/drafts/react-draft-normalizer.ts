@@ -22,6 +22,7 @@ export class ReactDraftNormalizer {
       services: [...draftSet.services].sort(byId),
       routes: [...draftSet.routes].sort(byId),
       state: [...draftSet.state].sort(byId),
+      reduxToolkit: [...draftSet.reduxToolkit].sort(byId),
       manualReviewItems: [...draftSet.manualReviewItems].sort(byId) as ManualReviewItem[],
       diagnostics: [...draftSet.diagnostics].sort((left: Diagnostic, right: Diagnostic) => {
         const severity = left.severity.localeCompare(right.severity);

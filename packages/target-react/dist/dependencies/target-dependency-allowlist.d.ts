@@ -11,6 +11,7 @@ export declare const targetDependencyAllowlist: {
     readonly vite: "5.4.11";
     readonly less: "4.2.0";
     readonly '@reduxjs/toolkit': "2.2.7";
+    readonly 'react-redux': "9.1.2";
     readonly zustand: "5.0.6";
 };
 export declare const targetStateDependencyHints: Record<TargetStateStrategy, readonly string[]>;

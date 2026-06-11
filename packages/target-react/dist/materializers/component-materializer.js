@@ -27,7 +27,7 @@ const toReactEventName = (name) => {
     };
     return eventMap[name.toLowerCase()] ?? `on${name.charAt(0).toUpperCase()}${name.slice(1)}`;
 };
-const needsReactImport = (component) => component.propertyInitializers.length > 0 || component.hooks.length > 0 || component.forms.length > 0;
+const needsReactImport = (component) => component.propertyInitializers.length > 0 || component.hooks.length > 0 || component.forms.length > 0 || component.rxHooks.length > 0;
 const normalizeInitializer = (initializer) => {
     if (!initializer || initializer.trim().length === 0) {
         return 'undefined';
@@ -54,8 +54,12 @@ const transformExpression = (expression, context) => {
     });
     return transformed;
 };
-const transformTemplateExpression = (expression, context) => {
+const transformTemplateExpression = (expression, context, rxValueNames = new Map()) => {
     const [baseExpression, ...pipes] = expression.split('|').map((part) => part.trim()).filter(Boolean);
+    if (pipes[0]?.startsWith('async')) {
+        const streamExpression = (baseExpression ?? expression).replace(/^this\./, '').trim();
+        return rxValueNames.get(streamExpression) ?? rxValueNames.get(streamExpression.replace(/\$$/, '')) ?? `${toIdentifier(streamExpression.replace(/\$$/, ''), 'observable')}Value`;
+    }
     const transformed = transformExpression(baseExpression ?? expression, context);
     return pipes.length > 0 ? `String(${transformed} ?? '')` : transformed;
 };
@@ -101,6 +105,16 @@ const transformAngularStatement = (line, context) => {
             const delta = operator === '++' ? '+ 1' : '- 1';
             return [`    ${toStateSetter(identifier)}((previous) => Number(previous ?? 0) ${delta});`];
         }
+    }
+    const storeDispatch = trimmed.match(/^(?:this\.)?store\.dispatch\s*\((.+)\);?$/);
+    if (storeDispatch?.[1] && context.hasReduxDispatch) {
+        return [`    dispatch(${transformExpression(storeDispatch[1], context)});`];
+    }
+    const storeSelect = trimmed.match(/^(?:this\.)?store\.select\s*\((.+)\);?$/);
+    if (storeSelect?.[1]) {
+        return [
+            `    // AIDLC_MANUAL_REVIEW_NGRX: store.select(${storeSelect[1].replace(/\*\//g, '* /')}) should be represented by useAppSelector at render scope.`,
+        ];
     }
     const returnStatement = trimmed.match(/^return\s+(.+);?$/);
     if (returnStatement?.[1]) {
@@ -233,6 +247,44 @@ const renderFormLines = (component) => {
     }
     return lines.length > 0 ? [...lines, ''] : [];
 };
+const renderRxHookLines = (component) => {
+    if (component.rxHooks.length === 0) {
+        return [];
+    }
+    const lines = [];
+    for (const hook of component.rxHooks) {
+        lines.push(...hook.reviewComments.map((comment) => `  /* ${comment.replace(/\*\//g, '* /')} */`));
+        const valueName = toIdentifier(hook.valueName, 'observableValue');
+        const sourceExpression = hook.dependencyExpressions[0] ?? hook.sourceStreamId;
+        if (hook.hookKind === 'useObservable') {
+            lines.push(`  const { value: ${valueName} } = useObservable(${sourceExpression}, ${hook.initialValueText});`);
+        }
+        else if (hook.hookKind === 'useSubjectValue') {
+            lines.push(`  const { value: ${valueName} } = useSubjectValue(${sourceExpression}, ${hook.initialValueText});`);
+        }
+        else {
+            lines.push(`  useSubscriptionEffect(() => ${sourceExpression}.subscribe(), [${sourceExpression}]);`);
+        }
+    }
+    return [...lines, ''];
+};
+const renderReduxUsageLines = (component) => {
+    if (!component.reduxUsage) {
+        return [];
+    }
+    const lines = [];
+    lines.push(...component.reduxUsage.reviewComments.map((comment) => `  /* ${comment.replace(/\*\//g, '* /')} */`));
+    lines.push('  const dispatch = useAppDispatch();');
+    for (const selectorRef of component.reduxUsage.selectorRefs) {
+        const selectorName = toIdentifier(selectorRef.split('.').pop() ?? selectorRef, 'selector');
+        lines.push(`  const ${selectorName}Value = useAppSelector((state) => (state as unknown as Record<string, unknown>)['${selectorName}']);`);
+    }
+    for (const actionRef of component.reduxUsage.actionRefs) {
+        const actionName = toIdentifier(actionRef.split('.').pop() ?? actionRef, 'action');
+        lines.push(`  const dispatch${actionName.charAt(0).toUpperCase()}${actionName.slice(1)} = (payload?: Record<string, unknown>) => dispatch({ type: '${actionRef.replace(/'/g, "\\'")}', payload });`);
+    }
+    return [...lines, ''];
+};
 export class ComponentMaterializer {
     templateRenderer;
     constructor(templateRenderer = new TemplateJsxRenderer()) {
@@ -255,14 +307,17 @@ export class ComponentMaterializer {
         const imports = [
             ...(needsReactImport(component) ? ["import { useEffect, useState } from 'react';"] : []),
             ...(component.forms.length > 0 ? [`import { useFormArray, useFormControl, useFormGroup, validators as formValidators } from '${toRelativeImport(componentPath, 'src/utils/forms/index')}';`] : []),
+            ...(component.rxHooks.length > 0 ? [`import { useObservable, useSubjectValue, useSubscriptionEffect } from '${toRelativeImport(componentPath, 'src/utils/rxjs/index')}';`] : []),
+            ...(component.reduxUsage ? [`import { useAppDispatch, useAppSelector } from '${toRelativeImport(componentPath, 'src/store/hooks')}';`] : []),
             ...styleImports,
-            ...(needsReactImport(component) || styleImports.length > 0 || component.forms.length > 0 ? [''] : []),
+            ...(needsReactImport(component) || styleImports.length > 0 || component.forms.length > 0 || component.rxHooks.length > 0 || component.reduxUsage ? [''] : []),
         ];
         const logicContext = {
             stateNames: new Set(component.propertyInitializers.filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input')).map((property) => property.name)),
             propertyNames: new Set(component.propertyInitializers.map((property) => property.name)),
             methodNames: new Set(component.methods.map((method) => method.name)),
             propNames: new Set(component.props),
+            hasReduxDispatch: Boolean(component.reduxUsage),
         };
         const stateLines = component.propertyInitializers
             .filter((property) => !property.readonly && !property.isEventEmitter && !propertyDecorators(property).includes('Input') && !isFormProperty(component, property.name))
@@ -315,7 +370,14 @@ export class ComponentMaterializer {
         const templateLogicContext = {
             ...logicContext,
             transformExpression: (expression) => transformExpression(expression, logicContext),
-            transformTemplateExpression: (expression) => transformTemplateExpression(expression, logicContext),
+            transformTemplateExpression: (expression) => transformTemplateExpression(expression, logicContext, new Map(component.rxHooks.flatMap((hook) => {
+                const source = hook.dependencyExpressions[0] ?? hook.sourceStreamId;
+                const stripped = source.replace(/^this\./, '');
+                return [
+                    [stripped, toIdentifier(hook.valueName, 'observableValue')],
+                    [stripped.replace(/\$$/, ''), toIdentifier(hook.valueName, 'observableValue')],
+                ];
+            }))),
             toStateSetter,
             toIdentifier,
             formControlNames: new Set(component.forms.flatMap((form) => collectControls(form).map((control) => control.name))),
@@ -348,11 +410,17 @@ export class ComponentMaterializer {
             ...eventEmitterLines,
             ...(stateLines.length > 0 || readonlyLines.length > 0 || eventEmitterLines.length > 0 ? [''] : []),
             ...renderFormLines(component),
+            ...renderRxHookLines(component),
+            ...renderReduxUsageLines(component),
             ...lifecycleLines,
             ...(lifecycleLines.length > 0 ? [''] : []),
             ...methodLines,
             ...this.renderTemplateHelpers(template.helpers),
             ...usedIdentifiers.map((identifier) => `  void ${identifier};`),
+            ...(component.reduxUsage?.actionRefs ?? []).map((actionRef) => {
+                const actionName = toIdentifier(actionRef.split('.').pop() ?? actionRef, 'action');
+                return `  void dispatch${actionName.charAt(0).toUpperCase()}${actionName.slice(1)};`;
+            }),
             ...(usedIdentifiers.length > 0 ? [''] : []),
             '  return (',
             `    <section data-component="${safeName}">`,

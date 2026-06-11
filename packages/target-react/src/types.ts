@@ -7,6 +7,7 @@ import type {
 } from '@spa-bridge/core-model';
 import type {
   ReactComponentDraft,
+  ReactReduxToolkitDraft,
   ReactRouteDraft,
   ReactServiceDraft,
   ReactStateDraft,
@@ -76,6 +77,7 @@ export type NormalizedTargetDraftBundle = {
   services: ReactServiceDraft[];
   routes: ReactRouteDraft[];
   state: ReactStateDraft[];
+  reduxToolkit: ReactReduxToolkitDraft[];
   manualReviewItems: ManualReviewItem[];
   diagnostics: Diagnostic[];
   traces: TraceLink[];

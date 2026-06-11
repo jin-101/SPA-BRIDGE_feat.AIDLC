@@ -6,6 +6,8 @@ import { createReactDefaultStrategy, createViteReactTypeScriptStrategy } from '.
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
 import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
+import { RxjsRuntimeMaterializer } from '../materializers/rxjs-runtime-materializer.js';
+import { ReduxToolkitMaterializer } from '../materializers/redux-toolkit-materializer.js';
 import { ServiceMaterializer } from '../materializers/service-materializer.js';
 import { RoutingOutputAdapter } from '../routing/routing-output-adapter.js';
 import { StateOutputAdapters } from '../state/state-output-adapters.js';
@@ -39,6 +41,8 @@ export class TargetGenerationService {
     dependencyBuilder;
     componentMaterializer;
     formRuntimeMaterializer;
+    rxjsRuntimeMaterializer;
+    reduxToolkitMaterializer;
     serviceMaterializer;
     routeAdapter;
     stateAdapters;
@@ -51,13 +55,15 @@ export class TargetGenerationService {
     privacyGuard;
     dependencyClassifier;
     dependencyReportMaterializer;
-    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard(), dependencyClassifier = new DependencyCompatibilityClassifier(), dependencyReportMaterializer = new DependencyCompatibilityReportMaterializer()) {
+    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), rxjsRuntimeMaterializer = new RxjsRuntimeMaterializer(), reduxToolkitMaterializer = new ReduxToolkitMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard(), dependencyClassifier = new DependencyCompatibilityClassifier(), dependencyReportMaterializer = new DependencyCompatibilityReportMaterializer()) {
         this.registry = registry;
         this.validator = validator;
         this.normalizer = normalizer;
         this.dependencyBuilder = dependencyBuilder;
         this.componentMaterializer = componentMaterializer;
         this.formRuntimeMaterializer = formRuntimeMaterializer;
+        this.rxjsRuntimeMaterializer = rxjsRuntimeMaterializer;
+        this.reduxToolkitMaterializer = reduxToolkitMaterializer;
         this.serviceMaterializer = serviceMaterializer;
         this.routeAdapter = routeAdapter;
         this.stateAdapters = stateAdapters;
@@ -94,6 +100,8 @@ export class TargetGenerationService {
         const generatedFiles = [
             ...scaffoldFiles,
             ...this.formRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.forms.length > 0)),
+            ...this.rxjsRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.rxHooks.length > 0)),
+            ...this.reduxToolkitMaterializer.materialize(normalizedDrafts.reduxToolkit, [sourceRef]),
             ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
             ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
             ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),
@@ -170,7 +178,7 @@ export class TargetGenerationService {
         });
     }
     buildDependencyManifest(strategy, drafts, request) {
-        const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true);
+        const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true, drafts.reduxToolkit.length > 0);
         const dependencyClassification = this.dependencyClassifier.classify(request.sourceDependencies ?? {});
         const devDependencyClassification = this.dependencyClassifier.classify(request.sourceDevDependencies ?? {});
         const sourceDependencies = this.dependencyClassifier.toDependencyRecord(dependencyClassification.decisions);

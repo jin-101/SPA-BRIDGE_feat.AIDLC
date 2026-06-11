@@ -227,7 +227,7 @@ const buildIndexHtml = (projectName: string): string => `<!doctype html>
 </html>
 `;
 
-const buildMainTsx = (): string => `import React from 'react';
+const buildMainTsx = (includeReduxStore: boolean): string => `${includeReduxStore ? "import { Provider } from 'react-redux';\nimport { store } from './store/index.js';\n" : ''}import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App.js';
 import './styles.css';
@@ -235,7 +235,7 @@ import './source-styles.js';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
-    <App />
+    ${includeReduxStore ? '<Provider store={store}>\n      <App />\n    </Provider>' : '<App />'}
   </React.StrictMode>,
 );
 `;
@@ -282,7 +282,7 @@ const buildStrategy = (id: TargetStrategyDescriptor['id'], defaultStrategy: bool
       makeFile('tsconfig.node.json', 'scaffold', buildTsconfigNode()),
       makeFile('vite.config.ts', 'scaffold', buildViteConfig(aliasMappings)),
       makeFile('index.html', 'scaffold', buildIndexHtml(projectName)),
-      makeFile('src/main.tsx', 'scaffold', buildMainTsx()),
+      makeFile('src/main.tsx', 'scaffold', buildMainTsx(normalizedDrafts.reduxToolkit.length > 0)),
       makeFile('src/App.tsx', 'scaffold', buildAppTsx(projectName)),
       makeFile('src/styles.css', 'scaffold', buildStyles()),
       makeFile('src/source-styles.ts', 'scaffold', '/* Angular source style imports are added by the CLI resource copier. */\n'),

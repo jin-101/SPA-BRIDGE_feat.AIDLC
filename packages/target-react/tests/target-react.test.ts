@@ -87,6 +87,7 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         templateRawText: '<article class="panel"><button (click)="selectPassenger(title)">{{ title }}</button><img src="assets/logo.png"></article>',
         templateExternalReferences: ['assets/logo.png'],
         forms: [],
+        rxHooks: [],
         serviceRefs: ['service-1'],
         styleUrls: ['./main-panel.less'],
         propertyInitializers: [
@@ -172,6 +173,7 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         generatedRefs: [{ kind: 'generated', path: 'src/state/local/appstate.ts' }],
       },
     ],
+    reduxToolkit: [],
     manualReviewItems: [
       {
         id: 'review-1',
@@ -233,6 +235,87 @@ describe('TargetGenerationService', () => {
     expect(first.writePlan).toStrictEqual(second.writePlan);
     expect(first.summary).toStrictEqual(second.summary);
     expect(first.dependencyManifest).toStrictEqual(second.dependencyManifest);
+  });
+
+  it('generates Redux Toolkit store artifacts when NgRx drafts are present', () => {
+    const request = createFixtureRequest();
+    request.selectedStateStrategy = 'store';
+    request.draftSet.reduxToolkit = [
+      {
+        id: 'redux-flights',
+        featureName: 'flights',
+        actions: [
+          {
+            id: 'action-load-flights',
+            name: 'loadFlights',
+            actionType: '[Flights] Load',
+            sourceRef: { kind: 'source', path: '/workspace/spa-bridge/src/app/flights.actions.ts' },
+            payloadProperties: ['routeId'],
+          },
+        ],
+        reducer: {
+          id: 'reducer-flights',
+          name: 'flightsReducer',
+          featureName: 'flights',
+          sourceRef: { kind: 'source', path: '/workspace/spa-bridge/src/app/flights.reducer.ts' },
+          handlers: [
+            {
+              id: 'handler-load-flights',
+              actionNames: ['loadFlights'],
+              reducerExpression: '(state) => state',
+              reviewRequired: false,
+            },
+          ],
+        },
+        selectors: [
+          {
+            id: 'selector-flights',
+            name: 'selectFlights',
+            featureName: 'flights',
+            dependencies: ['selectFlightsFeature'],
+            sourceRef: { kind: 'source', path: '/workspace/spa-bridge/src/app/flights.selectors.ts' },
+            reviewRequired: false,
+          },
+        ],
+        effects: [
+          {
+            id: 'effect-flights',
+            name: 'loadFlights$',
+            sourceRef: { kind: 'source', path: '/workspace/spa-bridge/src/app/flights.effects.ts' },
+            ofTypeActions: ['loadFlights'],
+            dispatch: true,
+            operatorIntents: ['switchMap'],
+            serviceCallRefs: ['api.load'],
+            safety: 'safe',
+          },
+        ],
+        entityAdapters: [],
+        componentUsages: [],
+        hasRouterStore: false,
+        reviewComments: [],
+      },
+    ];
+    request.draftSet.components[0] = {
+      ...request.draftSet.components[0]!,
+      reduxUsage: {
+        id: 'usage-flights',
+        ownerComponentId: 'component-1',
+        selectorRefs: ['selectFlights'],
+        actionRefs: ['loadFlights'],
+        reviewComments: [],
+      },
+    };
+
+    const result = expectOk(generateReactTarget(request));
+    expect(result.dependencyManifest.dependencies['@reduxjs/toolkit']).toBe('2.2.7');
+    expect(result.dependencyManifest.dependencies['react-redux']).toBe('9.1.2');
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/store/index.ts'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/store/hooks.ts'))).toBe(true);
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/store/slices/flights.ts'))?.content).toContain('createSlice');
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/store/selectors/flights.ts'))?.content).toContain('selectFlights');
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/store/effects/flights.ts'))?.content).toContain('loadFlights$');
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'))?.content).toContain('useAppSelector');
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/main.tsx'))?.content).toContain('<Provider store={store}>');
   });
 });
 
@@ -326,6 +409,50 @@ describe('Support utilities', () => {
     expect(componentFile?.content).toContain('formValidators.required()');
     expect(componentFile?.content).toContain('{...emailControl.inputProps}');
     expect(componentFile?.content).toContain('event.preventDefault(); submit();');
+  });
+
+  it('generates RxJS runtime helpers and binds async pipe expressions to observable hook values', () => {
+    const request = createFixtureRequest();
+    request.sourceDependencies = {
+      rxjs: '6.6.7',
+    };
+    request.draftSet.components[0] = {
+      ...request.draftSet.components[0]!,
+      templateRawText: '<span>{{ flights$ | async }}</span>',
+      propertyInitializers: [
+        ...request.draftSet.components[0]!.propertyInitializers,
+        {
+          name: 'flights$',
+          initializer: 'this.flightService.flights()',
+          readonly: true,
+          decorators: [],
+          typeText: 'Observable<string[]>',
+          isEventEmitter: false,
+        },
+      ],
+      rxHooks: [
+        {
+          id: 'rx-hook-1',
+          ownerComponentId: 'component-1',
+          hookKind: 'useObservable',
+          sourceStreamId: 'stream-1',
+          valueName: 'flightsValue',
+          initialValueText: '[]',
+          dependencyExpressions: ['flights$'],
+          cleanupRequired: true,
+          reviewComments: [],
+        },
+      ],
+    };
+
+    const result = expectOk(generateReactTarget(request));
+    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
+
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/utils/rxjs/useObservable.ts'))).toBe(true);
+    expect(componentFile?.content).toContain('useObservable');
+    expect(componentFile?.content).toContain('const { value: flightsValue } = useObservable(flights$, []);');
+    expect(componentFile?.content).toContain('{flightsValue}');
+    expect(result.dependencyManifest.dependencies.rxjs).toBe('6.6.7');
   });
 
   it('selects the default strategy deterministically', () => {

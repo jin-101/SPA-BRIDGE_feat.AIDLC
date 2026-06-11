@@ -65,6 +65,87 @@ describe('TransformationService', () => {
     expect(result.draftSet.manualReviewItems.length).toBeGreaterThan(0);
     expect(result.draftSet.diagnostics.some((diagnostic) => diagnostic.severity === 'manual-review')).toBe(true);
   });
+
+  it('carries NgRx IR into Redux Toolkit drafts and component store usage', () => {
+    const analysis = createBenchmarkAngularAnalysisFixture({
+      componentCount: 1,
+      includeUnsupportedTemplate: false,
+    });
+    const componentPath = analysis.typeScriptSummaries[0]?.sourcePath ?? '/workspace/spa-bridge/src/app/component-1.component.ts';
+    analysis.ngrxModel = {
+      schemaVersion: 1,
+      actions: [
+        {
+          id: 'action-load-flights',
+          name: 'loadFlights',
+          actionType: '[Flights] Load',
+          sourceRef: { kind: 'source', path: componentPath, symbol: 'loadFlights' },
+          payloadProperties: ['routeId'],
+        },
+      ],
+      reducers: [
+        {
+          id: 'reducer-flights',
+          name: 'flightsReducer',
+          featureName: 'flights',
+          sourceRef: { kind: 'source', path: componentPath, symbol: 'flightsReducer' },
+          handlers: [
+            {
+              id: 'handler-load-flights',
+              actionNames: ['loadFlights'],
+              reducerExpression: '(state) => state',
+              reviewRequired: false,
+            },
+          ],
+        },
+      ],
+      selectors: [
+        {
+          id: 'selector-flights',
+          name: 'selectFlights',
+          featureName: 'flights',
+          dependencies: ['selectFlightsFeature'],
+          sourceRef: { kind: 'source', path: componentPath, symbol: 'selectFlights' },
+          reviewRequired: false,
+        },
+      ],
+      effects: [
+        {
+          id: 'effect-load-flights',
+          name: 'loadFlights$',
+          sourceRef: { kind: 'source', path: componentPath, symbol: 'loadFlights$' },
+          ofTypeActions: ['loadFlights'],
+          dispatch: true,
+          operatorIntents: ['switchMap'],
+          serviceCallRefs: ['api.load'],
+          safety: 'safe',
+        },
+      ],
+      entityAdapters: [],
+      componentUsages: [
+        {
+          id: 'usage-flights',
+          ownerComponentPath: componentPath,
+          ownerComponentName: analysis.typeScriptSummaries[0]?.symbols[0]?.name,
+          sourceRef: { kind: 'source', path: componentPath },
+          storeDependencyName: 'store',
+          selectedSelectors: ['selectFlights'],
+          dispatchedActions: ['loadFlights'],
+          usageKind: 'mixed',
+          reviewRequired: false,
+        },
+      ],
+      hasRouterStore: false,
+      diagnostics: [],
+    };
+    const service = new TransformationService();
+    const result = expectOk(service.transform(createRequest({ analysis, stateStrategy: 'store' })));
+
+    expect(result.draftSet.reduxToolkit[0]?.featureName).toBe('flights');
+    expect(result.draftSet.reduxToolkit[0]?.actions.map((action) => action.name)).toContain('loadFlights');
+    expect(result.draftSet.components[0]?.reduxUsage?.selectorRefs).toContain('selectFlights');
+    expect(result.draftSet.components[0]?.reduxUsage?.actionRefs).toContain('loadFlights');
+  });
 });
 
 describe('Registry and planner', () => {
