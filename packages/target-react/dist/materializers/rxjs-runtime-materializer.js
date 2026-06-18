@@ -35,7 +35,7 @@ export const useObservable = <T>(observable: Observable<T> | undefined, initialV
   return state;
 };
 `;
-const useSubjectValueSource = `import { useObservable, type ObservableState } from './useObservable.js';
+const useSubjectValueSource = `import { useObservable, type ObservableState } from './useObservable';
 import type { Observable } from 'rxjs';
 
 export const useSubjectValue = <T>(subject: Observable<T> | undefined, initialValue: T): ObservableState<T> => {
@@ -79,9 +79,9 @@ export class RxjsRuntimeMaterializer {
                 path: 'src/utils/rxjs/index.ts',
                 kind: 'scaffold',
                 content: [
-                    "export * from './useObservable.js';",
-                    "export * from './useSubjectValue.js';",
-                    "export * from './useSubscriptionEffect.js';",
+                    "export * from './useObservable';",
+                    "export * from './useSubjectValue';",
+                    "export * from './useSubscriptionEffect';",
                     '',
                 ].join('\n'),
             }),

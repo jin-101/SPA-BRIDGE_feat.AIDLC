@@ -13,6 +13,11 @@ import {
   RunnerPlanBuilder,
   SelfCorrectionPlanner,
   TraceCoverageValidator,
+  RuntimeParityQualityGate,
+  GeneratedTargetCommandPlanner,
+  ValidationResultClassifier,
+  DeterministicFixerRegistry,
+  GeneratedTargetSelfCorrectionService,
   createQualityGateTraceId,
   propertyTestPlanArbitrary,
   qualityRequestArbitrary,
@@ -148,6 +153,145 @@ describe('core-quality package', () => {
   it('keeps trace coverage stable for generated trace ids', () => {
     const gateTraceId = createQualityGateTraceId('run-001', 'unit');
     expect(gateTraceId.startsWith('trace-')).toBe(true);
+  });
+
+  it('scores Next.js runtime parity artifacts with required files and residue findings', () => {
+    const gate = new RuntimeParityQualityGate();
+    const score = gate.evaluate({
+      targetStrategy: 'nextjs-typescript',
+      expectedFramework: 'nextjs',
+      files: [
+        {
+          path: 'package.json',
+          content: JSON.stringify({ scripts: { dev: 'next dev', build: 'next build', typecheck: 'tsc --noEmit' }, dependencies: { next: '14.2.30' } }),
+        },
+        { path: 'next.config.mjs', content: 'export default {};' },
+        { path: 'tsconfig.json', content: '{}' },
+        { path: 'src/app/layout.tsx', content: 'export default function RootLayout() { return null; }' },
+        { path: 'src/app/page.tsx', content: 'export default function Page() { return <main />; }' },
+        { path: 'src/app/providers.tsx', content: "'use client'; export const RootProviders = ({ children }) => <>{children}</>;" },
+        { path: '.npmrc.example', content: '# registry placeholders\n' },
+        { path: '.env.example', content: 'API_BASE_URL=\n' },
+        { path: 'src/review/registry-migration-report.json', content: '{"schemaVersion":1}' },
+        { path: 'src/review/script-migration-report.json', content: '{"schemaVersion":1}' },
+        { path: 'src/review/environment-contract-report.json', content: '{"schemaVersion":1}' },
+        { path: 'src/review/package-manager-parity-report.json', content: '{"schemaVersion":1}' },
+      ],
+    });
+
+    expect(score.requiredFilesPresent).toBe(true);
+    expect(score.packageInstallReady).toBe(true);
+    expect(score.enterpriseParityArtifactsPresent).toBe(true);
+    expect(score.enterpriseScriptReady).toBe(true);
+    expect(score.enterpriseEnvironmentReady).toBe(true);
+    expect(score.score).toBeGreaterThanOrEqual(85);
+  });
+
+  it('plans generated target validation commands with safe boundaries', () => {
+    const planner = new GeneratedTargetCommandPlanner();
+    const plan = planner.plan({
+      runId: 'run-001',
+      targetRoot: '/workspace/generated-next',
+      packageJson: {
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          lint: 'next lint',
+          postinstall: 'node unsafe.js',
+          typecheck: 'tsc --noEmit',
+        },
+      },
+    });
+
+    expect(plan.commands.map((command) => command.kind)).toEqual(['install', 'typecheck', 'build', 'lint']);
+    expect(plan.commands.every((command) => command.allowlisted)).toBe(true);
+    expect(plan.commands.every((command) => command.workingDirectory === '/workspace/generated-next')).toBe(true);
+    expect(plan.rejectedScripts).toEqual(['postinstall']);
+  });
+
+  it('plans generated target validation commands with detected Yarn package manager parity', () => {
+    const planner = new GeneratedTargetCommandPlanner();
+    const plan = planner.plan({
+      runId: 'run-yarn',
+      targetRoot: '/workspace/generated-next',
+      packageJson: {
+        packageManager: 'yarn@1.22.22',
+        scripts: {
+          dev: 'next dev',
+          build: 'next build',
+          typecheck: 'tsc --noEmit',
+        },
+      },
+    });
+
+    expect(plan.packageManager).toBe('yarn');
+    expect(plan.commands[0]).toMatchObject({
+      kind: 'install',
+      command: 'yarn',
+      args: ['install', '--ignore-scripts', '--non-interactive'],
+    });
+    expect(plan.commands.find((command) => command.kind === 'build')).toMatchObject({
+      command: 'yarn',
+      args: ['build'],
+    });
+  });
+
+  it('classifies generated target validation failures with sanitized diagnostics', () => {
+    const classifier = new ValidationResultClassifier();
+    const result = classifier.classify({
+      commandId: 'run-001-build',
+      kind: 'build',
+      exitCode: 1,
+      safeOutputSummary: 'Module not found: /Users/jhan/private/customer/src/app.tsx',
+      durationMs: 10,
+    });
+
+    expect(result.status).toBe('failed');
+    expect(result.safeOutputSummary).toContain('[safe-path]');
+    expect(result.diagnostics[0]?.category).toBe('typescript-import-resolution');
+    expect(result.diagnostics[0]?.fixerCandidateIds).toContain('fix-import-paths');
+  });
+
+  it('keeps deterministic fixer planning idempotent for repeated diagnostics', () => {
+    const classifier = new ValidationResultClassifier();
+    const diagnostic = classifier.classify({
+      commandId: 'run-001-build',
+      kind: 'build',
+      exitCode: 1,
+      safeOutputSummary: 'useState requires a client component boundary',
+    }).diagnostics[0];
+    if (!diagnostic) {
+      throw new Error('Expected diagnostic');
+    }
+    const registry = new DeterministicFixerRegistry();
+
+    const first = registry.planFixes([diagnostic, diagnostic]);
+    const second = registry.planFixes([diagnostic]);
+
+    expect(first).toStrictEqual(second);
+    expect(first).toHaveLength(1);
+    expect(first[0]?.category).toBe('next-client-boundary');
+  });
+
+  it('summarizes generated target self-correction for runtime parity scoring', () => {
+    const classifier = new ValidationResultClassifier();
+    const validationResult = classifier.classify({
+      commandId: 'run-001-build',
+      kind: 'build',
+      exitCode: 1,
+      safeOutputSummary: 'Cannot find module ./helpers',
+    });
+    const service = new GeneratedTargetSelfCorrectionService();
+    const result = service.evaluate({
+      runId: 'run-001',
+      targetRoot: '/workspace/generated-next',
+      packageJson: { scripts: { build: 'next build' } },
+      validationResults: [validationResult],
+    });
+
+    expect(result.status).toBe('degraded');
+    expect(result.summary.appliedFixes).toBe(1);
+    expect(result.artifactRefs).toContain('.spa-bridge/quality-gate-results.json');
   });
 });
 

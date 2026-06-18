@@ -1,10 +1,13 @@
 import { err, ok } from '@spa-bridge/core-model';
+import { GeneratedTargetSelfCorrectionService, RuntimeParityQualityGate } from '@spa-bridge/core-quality';
 import { TargetGenerationRequestValidator } from '../validation/target-generation-request-validator.js';
 import { TargetStrategyRegistry } from '../strategy/target-strategy-registry.js';
 import { selectTargetStrategy } from '../strategy/target-strategy-selection-policy.js';
+import { createNextJsTypeScriptStrategy } from '../strategies/nextjs-typescript.js';
 import { createReactDefaultStrategy, createViteReactTypeScriptStrategy } from '../strategies/vite-react-typescript.js';
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { AnimationMaterializer } from '../materializers/animation-materializer.js';
 import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
 import { RxjsRuntimeMaterializer } from '../materializers/rxjs-runtime-materializer.js';
 import { ReduxToolkitMaterializer } from '../materializers/redux-toolkit-materializer.js';
@@ -17,6 +20,7 @@ import { TraceCoverageValidator } from '../traceability/trace-coverage-validator
 import { DependencyManifestBuilder } from '../dependencies/dependency-manifest-builder.js';
 import { DependencyCompatibilityClassifier } from '../dependencies/dependency-compatibility-classifier.js';
 import { DependencyCompatibilityReportMaterializer } from '../dependencies/dependency-compatibility-report-materializer.js';
+import { EnterpriseArtifactMaterializer } from '../enterprise/enterprise-artifact-materializer.js';
 import { TargetDiagnosticFactory } from '../diagnostics/target-diagnostic-factory.js';
 import { TargetManualReviewFactory } from '../review/target-manual-review-factory.js';
 import { ReviewStubGenerator } from '../review/review-stub-generator.js';
@@ -25,6 +29,7 @@ import { EcosystemMetadataPrivacyGuard } from '../metadata/ecosystem-metadata-pr
 import { createFileSpec } from '../write-plan/generated-file-spec-factory.js';
 const defaultRegistry = () => {
     const registry = new TargetStrategyRegistry();
+    registry.register(createNextJsTypeScriptStrategy());
     registry.register(createViteReactTypeScriptStrategy());
     registry.register(createReactDefaultStrategy());
     return registry;
@@ -40,6 +45,7 @@ export class TargetGenerationService {
     normalizer;
     dependencyBuilder;
     componentMaterializer;
+    animationMaterializer;
     formRuntimeMaterializer;
     rxjsRuntimeMaterializer;
     reduxToolkitMaterializer;
@@ -55,12 +61,16 @@ export class TargetGenerationService {
     privacyGuard;
     dependencyClassifier;
     dependencyReportMaterializer;
-    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), rxjsRuntimeMaterializer = new RxjsRuntimeMaterializer(), reduxToolkitMaterializer = new ReduxToolkitMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard(), dependencyClassifier = new DependencyCompatibilityClassifier(), dependencyReportMaterializer = new DependencyCompatibilityReportMaterializer()) {
+    enterpriseArtifactMaterializer;
+    runtimeParityQualityGate;
+    selfCorrectionService;
+    constructor(registry = defaultRegistry(), validator = new TargetGenerationRequestValidator(), normalizer = new ReactDraftNormalizer(), dependencyBuilder = new DependencyManifestBuilder(), componentMaterializer = new ComponentMaterializer(), animationMaterializer = new AnimationMaterializer(), formRuntimeMaterializer = new FormRuntimeMaterializer(), rxjsRuntimeMaterializer = new RxjsRuntimeMaterializer(), reduxToolkitMaterializer = new ReduxToolkitMaterializer(), serviceMaterializer = new ServiceMaterializer(), routeAdapter = new RoutingOutputAdapter(), stateAdapters = new StateOutputAdapters(), writePlanBuilder = new WritePlanBuilder(), traceBuilder = new TargetTraceBuilder(), traceCoverageValidator = new TraceCoverageValidator(), diagnosticFactory = new TargetDiagnosticFactory(), manualReviewFactory = new TargetManualReviewFactory(), reviewStubGenerator = new ReviewStubGenerator(), privacyGuard = new EcosystemMetadataPrivacyGuard(), dependencyClassifier = new DependencyCompatibilityClassifier(), dependencyReportMaterializer = new DependencyCompatibilityReportMaterializer(), enterpriseArtifactMaterializer = new EnterpriseArtifactMaterializer(), runtimeParityQualityGate = new RuntimeParityQualityGate(), selfCorrectionService = new GeneratedTargetSelfCorrectionService()) {
         this.registry = registry;
         this.validator = validator;
         this.normalizer = normalizer;
         this.dependencyBuilder = dependencyBuilder;
         this.componentMaterializer = componentMaterializer;
+        this.animationMaterializer = animationMaterializer;
         this.formRuntimeMaterializer = formRuntimeMaterializer;
         this.rxjsRuntimeMaterializer = rxjsRuntimeMaterializer;
         this.reduxToolkitMaterializer = reduxToolkitMaterializer;
@@ -76,6 +86,9 @@ export class TargetGenerationService {
         this.privacyGuard = privacyGuard;
         this.dependencyClassifier = dependencyClassifier;
         this.dependencyReportMaterializer = dependencyReportMaterializer;
+        this.enterpriseArtifactMaterializer = enterpriseArtifactMaterializer;
+        this.runtimeParityQualityGate = runtimeParityQualityGate;
+        this.selfCorrectionService = selfCorrectionService;
     }
     generate(request) {
         const requestValidation = this.validator.validate(request);
@@ -85,7 +98,8 @@ export class TargetGenerationService {
         const strategy = selectTargetStrategy(requestValidation.value, this.registry);
         const normalizedDrafts = this.normalizer.normalize(requestValidation.value);
         const sourceRef = makeSourceRef(requestValidation.value);
-        const dependencyManifest = this.buildDependencyManifest(strategy, normalizedDrafts, requestValidation.value);
+        const enterpriseParity = this.enterpriseArtifactMaterializer.buildArtifacts(requestValidation.value);
+        const dependencyManifest = this.buildDependencyManifest(strategy, normalizedDrafts, requestValidation.value, enterpriseParity.scriptMigrationPlan.targetScripts, enterpriseParity.packageManagerParityReport.targetPackageManagerField);
         const dependencyCompatibilityReport = dependencyManifest.compatibilityReport ?? {
             schemaVersion: 1,
             decisions: [],
@@ -102,6 +116,7 @@ export class TargetGenerationService {
             ...this.formRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.forms.length > 0)),
             ...this.rxjsRuntimeMaterializer.materialize(normalizedDrafts.components.some((component) => component.rxHooks.length > 0)),
             ...this.reduxToolkitMaterializer.materialize(normalizedDrafts.reduxToolkit, [sourceRef]),
+            ...this.animationMaterializer.materialize(normalizedDrafts.animations, [sourceRef]),
             ...this.componentMaterializer.materializeMany(normalizedDrafts.components, sourceRef),
             ...this.serviceMaterializer.materializeMany(normalizedDrafts.services, sourceRef),
             ...this.routeAdapter.materialize(normalizedDrafts.routes, [sourceRef], normalizedDrafts.components),
@@ -110,9 +125,11 @@ export class TargetGenerationService {
         const manualReviewItems = [
             ...normalizedDrafts.manualReviewItems,
             ...this.createManualReviewItems(normalizedDrafts, dependencyCompatibilityReport),
+            ...this.enterpriseArtifactMaterializer.createManualReviewItems(enterpriseParity),
         ];
         const reviewStubs = this.reviewStubGenerator.build(manualReviewItems);
         const dependencyCompatibilityFile = this.dependencyReportMaterializer.materialize(dependencyCompatibilityReport);
+        const enterpriseFiles = this.enterpriseArtifactMaterializer.materialize(enterpriseParity);
         const ecosystemMetadata = this.privacyGuard.sanitize(targetEcosystemMetadataCatalog);
         const metadataFile = createFileSpec({
             path: 'src/metadata/ecosystem-metadata.json',
@@ -121,7 +138,39 @@ export class TargetGenerationService {
             overwrite: true,
             status: 'metadata',
         });
-        const allFiles = [...generatedFiles, ...reviewStubs, dependencyCompatibilityFile, metadataFile];
+        const preQualityFiles = [...generatedFiles, ...reviewStubs, dependencyCompatibilityFile, ...enterpriseFiles, metadataFile];
+        const packageJsonFile = preQualityFiles.find((file) => file.path === 'package.json');
+        const packageJson = this.parsePackageJson(packageJsonFile?.content);
+        const selfCorrectionResult = this.selfCorrectionService.evaluate({
+            runId: requestValidation.value.runId,
+            targetRoot: requestValidation.value.targetRoot,
+            packageJson,
+            packageManager: enterpriseParity.packageManagerParityReport.selected.name,
+            includeSmokeStart: false,
+            allowLocalAiRepair: true,
+            allowExternalAiRepair: false,
+        });
+        const selfCorrectionFile = createFileSpec({
+            path: '.spa-bridge/quality-gate-results.json',
+            kind: 'metadata',
+            content: JSON.stringify(selfCorrectionResult, null, 2) + '\n',
+            overwrite: true,
+            status: selfCorrectionResult.status === 'blocked' ? 'review' : 'metadata',
+        });
+        const runtimeParityQuality = this.runtimeParityQualityGate.evaluate({
+            targetStrategy: strategy.id,
+            expectedFramework: strategy.id === 'nextjs-typescript' ? 'nextjs' : 'vite',
+            files: [...preQualityFiles, selfCorrectionFile].map((file) => ({ path: file.path, content: file.content })),
+            selfCorrection: selfCorrectionResult,
+        });
+        const runtimeParityQualityFile = createFileSpec({
+            path: 'src/review/runtime-parity-quality.json',
+            kind: 'review',
+            content: JSON.stringify(runtimeParityQuality, null, 2) + '\n',
+            overwrite: true,
+            status: runtimeParityQuality.status === 'failed' ? 'review' : 'metadata',
+        });
+        const allFiles = [...preQualityFiles, selfCorrectionFile, runtimeParityQualityFile];
         const writePlanResult = this.writePlanBuilder.build({
             runId: requestValidation.value.runId,
             correlationId: requestValidation.value.correlationId,
@@ -162,6 +211,7 @@ export class TargetGenerationService {
             totalAliases: normalizedDrafts.aliasModel.summary.totalAliases,
             totalGeneratedAliases: normalizedDrafts.aliasModel.paths.filter((mapping) => mapping.status === 'supported').length,
             unresolvedAliases: normalizedDrafts.aliasModel.summary.unresolvedAliases,
+            enterpriseParity: enterpriseParity.summary,
         };
         return ok({
             status: manualReviewItems.length > 0 ? 'partial' : 'success',
@@ -174,11 +224,14 @@ export class TargetGenerationService {
             traces: traceLinks,
             dependencyManifest,
             dependencyCompatibilityReport,
+            enterpriseParity,
             scaffoldFiles,
+            selfCorrectionResult,
         });
     }
-    buildDependencyManifest(strategy, drafts, request) {
-        const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true, drafts.reduxToolkit.length > 0);
+    buildDependencyManifest(strategy, drafts, request, targetScripts, packageManager) {
+        const framework = drafts.projectStrategy === 'nextjs-typescript' ? 'nextjs' : 'vite';
+        const manifest = this.dependencyBuilder.build(drafts.stateStrategy, true, drafts.reduxToolkit.length > 0, framework);
         const dependencyClassification = this.dependencyClassifier.classify(request.sourceDependencies ?? {});
         const devDependencyClassification = this.dependencyClassifier.classify(request.sourceDevDependencies ?? {});
         const sourceDependencies = this.dependencyClassifier.toDependencyRecord(dependencyClassification.decisions);
@@ -187,6 +240,8 @@ export class TargetGenerationService {
         return {
             dependencies: { ...sourceDependencies, ...strategy.exactDependencies, ...manifest.dependencies },
             devDependencies: { ...sourceDevDependencies, ...manifest.devDependencies },
+            scripts: targetScripts,
+            packageManager,
             rationale: {
                 ...Object.fromEntries(compatibilityReport.decisions
                     .filter((decision) => decision.decision === 'carry' || decision.decision === 'replace')
@@ -241,6 +296,20 @@ export class TargetGenerationService {
         return [
             this.diagnosticFactory.create('UOW07-TARGET-001', 'info', `Target strategy '${strategyId}' produced ${totalFiles} write-plan files.`),
         ];
+    }
+    parsePackageJson(content) {
+        if (!content)
+            return undefined;
+        try {
+            const parsed = JSON.parse(content);
+            return {
+                scripts: parsed.scripts && typeof parsed.scripts === 'object' ? parsed.scripts : undefined,
+                packageManager: typeof parsed.packageManager === 'string' ? parsed.packageManager : undefined,
+            };
+        }
+        catch {
+            return undefined;
+        }
     }
 }
 export const generateReactTarget = (request) => new TargetGenerationService().generate(request);

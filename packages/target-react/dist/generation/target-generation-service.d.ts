@@ -1,9 +1,11 @@
 import { type Result } from '@spa-bridge/core-model';
+import { GeneratedTargetSelfCorrectionService, RuntimeParityQualityGate } from '@spa-bridge/core-quality';
 import type { TargetGenerationError, TargetGenerationRequest, TargetGenerationResult } from '../types.js';
 import { TargetGenerationRequestValidator } from '../validation/target-generation-request-validator.js';
 import { TargetStrategyRegistry } from '../strategy/target-strategy-registry.js';
 import { ReactDraftNormalizer } from '../drafts/react-draft-normalizer.js';
 import { ComponentMaterializer } from '../materializers/component-materializer.js';
+import { AnimationMaterializer } from '../materializers/animation-materializer.js';
 import { FormRuntimeMaterializer } from '../materializers/form-runtime-materializer.js';
 import { RxjsRuntimeMaterializer } from '../materializers/rxjs-runtime-materializer.js';
 import { ReduxToolkitMaterializer } from '../materializers/redux-toolkit-materializer.js';
@@ -16,6 +18,7 @@ import { TraceCoverageValidator } from '../traceability/trace-coverage-validator
 import { DependencyManifestBuilder } from '../dependencies/dependency-manifest-builder.js';
 import { DependencyCompatibilityClassifier } from '../dependencies/dependency-compatibility-classifier.js';
 import { DependencyCompatibilityReportMaterializer } from '../dependencies/dependency-compatibility-report-materializer.js';
+import { EnterpriseArtifactMaterializer } from '../enterprise/enterprise-artifact-materializer.js';
 import { TargetDiagnosticFactory } from '../diagnostics/target-diagnostic-factory.js';
 import { TargetManualReviewFactory } from '../review/target-manual-review-factory.js';
 import { ReviewStubGenerator } from '../review/review-stub-generator.js';
@@ -26,6 +29,7 @@ export declare class TargetGenerationService {
     private readonly normalizer;
     private readonly dependencyBuilder;
     private readonly componentMaterializer;
+    private readonly animationMaterializer;
     private readonly formRuntimeMaterializer;
     private readonly rxjsRuntimeMaterializer;
     private readonly reduxToolkitMaterializer;
@@ -41,12 +45,16 @@ export declare class TargetGenerationService {
     private readonly privacyGuard;
     private readonly dependencyClassifier;
     private readonly dependencyReportMaterializer;
-    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, rxjsRuntimeMaterializer?: RxjsRuntimeMaterializer, reduxToolkitMaterializer?: ReduxToolkitMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard, dependencyClassifier?: DependencyCompatibilityClassifier, dependencyReportMaterializer?: DependencyCompatibilityReportMaterializer);
+    private readonly enterpriseArtifactMaterializer;
+    private readonly runtimeParityQualityGate;
+    private readonly selfCorrectionService;
+    constructor(registry?: TargetStrategyRegistry, validator?: TargetGenerationRequestValidator, normalizer?: ReactDraftNormalizer, dependencyBuilder?: DependencyManifestBuilder, componentMaterializer?: ComponentMaterializer, animationMaterializer?: AnimationMaterializer, formRuntimeMaterializer?: FormRuntimeMaterializer, rxjsRuntimeMaterializer?: RxjsRuntimeMaterializer, reduxToolkitMaterializer?: ReduxToolkitMaterializer, serviceMaterializer?: ServiceMaterializer, routeAdapter?: RoutingOutputAdapter, stateAdapters?: StateOutputAdapters, writePlanBuilder?: WritePlanBuilder, traceBuilder?: TargetTraceBuilder, traceCoverageValidator?: TraceCoverageValidator, diagnosticFactory?: TargetDiagnosticFactory, manualReviewFactory?: TargetManualReviewFactory, reviewStubGenerator?: ReviewStubGenerator, privacyGuard?: EcosystemMetadataPrivacyGuard, dependencyClassifier?: DependencyCompatibilityClassifier, dependencyReportMaterializer?: DependencyCompatibilityReportMaterializer, enterpriseArtifactMaterializer?: EnterpriseArtifactMaterializer, runtimeParityQualityGate?: RuntimeParityQualityGate, selfCorrectionService?: GeneratedTargetSelfCorrectionService);
     generate(request: TargetGenerationRequest): Result<TargetGenerationResult, TargetGenerationError>;
     private buildDependencyManifest;
     private withUsageFindings;
     private createManualReviewItems;
     private createGeneratedDiagnostics;
+    private parsePackageJson;
 }
 export declare const generateReactTarget: (request: TargetGenerationRequest) => Result<TargetGenerationResult, TargetGenerationError>;
 //# sourceMappingURL=target-generation-service.d.ts.map

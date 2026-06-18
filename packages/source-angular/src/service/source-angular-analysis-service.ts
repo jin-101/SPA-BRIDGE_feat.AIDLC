@@ -13,6 +13,7 @@ import {
 
 import { AnalysisArtifactMapper } from '../model/artifact-mapper.js';
 import { AliasAnalyzer } from '../aliases/alias-analyzer.js';
+import { AnimationModelExtractor } from '../animations/animation-model-extractor.js';
 import { FormModelExtractor } from '../forms/form-model-extractor.js';
 import { GraphBuilder } from '../graph/graph-builder.js';
 import { PathGuard } from '../path/path-guard.js';
@@ -51,6 +52,7 @@ export class SourceAngularAnalysisService {
   private readonly pathGuard = new PathGuard();
   private readonly workspaceProfiler = new WorkspaceProfiler(this.pathGuard);
   private readonly aliasAnalyzer = new AliasAnalyzer(this.pathGuard);
+  private readonly animationExtractor = new AnimationModelExtractor();
   private readonly formExtractor = new FormModelExtractor();
   private readonly rxjsExtractor = new RxjsModelExtractor();
   private readonly ngrxExtractor = new NgrxModelExtractor();
@@ -235,8 +237,10 @@ export class SourceAngularAnalysisService {
     const formModels = this.formExtractor.extract(typeScriptSummaries, templateSummaries);
     const rxjsModel = this.rxjsExtractor.extract(typeScriptSummaries, templateSummaries);
     const ngrxModel = this.ngrxExtractor.extract(typeScriptSummaries);
+    const animationModel = this.animationExtractor.extract(typeScriptSummaries, templateSummaries);
     diagnostics.push(...rxjsModel.diagnostics);
     diagnostics.push(...ngrxModel.diagnostics);
+    diagnostics.push(...animationModel.diagnostics);
     diagnostics.push(
       ...formModels.flatMap((form) =>
         form.diagnostics.map((diagnostic) =>
@@ -278,6 +282,7 @@ export class SourceAngularAnalysisService {
       formModels,
       rxjsModel,
       ngrxModel,
+      animationModel,
       routeSummaries,
       graph: graphResult.graph,
       diagnostics: normalizedDiagnostics,
@@ -305,6 +310,14 @@ export class SourceAngularAnalysisService {
         totalNgrxEntityAdapters: ngrxModel.entityAdapters.length,
         totalNgrxComponentUsages: ngrxModel.componentUsages.length,
         totalNgrxDiagnostics: ngrxModel.diagnostics.length,
+        totalAnimationDeclarations: animationModel.declarations.length,
+        totalAnimationTriggers: animationModel.declarations.reduce((total, declaration) => total + declaration.triggers.length, 0),
+        totalAnimationBindings: animationModel.declarations.reduce(
+          (total, declaration) => total + declaration.triggers.reduce((triggerTotal, trigger) => triggerTotal + trigger.bindings.length, 0),
+          0,
+        ),
+        totalAnimationThirdPartyUsages: animationModel.thirdPartyUsages.length,
+        totalAnimationDiagnostics: animationModel.diagnostics.length,
       },
     });
   }

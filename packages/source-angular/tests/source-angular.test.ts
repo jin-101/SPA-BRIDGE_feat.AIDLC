@@ -14,6 +14,7 @@ import { TypeScriptParserAdapter } from '../src/parser/typescript-parser-adapter
 import { FormModelExtractor } from '../src/forms/form-model-extractor.js';
 import { RxjsModelExtractor } from '../src/rxjs/rxjs-model-extractor.js';
 import { NgrxModelExtractor } from '../src/ngrx/ngrx-model-extractor.js';
+import { AnimationModelExtractor } from '../src/animations/animation-model-extractor.js';
 import { AngularTemplateParserAdapter } from '../src/templates/angular-template-parser-adapter.js';
 import { GraphBuilder } from '../src/graph/graph-builder.js';
 import { SafeDiagnosticBuilder } from '../src/diagnostics/safe-diagnostic-builder.js';
@@ -319,6 +320,49 @@ describe('Parser adapters', () => {
       expect(model.entityAdapters.map((adapterModel) => adapterModel.name)).toContain('adapter');
       expect(model.componentUsages[0]?.selectedSelectors).toContain('selectFlights');
       expect(model.componentUsages[0]?.dispatchedActions).toContain('loadFlights');
+    }
+  });
+
+  test('extracts Angular animation metadata and template animation bindings without execution', async () => {
+    const tsParser = new TypeScriptParserAdapter();
+    const templateParser = new AngularTemplateParserAdapter();
+    const extractor = new AnimationModelExtractor();
+    const parsedTs = tsParser.parse(
+      '/tmp/panel.component.ts',
+      `
+        import { Component } from '@angular/core';
+        import { trigger, state, style, transition, animate } from '@angular/animations';
+        import lottie from 'lottie-web';
+
+        @Component({
+          selector: 'app-panel',
+          templateUrl: './panel.component.html',
+          animations: [
+            trigger('openClose', [
+              state('open', style({ opacity: 1 })),
+              state('closed', style({ opacity: 0 })),
+              transition('open => closed', [animate('200ms ease-in-out')])
+            ])
+          ]
+        })
+        export class PanelComponent {}
+      `,
+    );
+    const parsedTemplate = await templateParser.parse(
+      '/tmp/panel.component.html',
+      `<section [@openClose]="state" (@openClose.done)="done($event)">Panel</section>`,
+      '/tmp/panel.component.ts',
+    );
+
+    expect(parsedTs.ok).toBe(true);
+    expect(parsedTemplate.ok).toBe(true);
+    if (parsedTs.ok && parsedTemplate.ok) {
+      const model = extractor.extract([parsedTs.value], [parsedTemplate.value]);
+      expect(model.declarations).toHaveLength(1);
+      expect(model.declarations[0]?.triggers[0]?.triggerName).toBe('openClose');
+      expect(model.declarations[0]?.triggers[0]?.conversionEligibility).toBe('css-transition');
+      expect(model.declarations[0]?.triggers[0]?.bindings.some((binding) => binding.doneHandler === 'done($event)')).toBe(true);
+      expect(model.thirdPartyUsages.some((usage) => usage.packageName === 'lottie-web' && usage.targetDependencyDecision === 'carry')).toBe(true);
     }
   });
 });

@@ -138,6 +138,27 @@ export const ReportQualitySectionSchema = z.object({
     gateRuns: z.array(QualityGateRunSchema).default([]),
     pbtRuns: z.array(PbtOutcomeSchema).default([]),
     correctionAttempts: z.number().int().nonnegative().default(0),
+    selfCorrection: z
+        .object({
+        status: z.enum(['passed', 'degraded', 'blocked', 'skipped']),
+        plannedCommands: z.number().int().nonnegative().default(0),
+        appliedFixes: z.number().int().nonnegative().default(0),
+        aiRepairRequests: z.number().int().nonnegative().default(0),
+        remainingBlockers: z.number().int().nonnegative().default(0),
+        artifactRefs: z.array(SafeRelativePathSchema).default([]),
+    })
+        .optional(),
+    enterpriseParity: z
+        .object({
+        registrySafeEntries: z.number().int().nonnegative().default(0),
+        registrySecretPlaceholders: z.number().int().nonnegative().default(0),
+        generatedScripts: z.number().int().nonnegative().default(0),
+        reviewedScripts: z.number().int().nonnegative().default(0),
+        environmentVariables: z.number().int().nonnegative().default(0),
+        secretEnvironmentVariables: z.number().int().nonnegative().default(0),
+        manualReviewItems: z.number().int().nonnegative().default(0),
+    })
+        .optional(),
     evidenceCounts: z.object({
         total: z.number().int().nonnegative().default(0),
         blocked: z.number().int().nonnegative().default(0),

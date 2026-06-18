@@ -633,6 +633,53 @@ export declare const ReportQualitySectionSchema: z.ZodObject<{
         shrunk?: boolean | undefined;
     }>, "many">>;
     correctionAttempts: z.ZodDefault<z.ZodNumber>;
+    selfCorrection: z.ZodOptional<z.ZodObject<{
+        status: z.ZodEnum<["passed", "degraded", "blocked", "skipped"]>;
+        plannedCommands: z.ZodDefault<z.ZodNumber>;
+        appliedFixes: z.ZodDefault<z.ZodNumber>;
+        aiRepairRequests: z.ZodDefault<z.ZodNumber>;
+        remainingBlockers: z.ZodDefault<z.ZodNumber>;
+        artifactRefs: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodString, string, string>, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        status: "passed" | "blocked" | "skipped" | "degraded";
+        plannedCommands: number;
+        appliedFixes: number;
+        aiRepairRequests: number;
+        remainingBlockers: number;
+        artifactRefs: string[];
+    }, {
+        status: "passed" | "blocked" | "skipped" | "degraded";
+        plannedCommands?: number | undefined;
+        appliedFixes?: number | undefined;
+        aiRepairRequests?: number | undefined;
+        remainingBlockers?: number | undefined;
+        artifactRefs?: string[] | undefined;
+    }>>;
+    enterpriseParity: z.ZodOptional<z.ZodObject<{
+        registrySafeEntries: z.ZodDefault<z.ZodNumber>;
+        registrySecretPlaceholders: z.ZodDefault<z.ZodNumber>;
+        generatedScripts: z.ZodDefault<z.ZodNumber>;
+        reviewedScripts: z.ZodDefault<z.ZodNumber>;
+        environmentVariables: z.ZodDefault<z.ZodNumber>;
+        secretEnvironmentVariables: z.ZodDefault<z.ZodNumber>;
+        manualReviewItems: z.ZodDefault<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        registrySafeEntries: number;
+        registrySecretPlaceholders: number;
+        generatedScripts: number;
+        reviewedScripts: number;
+        environmentVariables: number;
+        secretEnvironmentVariables: number;
+        manualReviewItems: number;
+    }, {
+        registrySafeEntries?: number | undefined;
+        registrySecretPlaceholders?: number | undefined;
+        generatedScripts?: number | undefined;
+        reviewedScripts?: number | undefined;
+        environmentVariables?: number | undefined;
+        secretEnvironmentVariables?: number | undefined;
+        manualReviewItems?: number | undefined;
+    }>>;
     evidenceCounts: z.ZodObject<{
         total: z.ZodDefault<z.ZodNumber>;
         blocked: z.ZodDefault<z.ZodNumber>;
@@ -680,6 +727,23 @@ export declare const ReportQualitySectionSchema: z.ZodObject<{
     conversionQualityScore: number;
     targetPercent: number;
     targetMet: boolean;
+    selfCorrection?: {
+        status: "passed" | "blocked" | "skipped" | "degraded";
+        plannedCommands: number;
+        appliedFixes: number;
+        aiRepairRequests: number;
+        remainingBlockers: number;
+        artifactRefs: string[];
+    } | undefined;
+    enterpriseParity?: {
+        registrySafeEntries: number;
+        registrySecretPlaceholders: number;
+        generatedScripts: number;
+        reviewedScripts: number;
+        environmentVariables: number;
+        secretEnvironmentVariables: number;
+        manualReviewItems: number;
+    } | undefined;
 }, {
     gateStatus: "passed" | "blocked" | "failed" | "skipped";
     evidenceCounts: {
@@ -711,6 +775,23 @@ export declare const ReportQualitySectionSchema: z.ZodObject<{
         shrunk?: boolean | undefined;
     }[] | undefined;
     correctionAttempts?: number | undefined;
+    selfCorrection?: {
+        status: "passed" | "blocked" | "skipped" | "degraded";
+        plannedCommands?: number | undefined;
+        appliedFixes?: number | undefined;
+        aiRepairRequests?: number | undefined;
+        remainingBlockers?: number | undefined;
+        artifactRefs?: string[] | undefined;
+    } | undefined;
+    enterpriseParity?: {
+        registrySafeEntries?: number | undefined;
+        registrySecretPlaceholders?: number | undefined;
+        generatedScripts?: number | undefined;
+        reviewedScripts?: number | undefined;
+        environmentVariables?: number | undefined;
+        secretEnvironmentVariables?: number | undefined;
+        manualReviewItems?: number | undefined;
+    } | undefined;
 }>;
 export type ReportQualitySection = z.infer<typeof ReportQualitySectionSchema>;
 export declare const TraceCoverageSummarySchema: z.ZodObject<{
@@ -1480,6 +1561,53 @@ export declare const CanonicalConversionReportSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }>, "many">>;
         correctionAttempts: z.ZodDefault<z.ZodNumber>;
+        selfCorrection: z.ZodOptional<z.ZodObject<{
+            status: z.ZodEnum<["passed", "degraded", "blocked", "skipped"]>;
+            plannedCommands: z.ZodDefault<z.ZodNumber>;
+            appliedFixes: z.ZodDefault<z.ZodNumber>;
+            aiRepairRequests: z.ZodDefault<z.ZodNumber>;
+            remainingBlockers: z.ZodDefault<z.ZodNumber>;
+            artifactRefs: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodString, string, string>, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        }, {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        }>>;
+        enterpriseParity: z.ZodOptional<z.ZodObject<{
+            registrySafeEntries: z.ZodDefault<z.ZodNumber>;
+            registrySecretPlaceholders: z.ZodDefault<z.ZodNumber>;
+            generatedScripts: z.ZodDefault<z.ZodNumber>;
+            reviewedScripts: z.ZodDefault<z.ZodNumber>;
+            environmentVariables: z.ZodDefault<z.ZodNumber>;
+            secretEnvironmentVariables: z.ZodDefault<z.ZodNumber>;
+            manualReviewItems: z.ZodDefault<z.ZodNumber>;
+        }, "strip", z.ZodTypeAny, {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        }, {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        }>>;
         evidenceCounts: z.ZodObject<{
             total: z.ZodDefault<z.ZodNumber>;
             blocked: z.ZodDefault<z.ZodNumber>;
@@ -1527,6 +1655,23 @@ export declare const CanonicalConversionReportSchema: z.ZodObject<{
         conversionQualityScore: number;
         targetPercent: number;
         targetMet: boolean;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        } | undefined;
     }, {
         gateStatus: "passed" | "blocked" | "failed" | "skipped";
         evidenceCounts: {
@@ -1558,6 +1703,23 @@ export declare const CanonicalConversionReportSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }[] | undefined;
         correctionAttempts?: number | undefined;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        } | undefined;
     }>;
     traceability: z.ZodObject<{
         links: z.ZodDefault<z.ZodArray<z.ZodObject<{
@@ -1799,6 +1961,23 @@ export declare const CanonicalConversionReportSchema: z.ZodObject<{
         conversionQualityScore: number;
         targetPercent: number;
         targetMet: boolean;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        } | undefined;
     };
     reportId: string;
     schemaVersion: number;
@@ -1980,6 +2159,23 @@ export declare const CanonicalConversionReportSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }[] | undefined;
         correctionAttempts?: number | undefined;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        } | undefined;
     };
     reportId: string;
     schemaVersion: number;
@@ -2587,6 +2783,53 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }>, "many">>;
             correctionAttempts: z.ZodDefault<z.ZodNumber>;
+            selfCorrection: z.ZodOptional<z.ZodObject<{
+                status: z.ZodEnum<["passed", "degraded", "blocked", "skipped"]>;
+                plannedCommands: z.ZodDefault<z.ZodNumber>;
+                appliedFixes: z.ZodDefault<z.ZodNumber>;
+                aiRepairRequests: z.ZodDefault<z.ZodNumber>;
+                remainingBlockers: z.ZodDefault<z.ZodNumber>;
+                artifactRefs: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodString, string, string>, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            }, {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            }>>;
+            enterpriseParity: z.ZodOptional<z.ZodObject<{
+                registrySafeEntries: z.ZodDefault<z.ZodNumber>;
+                registrySecretPlaceholders: z.ZodDefault<z.ZodNumber>;
+                generatedScripts: z.ZodDefault<z.ZodNumber>;
+                reviewedScripts: z.ZodDefault<z.ZodNumber>;
+                environmentVariables: z.ZodDefault<z.ZodNumber>;
+                secretEnvironmentVariables: z.ZodDefault<z.ZodNumber>;
+                manualReviewItems: z.ZodDefault<z.ZodNumber>;
+            }, "strip", z.ZodTypeAny, {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            }, {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            }>>;
             evidenceCounts: z.ZodObject<{
                 total: z.ZodDefault<z.ZodNumber>;
                 blocked: z.ZodDefault<z.ZodNumber>;
@@ -2634,6 +2877,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         }, {
             gateStatus: "passed" | "blocked" | "failed" | "skipped";
             evidenceCounts: {
@@ -2665,6 +2925,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         }>;
         traceability: z.ZodObject<{
             links: z.ZodDefault<z.ZodArray<z.ZodObject<{
@@ -2869,6 +3146,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         };
         metadata: {
             targetFramework: string;
@@ -3015,6 +3309,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         };
         metadata: {
             targetFramework: string;
@@ -3171,6 +3482,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         };
         metadata: {
             targetFramework: string;
@@ -3323,6 +3651,23 @@ export declare const ReportGenerationRequestSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         };
         metadata: {
             targetFramework: string;
@@ -3804,6 +4149,53 @@ export declare const ReportInputBundleSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }>, "many">>;
         correctionAttempts: z.ZodDefault<z.ZodNumber>;
+        selfCorrection: z.ZodOptional<z.ZodObject<{
+            status: z.ZodEnum<["passed", "degraded", "blocked", "skipped"]>;
+            plannedCommands: z.ZodDefault<z.ZodNumber>;
+            appliedFixes: z.ZodDefault<z.ZodNumber>;
+            aiRepairRequests: z.ZodDefault<z.ZodNumber>;
+            remainingBlockers: z.ZodDefault<z.ZodNumber>;
+            artifactRefs: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodString, string, string>, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        }, {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        }>>;
+        enterpriseParity: z.ZodOptional<z.ZodObject<{
+            registrySafeEntries: z.ZodDefault<z.ZodNumber>;
+            registrySecretPlaceholders: z.ZodDefault<z.ZodNumber>;
+            generatedScripts: z.ZodDefault<z.ZodNumber>;
+            reviewedScripts: z.ZodDefault<z.ZodNumber>;
+            environmentVariables: z.ZodDefault<z.ZodNumber>;
+            secretEnvironmentVariables: z.ZodDefault<z.ZodNumber>;
+            manualReviewItems: z.ZodDefault<z.ZodNumber>;
+        }, "strip", z.ZodTypeAny, {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        }, {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        }>>;
         evidenceCounts: z.ZodObject<{
             total: z.ZodDefault<z.ZodNumber>;
             blocked: z.ZodDefault<z.ZodNumber>;
@@ -3851,6 +4243,23 @@ export declare const ReportInputBundleSchema: z.ZodObject<{
         conversionQualityScore: number;
         targetPercent: number;
         targetMet: boolean;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        } | undefined;
     }, {
         gateStatus: "passed" | "blocked" | "failed" | "skipped";
         evidenceCounts: {
@@ -3882,6 +4291,23 @@ export declare const ReportInputBundleSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }[] | undefined;
         correctionAttempts?: number | undefined;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        } | undefined;
     }>;
     traceability: z.ZodObject<{
         links: z.ZodDefault<z.ZodArray<z.ZodObject<{
@@ -4086,6 +4512,23 @@ export declare const ReportInputBundleSchema: z.ZodObject<{
         conversionQualityScore: number;
         targetPercent: number;
         targetMet: boolean;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands: number;
+            appliedFixes: number;
+            aiRepairRequests: number;
+            remainingBlockers: number;
+            artifactRefs: string[];
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries: number;
+            registrySecretPlaceholders: number;
+            generatedScripts: number;
+            reviewedScripts: number;
+            environmentVariables: number;
+            secretEnvironmentVariables: number;
+            manualReviewItems: number;
+        } | undefined;
     };
     metadata: {
         targetFramework: string;
@@ -4232,6 +4675,23 @@ export declare const ReportInputBundleSchema: z.ZodObject<{
             shrunk?: boolean | undefined;
         }[] | undefined;
         correctionAttempts?: number | undefined;
+        selfCorrection?: {
+            status: "passed" | "blocked" | "skipped" | "degraded";
+            plannedCommands?: number | undefined;
+            appliedFixes?: number | undefined;
+            aiRepairRequests?: number | undefined;
+            remainingBlockers?: number | undefined;
+            artifactRefs?: string[] | undefined;
+        } | undefined;
+        enterpriseParity?: {
+            registrySafeEntries?: number | undefined;
+            registrySecretPlaceholders?: number | undefined;
+            generatedScripts?: number | undefined;
+            reviewedScripts?: number | undefined;
+            environmentVariables?: number | undefined;
+            secretEnvironmentVariables?: number | undefined;
+            manualReviewItems?: number | undefined;
+        } | undefined;
     };
     metadata: {
         targetFramework: string;
@@ -4942,6 +5402,53 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }>, "many">>;
             correctionAttempts: z.ZodDefault<z.ZodNumber>;
+            selfCorrection: z.ZodOptional<z.ZodObject<{
+                status: z.ZodEnum<["passed", "degraded", "blocked", "skipped"]>;
+                plannedCommands: z.ZodDefault<z.ZodNumber>;
+                appliedFixes: z.ZodDefault<z.ZodNumber>;
+                aiRepairRequests: z.ZodDefault<z.ZodNumber>;
+                remainingBlockers: z.ZodDefault<z.ZodNumber>;
+                artifactRefs: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodString, string, string>, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            }, {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            }>>;
+            enterpriseParity: z.ZodOptional<z.ZodObject<{
+                registrySafeEntries: z.ZodDefault<z.ZodNumber>;
+                registrySecretPlaceholders: z.ZodDefault<z.ZodNumber>;
+                generatedScripts: z.ZodDefault<z.ZodNumber>;
+                reviewedScripts: z.ZodDefault<z.ZodNumber>;
+                environmentVariables: z.ZodDefault<z.ZodNumber>;
+                secretEnvironmentVariables: z.ZodDefault<z.ZodNumber>;
+                manualReviewItems: z.ZodDefault<z.ZodNumber>;
+            }, "strip", z.ZodTypeAny, {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            }, {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            }>>;
             evidenceCounts: z.ZodObject<{
                 total: z.ZodDefault<z.ZodNumber>;
                 blocked: z.ZodDefault<z.ZodNumber>;
@@ -4989,6 +5496,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         }, {
             gateStatus: "passed" | "blocked" | "failed" | "skipped";
             evidenceCounts: {
@@ -5020,6 +5544,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         }>;
         traceability: z.ZodObject<{
             links: z.ZodDefault<z.ZodArray<z.ZodObject<{
@@ -5261,6 +5802,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         };
         reportId: string;
         schemaVersion: number;
@@ -5442,6 +6000,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         };
         reportId: string;
         schemaVersion: number;
@@ -5791,6 +6366,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
             conversionQualityScore: number;
             targetPercent: number;
             targetMet: boolean;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands: number;
+                appliedFixes: number;
+                aiRepairRequests: number;
+                remainingBlockers: number;
+                artifactRefs: string[];
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries: number;
+                registrySecretPlaceholders: number;
+                generatedScripts: number;
+                reviewedScripts: number;
+                environmentVariables: number;
+                secretEnvironmentVariables: number;
+                manualReviewItems: number;
+            } | undefined;
         };
         reportId: string;
         schemaVersion: number;
@@ -5990,6 +6582,23 @@ export declare const ReportGenerationResultSchema: z.ZodObject<{
                 shrunk?: boolean | undefined;
             }[] | undefined;
             correctionAttempts?: number | undefined;
+            selfCorrection?: {
+                status: "passed" | "blocked" | "skipped" | "degraded";
+                plannedCommands?: number | undefined;
+                appliedFixes?: number | undefined;
+                aiRepairRequests?: number | undefined;
+                remainingBlockers?: number | undefined;
+                artifactRefs?: string[] | undefined;
+            } | undefined;
+            enterpriseParity?: {
+                registrySafeEntries?: number | undefined;
+                registrySecretPlaceholders?: number | undefined;
+                generatedScripts?: number | undefined;
+                reviewedScripts?: number | undefined;
+                environmentVariables?: number | undefined;
+                secretEnvironmentVariables?: number | undefined;
+                manualReviewItems?: number | undefined;
+            } | undefined;
         };
         reportId: string;
         schemaVersion: number;

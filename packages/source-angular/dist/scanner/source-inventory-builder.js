@@ -34,7 +34,7 @@ const classifyFile = (filePath) => {
     if (base.endsWith('.html')) {
         return { role: 'template', kind: 'template', evidence: ['html template extension'] };
     }
-    if (base.endsWith('.scss') || base.endsWith('.css')) {
+    if (base.endsWith('.scss') || base.endsWith('.sass') || base.endsWith('.less') || base.endsWith('.css')) {
         return { role: 'style', kind: 'style', evidence: ['style extension'] };
     }
     if (base.endsWith('.json')) {

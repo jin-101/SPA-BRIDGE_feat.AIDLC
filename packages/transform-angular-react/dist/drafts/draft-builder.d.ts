@@ -1,5 +1,5 @@
 import type { ManualReviewItem, Diagnostic, TraceLink } from '@spa-bridge/core-model';
-import type { ReactComponentDraft, ReactRouteDraft, ReactReduxToolkitDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft, TransformationTargetFramework, TargetProjectStrategy, TransformationContext } from '../types.js';
+import type { ReactComponentDraft, ReactAnimationDraft, ReactRouteDraft, ReactReduxToolkitDraft, ReactServiceDraft, ReactStateDraft, ReactTargetDraftSet, ReactTemplateDraft, TransformationTargetFramework, TargetProjectStrategy, TransformationContext } from '../types.js';
 export declare class DraftBuilder {
     private readonly components;
     private readonly templates;
@@ -7,6 +7,7 @@ export declare class DraftBuilder {
     private readonly routes;
     private readonly state;
     private readonly reduxToolkit;
+    private readonly animations;
     private readonly diagnostics;
     private readonly reviewItems;
     private readonly traces;
@@ -16,6 +17,7 @@ export declare class DraftBuilder {
     addRoute(draft: ReactRouteDraft): void;
     addState(draft: ReactStateDraft): void;
     addReduxToolkitDraft(draft: ReactReduxToolkitDraft): void;
+    addAnimationDraft(draft: ReactAnimationDraft): void;
     addDiagnostic(diagnostic: Diagnostic): void;
     addReviewItem(item: ManualReviewItem): void;
     addTrace(trace: TraceLink): void;

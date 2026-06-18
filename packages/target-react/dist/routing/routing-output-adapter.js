@@ -24,7 +24,7 @@ const toSourceRelativeComponentPath = (component) => {
 const toRelativeImport = (fromPath, toPath) => {
     const fromDir = fromPath.split('/').slice(0, -1).join('/');
     const fromParts = fromDir.split('/').filter(Boolean);
-    const toParts = toPath.replace(/\.tsx$/i, '.js').split('/').filter(Boolean);
+    const toParts = toPath.replace(/\.(tsx|ts)$/i, '').split('/').filter(Boolean);
     while (fromParts.length > 0 && toParts.length > 0 && fromParts[0] === toParts[0]) {
         fromParts.shift();
         toParts.shift();
@@ -39,7 +39,7 @@ export class RoutingOutputAdapter {
             .map((name) => `import { ${name} } from '${toRelativeImport('src/routes.tsx', componentPathByName.get(name) ?? `src/components/${name}.tsx`)}';`);
         const routeContent = [
             "import type { RouteObject } from 'react-router-dom';",
-            "import { App } from './App.js';",
+            "import { App } from './App';",
             ...componentImports,
             '',
             'export const routes: RouteObject[] = [',

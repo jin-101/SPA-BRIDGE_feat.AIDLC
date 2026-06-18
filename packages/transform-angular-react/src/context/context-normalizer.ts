@@ -12,6 +12,10 @@ import type {
   AngularNgrxEffectModel,
   AngularNgrxEntityAdapterModel,
   AngularNgrxComponentUsageModel,
+  AngularAnimationDeclaration,
+  AngularAnimationTriggerModel,
+  AngularAnimationAssetRef,
+  AngularThirdPartyAnimationUsage,
   FileInventoryRecord,
   TypeScriptParseSummary,
 } from '@spa-bridge/source-angular';
@@ -24,6 +28,10 @@ import type {
   NormalizedFormModel,
   NormalizedRxOperatorChain,
   NormalizedRxStreamModel,
+  NormalizedAnimationDeclaration,
+  NormalizedAnimationTriggerModel,
+  NormalizedAnimationAssetRef,
+  NormalizedThirdPartyAnimationUsage,
   NormalizedRoute,
   NormalizedService,
   NormalizedState,
@@ -169,6 +177,37 @@ const normalizeNgrxComponentUsage = (usage: AngularNgrxComponentUsageModel) => (
   usageKind: usage.usageKind,
   reviewRequired: usage.reviewRequired,
 });
+
+const normalizeAnimationTrigger = (trigger: AngularAnimationTriggerModel): NormalizedAnimationTriggerModel => ({
+  id: trigger.id,
+  triggerName: trigger.triggerName,
+  states: trigger.states.map((state) => ({ ...state })).sort((left, right) => left.id.localeCompare(right.id)),
+  transitions: trigger.transitions.map((transition) => ({ ...transition })).sort((left, right) => left.id.localeCompare(right.id)),
+  bindings: trigger.bindings.map((binding) => ({ ...binding })).sort((left, right) => left.id.localeCompare(right.id)),
+  complexity: trigger.complexity,
+  conversionEligibility: trigger.conversionEligibility,
+});
+
+const normalizeAnimationDeclaration = (declaration: AngularAnimationDeclaration): NormalizedAnimationDeclaration => ({
+  id: declaration.id,
+  sourceRef: declaration.sourceRef,
+  componentId: declaration.componentId,
+  triggers: declaration.triggers.map(normalizeAnimationTrigger).sort((left, right) => left.id.localeCompare(right.id)),
+  rawConstructKinds: [...declaration.rawConstructKinds].sort((left, right) => left.localeCompare(right)),
+  diagnostics: declaration.diagnostics.map((diagnostic) => diagnostic.code).sort((left, right) => left.localeCompare(right)),
+});
+
+const normalizeThirdPartyAnimationUsage = (usage: AngularThirdPartyAnimationUsage): NormalizedThirdPartyAnimationUsage => ({
+  id: usage.id,
+  packageName: usage.packageName,
+  usageKind: usage.usageKind,
+  importRefs: [...usage.importRefs],
+  assetRefs: [...usage.assetRefs].sort((left, right) => left.localeCompare(right)),
+  targetDependencyDecision: usage.targetDependencyDecision,
+  targetAdapterPlan: usage.targetAdapterPlan,
+});
+
+const normalizeAnimationAssetRef = (asset: AngularAnimationAssetRef): NormalizedAnimationAssetRef => ({ ...asset });
 
 const isComponentSymbol = (symbol: TypeScriptSymbolSummary): boolean =>
   symbol.decorators.some((decorator: DecoratorSummary) => decorator.kind === 'Component');
@@ -383,6 +422,9 @@ export class ContextNormalizer {
       ngrxEntityAdapters: analysis.ngrxModel.entityAdapters.map(normalizeNgrxEntityAdapter).sort((left, right) => left.id.localeCompare(right.id)),
       ngrxComponentUsages: analysis.ngrxModel.componentUsages.map(normalizeNgrxComponentUsage).sort((left, right) => left.id.localeCompare(right.id)),
       hasNgrxRouterStore: analysis.ngrxModel.hasRouterStore,
+      animationDeclarations: analysis.animationModel.declarations.map(normalizeAnimationDeclaration).sort((left, right) => left.id.localeCompare(right.id)),
+      thirdPartyAnimationUsages: analysis.animationModel.thirdPartyUsages.map(normalizeThirdPartyAnimationUsage).sort((left, right) => left.id.localeCompare(right.id)),
+      animationAssetRefs: analysis.animationModel.assetRefs.map(normalizeAnimationAssetRef).sort((left, right) => left.id.localeCompare(right.id)),
     };
 
     return ok(normalizedContext);

@@ -391,6 +391,87 @@ export type AngularNgrxModel = {
     hasRouterStore: boolean;
     diagnostics: Diagnostic[];
 };
+export type AngularAnimationComplexity = 'simple' | 'moderate' | 'complex';
+export type AngularAnimationConversionEligibility = 'css-transition' | 'react-helper' | 'adapter-scaffold' | 'manual-review';
+export type AngularAnimationAssetKind = 'lottie-json' | 'image' | 'sprite' | 'style' | 'unknown';
+export type AngularAnimationCopyStatus = 'planned' | 'copied' | 'missing' | 'review';
+export type AngularAnimationStateModel = {
+    id: string;
+    stateName: string;
+    styleProperties: Record<string, string>;
+    sourceRef: SourceRef;
+    requiresReview: boolean;
+};
+export type AngularAnimationTransitionModel = {
+    id: string;
+    expression: string;
+    durationMs?: number;
+    easing?: string;
+    usesQuery: boolean;
+    usesStagger: boolean;
+    usesGroup: boolean;
+    requiresRuntimeHelper: boolean;
+    requiresManualReview: boolean;
+};
+export type AngularTemplateAnimationBindingModel = {
+    id: string;
+    triggerName: string;
+    bindingExpression?: string;
+    startHandler?: string;
+    doneHandler?: string;
+    targetElementRef: string;
+    sourceRef: SourceRef;
+    conversionPlan: 'class-binding' | 'helper-binding' | 'event-callback' | 'manual-review';
+};
+export type AngularAnimationTriggerModel = {
+    id: string;
+    triggerName: string;
+    states: AngularAnimationStateModel[];
+    transitions: AngularAnimationTransitionModel[];
+    bindings: AngularTemplateAnimationBindingModel[];
+    complexity: AngularAnimationComplexity;
+    conversionEligibility: AngularAnimationConversionEligibility;
+};
+export type AngularThirdPartyAnimationUsage = {
+    id: string;
+    packageName: string;
+    usageKind: 'lottie' | 'gsap' | 'animejs' | 'angular-wrapper' | 'unknown';
+    importRefs: SourceRef[];
+    assetRefs: string[];
+    targetDependencyDecision: 'carry' | 'replace' | 'remove' | 'review';
+    targetAdapterPlan: 'react-effect-wrapper' | 'react-lottie-wrapper' | 'manual-review';
+};
+export type AngularAnimationAssetRef = {
+    id: string;
+    sourcePath: string;
+    targetPath: string;
+    assetKind: AngularAnimationAssetKind;
+    copyStatus: AngularAnimationCopyStatus;
+};
+export type AngularAnimationConversionDiagnostic = {
+    code: string;
+    severity: Diagnostic['severity'];
+    sourceRef: SourceRef;
+    triggerName?: string;
+    category: 'metadata' | 'template-binding' | 'third-party-library' | 'asset' | 'nextjs-client-boundary';
+    runtimeParityImpact: 'none' | 'low' | 'medium' | 'high';
+    suggestedTargetApproach: string;
+};
+export type AngularAnimationDeclaration = {
+    id: string;
+    sourceRef: SourceRef;
+    componentId: string;
+    triggers: AngularAnimationTriggerModel[];
+    rawConstructKinds: string[];
+    diagnostics: AngularAnimationConversionDiagnostic[];
+};
+export type AngularAnimationModel = {
+    schemaVersion: 1;
+    declarations: AngularAnimationDeclaration[];
+    thirdPartyUsages: AngularThirdPartyAnimationUsage[];
+    assetRefs: AngularAnimationAssetRef[];
+    diagnostics: Diagnostic[];
+};
 export type RouteSummary = {
     id: string;
     sourcePath: string;
@@ -441,6 +522,7 @@ export type AngularAnalysisResult = {
     formModels: AngularFormModel[];
     rxjsModel: AngularRxModel;
     ngrxModel: AngularNgrxModel;
+    animationModel: AngularAnimationModel;
     routeSummaries: RouteSummary[];
     graph: AngularDependencyGraph;
     diagnostics: Diagnostic[];
@@ -468,6 +550,11 @@ export type AngularAnalysisResult = {
         totalNgrxEntityAdapters: number;
         totalNgrxComponentUsages: number;
         totalNgrxDiagnostics: number;
+        totalAnimationDeclarations: number;
+        totalAnimationTriggers: number;
+        totalAnimationBindings: number;
+        totalAnimationThirdPartyUsages: number;
+        totalAnimationDiagnostics: number;
     };
 };
 export type AnalysisError = {

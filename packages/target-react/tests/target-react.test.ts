@@ -7,12 +7,14 @@ import {
   DependencyManifestBuilder,
   DependencyAdvisoryBoundary,
   DependencyCompatibilityClassifier,
+  EnterpriseArtifactMaterializer,
   ReviewStubGenerator,
   TargetGenerationRequestValidator,
   TargetPathGuard,
   TargetStrategyRegistry,
   TargetGenerationService,
   TemplateJsxRenderer,
+  createNextJsTypeScriptStrategy,
   createViteReactTypeScriptStrategy,
   generateReactTarget,
   targetGenerationRequestArbitrary,
@@ -32,14 +34,14 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
   runId: 'run-001',
   correlationId: 'corr-001',
   targetRoot: '/workspace/spa-bridge/generated',
-  strategyId: 'vite-react-typescript',
+  strategyId: 'nextjs-typescript',
   overwritePolicy: 'preserve',
   projectName: 'demo-target',
   selectedStateStrategy: 'local',
   draftSet: {
     schemaVersion: 1,
     targetFramework: 'react',
-    projectStrategy: 'vite-react-typescript',
+    projectStrategy: 'nextjs-typescript',
     aliasModel: {
       schemaVersion: 1,
       baseUrl: '/workspace/spa-bridge/src',
@@ -88,6 +90,7 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
         templateExternalReferences: ['assets/logo.png'],
         forms: [],
         rxHooks: [],
+        animations: [],
         serviceRefs: ['service-1'],
         styleUrls: ['./main-panel.less'],
         propertyInitializers: [
@@ -174,6 +177,7 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
       },
     ],
     reduxToolkit: [],
+    animations: [],
     manualReviewItems: [
       {
         id: 'review-1',
@@ -197,21 +201,34 @@ const createFixtureRequest = (): TargetGenerationRequest => ({
 });
 
 describe('TargetGenerationService', () => {
-  it('generates a deterministic Vite + React + TypeScript target scaffold', () => {
+  it('generates a deterministic Next.js + React + TypeScript target scaffold by default', () => {
     const result = expectOk(generateReactTarget(createFixtureRequest()));
 
     expect(result.status).toBe('partial');
     expect(result.writePlan.files.length).toBeGreaterThan(0);
     expect(result.writePlan.files.map((file) => file.path)).toEqual([...result.writePlan.files.map((file) => file.path)].sort());
     expect(result.writePlan.files.some((file) => file.path.endsWith('package.json'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('next.config.mjs'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/app/layout.tsx'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/app/page.tsx'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/review/runtime-parity-quality.json'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('.spa-bridge/quality-gate-results.json'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/routes.tsx'))).toBe(true);
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/state/local/index.ts'))).toBe(true);
+    expect(result.dependencyManifest.dependencies.next).toBe('14.2.30');
+    expect(result.dependencyManifest.devDependencies.vite).toBeUndefined();
+    const qualityFile = result.writePlan.files.find((file) => file.path.endsWith('src/review/runtime-parity-quality.json'));
+    expect(qualityFile?.content).toContain('"requiredFilesPresent": true');
+    expect(qualityFile?.content).toContain('"selfCorrectionStatus": "skipped"');
+    const selfCorrectionFile = result.writePlan.files.find((file) => file.path.endsWith('.spa-bridge/quality-gate-results.json'));
+    expect(selfCorrectionFile?.content).toContain('"schemaVersion": 1');
+    expect(selfCorrectionFile?.content).toContain('.spa-bridge/quality-gate-results.json');
     const tsconfigFile = result.writePlan.files.find((file) => file.path.endsWith('tsconfig.json'));
-    const viteConfigFile = result.writePlan.files.find((file) => file.path.endsWith('vite.config.ts'));
+    const nextConfigFile = result.writePlan.files.find((file) => file.path.endsWith('next.config.mjs'));
     expect(tsconfigFile?.content).toContain('"@app/*"');
     expect(tsconfigFile?.content).toContain('"src/app/*"');
-    expect(viteConfigFile?.content).toContain("'@app': path.resolve(__dirname, 'src/app')");
+    expect(nextConfigFile?.content).toContain("config.resolve.alias['@app'] = path.resolve(process.cwd(), 'src/app')");
     expect(result.writePlan.files.some((file) => file.path.endsWith('src/metadata/alias-mapping.json'))).toBe(true);
     const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
     expect(componentFile?.content).toContain("useState('Hello')");
@@ -220,12 +237,27 @@ describe('TargetGenerationService', () => {
     expect(componentFile?.content).toContain('className="panel"');
     expect(componentFile?.content).toContain('onClick={(event) => selectPassenger(title)}');
     expect(componentFile?.content).toContain('src="/assets/logo.png"');
-    expect(componentFile?.content).toContain("import '../../styles/components/MainPanel.less';");
-    expect(result.writePlan.files.some((file) => file.path.endsWith('src/styles/components/MainPanel.less'))).toBe(true);
+    expect(componentFile?.content).toContain("import '../../styles/components/MainPanel.css';");
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/styles/components/MainPanel.css'))).toBe(true);
     const routesFile = result.writePlan.files.find((file) => file.path.endsWith('src/routes.tsx'));
-    expect(routesFile?.content).toContain("import { MainPanel } from './app/main-panel/MainPanel.js';");
+    expect(routesFile?.content).toContain("import { MainPanel } from './app/main-panel/MainPanel';");
+    expect(routesFile?.content).not.toContain("MainPanel.js");
+    const layoutFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/layout.tsx'));
+    expect(layoutFile?.content).toContain("import { RootProviders } from './providers';");
+    expect(layoutFile?.content).toContain("import '../source-styles.css';");
     expect(result.manualReviewItems.length).toBeGreaterThan(0);
     expect(result.traces.length).toBeGreaterThanOrEqual(result.writePlan.files.length);
+  });
+
+  it('still supports the legacy Vite strategy when explicitly selected', () => {
+    const request = createFixtureRequest();
+    request.strategyId = 'vite-react-typescript';
+    request.draftSet.projectStrategy = 'vite-react-typescript';
+    const result = expectOk(generateReactTarget(request));
+
+    expect(result.summary.strategyId).toBe('vite-react-typescript');
+    expect(result.writePlan.files.some((file) => file.path.endsWith('vite.config.ts'))).toBe(true);
+    expect(result.dependencyManifest.devDependencies.vite).toBe('5.4.11');
   });
 
   it('keeps output stable across repeated runs', () => {
@@ -315,7 +347,7 @@ describe('TargetGenerationService', () => {
     expect(result.writePlan.files.find((file) => file.path.endsWith('src/store/selectors/flights.ts'))?.content).toContain('selectFlights');
     expect(result.writePlan.files.find((file) => file.path.endsWith('src/store/effects/flights.ts'))?.content).toContain('loadFlights$');
     expect(result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'))?.content).toContain('useAppSelector');
-    expect(result.writePlan.files.find((file) => file.path.endsWith('src/main.tsx'))?.content).toContain('<Provider store={store}>');
+    expect(result.writePlan.files.find((file) => file.path.endsWith('src/app/providers.tsx'))?.content).toContain('<Provider store={store}>');
   });
 });
 
@@ -455,20 +487,77 @@ describe('Support utilities', () => {
     expect(result.dependencyManifest.dependencies.rxjs).toBe('6.6.7');
   });
 
+  it('generates animation helpers, CSS, client boundaries, and quality signals', () => {
+    const request = createFixtureRequest();
+    request.sourceDependencies = {
+      'lottie-web': '5.13.0',
+      'ngx-lottie': '7.0.0',
+    };
+    request.draftSet.components[0] = {
+      ...request.draftSet.components[0]!,
+      animations: [
+        {
+          id: 'animation-main-open-close',
+          ownerComponentId: 'component-1',
+          sourceRef: { kind: 'source', path: '/workspace/spa-bridge/src/app/main-panel.ts' },
+          triggerName: 'openClose',
+          conversionKind: 'manual-review',
+          cssClassPrefix: 'aidlc-main-panel-open-close',
+          stateClassNames: {
+            open: 'aidlc-main-panel-open-close-open',
+            closed: 'aidlc-main-panel-open-close-closed',
+          },
+          bindings: [
+            {
+              id: 'binding-open-close',
+              triggerName: 'openClose',
+              bindingExpression: 'state',
+              targetElementRef: '/workspace/spa-bridge/src/app/main-panel.html',
+              conversionPlan: 'class-binding',
+            },
+          ],
+          requiresClientComponent: true,
+          assetRefs: [],
+          reviewComments: ['AIDLC_MANUAL_REVIEW_ANIMATION: transition uses query/stagger behavior.'],
+          reviewItemIds: [],
+          generatedRefs: [{ kind: 'generated', path: 'src/animations/main-panel-openClose.ts', segment: 'openClose' }],
+        },
+      ],
+    };
+    request.draftSet.animations = [...request.draftSet.components[0]!.animations];
+
+    const result = expectOk(generateReactTarget(request));
+    const componentFile = result.writePlan.files.find((file) => file.path.endsWith('src/app/main-panel/MainPanel.tsx'));
+    const qualityFile = result.writePlan.files.find((file) => file.path.endsWith('src/review/runtime-parity-quality.json'));
+
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/animations/animations.css'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/animations/main-panel-openClose.ts'))).toBe(true);
+    expect(result.writePlan.files.some((file) => file.path.endsWith('src/review/animation-conversion-summary.json'))).toBe(true);
+    expect(componentFile?.content.startsWith('"use client";')).toBe(true);
+    expect(componentFile?.content).toContain('openCloseAnimationClass');
+    expect(componentFile?.content).toContain('className={openCloseAnimationClass}');
+    expect(result.dependencyManifest.dependencies['lottie-web']).toBe('5.13.0');
+    expect(result.dependencyManifest.dependencies['ngx-lottie']).toBeUndefined();
+    expect(qualityFile?.content).toContain('"animationTriggerCount": 1');
+    expect(qualityFile?.content).toContain('"unresolvedAnimationTriggerCount": 1');
+  });
+
   it('selects the default strategy deterministically', () => {
     const registry = new TargetStrategyRegistry();
+    registry.register(createNextJsTypeScriptStrategy());
     registry.register(createViteReactTypeScriptStrategy());
 
     const selected = registry.list()[0];
-    expect(selected.id).toBe('vite-react-typescript');
+    expect(selected.id).toBe('nextjs-typescript');
     expect(selected.defaultStrategy).toBe(true);
   });
 
   it('builds a dependency manifest with exact versions', () => {
     const manifest = new DependencyManifestBuilder().build('store');
     expect(manifest.dependencies.react).toBe('18.2.0');
+    expect(manifest.dependencies.next).toBe('14.2.30');
     expect(manifest.dependencies['@reduxjs/toolkit']).toBeDefined();
-    expect(manifest.devDependencies.vite).toBe('5.4.11');
+    expect(manifest.devDependencies.vite).toBeUndefined();
   });
 
   it('filters Angular-only dependencies and replaces the WDS Angular package', () => {
@@ -502,6 +591,122 @@ describe('Support utilities', () => {
     expect(reportFile?.content).toContain('@wds/wc-react-lib');
     expect(reportFile?.content).toContain('angularx-qrcode');
     expect(reportFile?.content).toContain('WDS Custom Package Compatibility');
+  });
+
+  it('generates enterprise parity artifacts for private registries, scripts, and environment contracts', () => {
+    const request = createFixtureRequest();
+    request.sourceDependencies = {
+      '@wds/wc-angular-lib': '0.1.43',
+      dayjs: '1.11.20',
+    };
+    request.sourceNpmrcFiles = [
+      {
+        sourcePath: '.npmrc',
+        lines: [
+          'registry=https://nexus.example/repository/npm-group/',
+          '@wds:registry=https://nexus.example/repository/wds-npm/',
+          '//nexus.example/repository/wds-npm/:_authToken=super-secret-token',
+        ],
+      },
+    ];
+    request.sourceScripts = {
+      start: 'ng serve --configuration local',
+      build: 'ng build --configuration production',
+      analyze: 'webpack-bundle-analyzer dist/stats.json',
+      deploy: 'npm run build && upload-to-prod',
+      clean: 'rm -rf dist',
+    };
+    request.sourceEnvironmentVariables = [
+      { name: 'API_BASE_URL', sourceKind: 'env-file', sourcePath: '.env', valuePresent: true },
+      { name: 'PUBLIC_CDN_URL', sourceKind: 'env-file', sourcePath: '.env', valuePresent: true },
+      { name: 'WDS_API_TOKEN', sourceKind: 'env-file', sourcePath: '.env.local', valuePresent: true },
+    ];
+    request.sourcePackageManager = {
+      name: 'yarn',
+      version: '1.22.22',
+      packageManagerField: 'yarn@1.22.22',
+      detectedFrom: ['package.json#packageManager', 'yarn.lock'],
+      lockfile: 'yarn.lock',
+      configFiles: ['.yarnrc'],
+      confidence: 'high',
+    };
+
+    const result = expectOk(generateReactTarget(request));
+    const packageFile = result.writePlan.files.find((file) => file.path.endsWith('package.json'));
+    const npmrcFile = result.writePlan.files.find((file) => file.path.endsWith('.npmrc'));
+    const npmrcExampleFile = result.writePlan.files.find((file) => file.path.endsWith('.npmrc.example'));
+    const envExampleFile = result.writePlan.files.find((file) => file.path.endsWith('.env.example'));
+    const registryReport = result.writePlan.files.find((file) => file.path.endsWith('src/review/registry-migration-report.json'));
+    const scriptReport = result.writePlan.files.find((file) => file.path.endsWith('src/review/script-migration-report.json'));
+    const environmentReport = result.writePlan.files.find((file) => file.path.endsWith('src/review/environment-contract-report.json'));
+    const packageManagerReport = result.writePlan.files.find((file) => file.path.endsWith('src/review/package-manager-parity-report.json'));
+    const qualityFile = result.writePlan.files.find((file) => file.path.endsWith('src/review/runtime-parity-quality.json'));
+
+    expect(packageFile?.content).toContain('"dev": "next dev"');
+    expect(packageFile?.content).toContain('"start": "next dev"');
+    expect(packageFile?.content).toContain('"serve": "next start"');
+    expect(packageFile?.content).toContain('"packageManager": "yarn@1.22.22"');
+    expect(packageFile?.content).toContain('"typecheck": "tsc --noEmit"');
+    expect(packageFile?.content).toContain('"analyze": "ANALYZE=true next build"');
+    expect(npmrcFile?.content).toContain('@wds:registry=https://nexus.example/repository/wds-npm/');
+    expect(npmrcFile?.content).not.toContain('super-secret-token');
+    expect(npmrcExampleFile?.content).toContain('_authToken=${');
+    expect(npmrcExampleFile?.content).not.toContain('super-secret-token');
+    expect(envExampleFile?.content).toContain('API_BASE_URL=');
+    expect(envExampleFile?.content).toContain('NEXT_PUBLIC_CDN_URL=');
+    expect(envExampleFile?.content).toContain('WDS_API_TOKEN=<set-securely>');
+    expect(registryReport?.content).not.toContain('super-secret-token');
+    expect(scriptReport?.content).toContain('UNSAFE_SCRIPT_NOT_COPIED');
+    expect(scriptReport?.content).toContain('SOURCE_DEPLOY_SCRIPT_REVIEW_REQUIRED');
+    expect(environmentReport?.content).toContain('"secretCount": 1');
+    expect(packageManagerReport?.content).toContain('"targetPackageManagerField": "yarn@1.22.22"');
+    expect(packageManagerReport?.content).toContain('"installCommand": "yarn install"');
+    expect(result.enterpriseParity?.summary.registrySecretPlaceholders).toBe(1);
+    expect(result.enterpriseParity?.summary.reviewedScripts).toBeGreaterThanOrEqual(2);
+    expect(result.enterpriseParity?.summary.secretEnvironmentVariables).toBe(1);
+    expect(result.enterpriseParity?.summary.packageManager).toBe('yarn');
+    expect(result.manualReviewItems.some((item) => item.id === 'registry-secret-1')).toBe(true);
+    expect(result.manualReviewItems.some((item) => item.id === 'env-WDS_API_TOKEN')).toBe(true);
+    expect(qualityFile?.content).toContain('"enterpriseParityArtifactsPresent": true');
+    expect(result.selfCorrectionResult?.commandPlan.packageManager).toBe('yarn');
+    expect(result.dependencyManifest.dependencies['@wds/wc-react-lib']).toBe('0.1.43');
+  });
+
+  it('keeps enterprise parity artifact generation deterministic and secret-free', async () => {
+    await fc.assert(
+      fc.property(
+        fc.array(
+          fc.tuple(
+            fc.constantFrom('registry', '@scope:registry', '//registry.example/:_authToken', 'always-auth'),
+            fc.string({ minLength: 1, maxLength: 12 }),
+          ),
+          { minLength: 1, maxLength: 8 },
+        ),
+        (entries) => {
+          const lines = entries.map(([key, value]) => `${key}=${key.includes('_authToken') ? `secret-${value}` : value}`);
+          const materializer = new EnterpriseArtifactMaterializer();
+          const first = materializer.buildArtifacts({
+            ...createFixtureRequest(),
+            sourceNpmrcFiles: [{ sourcePath: '.npmrc', lines }],
+            sourceScripts: { start: 'ng serve', clean: 'rm -rf dist' },
+            sourceEnvironmentVariables: [{ name: 'PRIVATE_TOKEN', sourceKind: 'env-file', sourcePath: '.env', valuePresent: true }],
+          });
+          const second = materializer.buildArtifacts({
+            ...createFixtureRequest(),
+            sourceNpmrcFiles: [{ sourcePath: '.npmrc', lines }],
+            sourceScripts: { start: 'ng serve', clean: 'rm -rf dist' },
+            sourceEnvironmentVariables: [{ name: 'PRIVATE_TOKEN', sourceKind: 'env-file', sourcePath: '.env', valuePresent: true }],
+          });
+          const files = materializer.materialize(first);
+
+          expect(first).toStrictEqual(second);
+          for (const [, value] of entries.filter(([key]) => key.includes('_authToken'))) {
+            expect(files.map((file) => file.content).join('\n')).not.toContain(`secret-${value}`);
+          }
+        },
+      ),
+      { numRuns: 20, seed: 20260617 },
+    );
   });
 
   it('parses dependency advisory responses defensively without overriding registry behavior', () => {

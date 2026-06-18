@@ -1,0 +1,1 @@
+{"version":3,"file":"deterministic-fixer-registry.d.ts","sourceRoot":"","sources":["../../src/self-correction/deterministic-fixer-registry.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EACV,+BAA+B,EAC/B,mCAAmC,EACpC,MAAM,aAAa,CAAC;AAErB,qBAAa,0BAA0B;IACrC,SAAS,CAAC,WAAW,EAAE,mCAAmC,EAAE,GAAG,+BAA+B,EAAE;IAUhG,OAAO,CAAC,SAAS;CAqDlB"}

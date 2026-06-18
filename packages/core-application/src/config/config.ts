@@ -64,7 +64,7 @@ export class ConfigPipeline {
     const diagnostics: Diagnostic[] = [];
 
     const outputPath = overrides.outputPath ?? rawProjectConfig.outputPath ?? './dist';
-    const targetStrategy = overrides.targetStrategy ?? rawProjectConfig.targetStrategy ?? 'vite-react-typescript';
+    const targetStrategy = overrides.targetStrategy ?? rawProjectConfig.targetStrategy ?? 'nextjs-typescript';
     const providerMode = overrides.providerMode ?? rawProjectConfig.providerMode ?? 'local-first';
     const reportFormats = overrides.reportFormats ?? rawProjectConfig.reportFormats ?? ['json', 'markdown'];
     const preservePartialArtifacts =

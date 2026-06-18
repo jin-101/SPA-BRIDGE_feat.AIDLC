@@ -31,7 +31,7 @@ export const dependencyRemovalRules: DependencyPatternRule[] = [
   {
     pattern: /^@angular-devkit\//,
     category: 'build-tool',
-    rationale: 'Angular build tooling is replaced by the generated React/Vite toolchain.',
+    rationale: 'Angular build tooling is replaced by the generated Next.js/React toolchain.',
   },
   {
     pattern: /^@schematics\//,
@@ -46,7 +46,7 @@ export const dependencyRemovalRules: DependencyPatternRule[] = [
   {
     pattern: /^webpack$/,
     category: 'build-tool',
-    rationale: 'The generated target uses Vite as the deterministic build tool.',
+    rationale: 'The generated target uses Next.js as the deterministic build tool by default.',
   },
   {
     pattern: /^webpack-bundle-analyzer$/,
@@ -117,4 +117,3 @@ export const frameworkNeutralCarryPackages = new Set([
   'uuid',
   'zoom-level',
 ]);
-

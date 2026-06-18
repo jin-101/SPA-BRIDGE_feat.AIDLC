@@ -1,0 +1,1 @@
+{"version":3,"file":"package-manager-parity-planner.d.ts","sourceRoot":"","sources":["../../src/enterprise/package-manager-parity-planner.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAsB,0BAA0B,EAAE,yBAAyB,EAAE,MAAM,aAAa,CAAC;AAyB7G,qBAAa,2BAA2B;IACtC,IAAI,CAAC,oBAAoB,CAAC,EAAE,yBAAyB,GAAG,0BAA0B;CAanF"}

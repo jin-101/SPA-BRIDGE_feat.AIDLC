@@ -6,6 +6,7 @@ export class DraftBuilder {
     routes = [];
     state = [];
     reduxToolkit = [];
+    animations = [];
     diagnostics = [];
     reviewItems = [];
     traces = [];
@@ -26,6 +27,9 @@ export class DraftBuilder {
     }
     addReduxToolkitDraft(draft) {
         this.reduxToolkit.push(draft);
+    }
+    addAnimationDraft(draft) {
+        this.animations.push(draft);
     }
     addDiagnostic(diagnostic) {
         this.diagnostics.push(diagnostic);
@@ -48,6 +52,7 @@ export class DraftBuilder {
             routes: sortById(this.routes),
             state: sortById(this.state),
             reduxToolkit: sortById(this.reduxToolkit),
+            animations: sortById(this.animations),
             manualReviewItems: sortById(this.reviewItems),
             diagnostics: [...this.diagnostics].sort((left, right) => {
                 if (left.severity !== right.severity) {

@@ -18,6 +18,7 @@ const collectDrafts = (draftSet) => [
     ...draftSet.services,
     ...draftSet.routes,
     ...draftSet.state,
+    ...draftSet.animations,
 ];
 const summarizeDraftSet = (draftSet) => ({
     totalComponents: draftSet.components.length,
@@ -103,6 +104,9 @@ export class TransformationPipeline {
             }
             for (const reduxToolkit of contribution.reduxToolkitDrafts ?? []) {
                 draftBuilder.addReduxToolkitDraft(reduxToolkit);
+            }
+            for (const animationDraft of contribution.animationDrafts ?? []) {
+                draftBuilder.addAnimationDraft(animationDraft);
             }
             for (const hook of contribution.hooks ?? []) {
                 const source = hook.sourceRef ?? { kind: 'source', path: context.sourceModelRef.entryFile };

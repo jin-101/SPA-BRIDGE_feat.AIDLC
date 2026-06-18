@@ -5,9 +5,9 @@
 - **Project Type**: Greenfield
 - **Start Date**: 2026-06-03T23:54:31Z
 - **Current Phase**: CONSTRUCTION
-- **Current Stage**: V2-GAP-UOW-05 Code Generation Review
-- **Last Completed**: V2-GAP-UOW-05 Code Generation
-- **Next Step**: Review generated NgRx conversion code and approve continuation to V2-GAP-UOW-06
+- **Current Stage**: V2 Generated Target CSS Asset Remediation Complete
+- **Last Completed**: Generated CSS relative asset copy remediation
+- **Next Step**: Re-run the real Angular repository conversion, install with the generated package manager command, and validate `npm/yarn/pnpm run build` plus `dev`
 
 ## Workspace State
 - **Existing Code**: No
@@ -152,6 +152,39 @@
 - [x] CONSTRUCTION - V2-GAP-UOW-05 Code Generation Planning
 - [x] CONSTRUCTION - V2-GAP-UOW-05 Code Generation
 - [x] CONSTRUCTION - V2-GAP-UOW-05 Build and Test
+- [x] CONSTRUCTION - V2 Runtime Parity Direction Change
+- [x] CONSTRUCTION - Next.js Target Default
+- [x] CONSTRUCTION - Runtime Parity Quality Gate
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Functional Design Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Functional Design Answers
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Build and Test
+- [x] CONSTRUCTION - V2-GAP-UOW-06 Code Generation Review Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Functional Design Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Functional Design Answers
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Functional Design Approval
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Build and Test
+- [x] CONSTRUCTION - V2-GAP-UOW-07 Code Generation Review Approval
+- [x] CONSTRUCTION - V2 Gap Build and Test Closure
+- [x] CONSTRUCTION - V2-GAP-FR-009 Requirement Addition
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Functional Design Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Functional Design Answers
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Functional Design Artifacts
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Code Generation Planning
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Code Generation
+- [x] CONSTRUCTION - V2-GAP-UOW-08 Build and Test
+- [x] CONSTRUCTION - V2 Gap Brownfield Track Completion
+- [x] CONSTRUCTION - V2 Package Manager Parity Enhancement
+- [x] CONSTRUCTION - V2 Generated Target Build Import and DAM Proxy Remediation
+- [x] CONSTRUCTION - V2 Generated Target Less Style Build Remediation
+- [x] CONSTRUCTION - V2 Generated Target Start Serve Script Parity Remediation
+- [x] CONSTRUCTION - V2 Generated Target CSS Relative Asset Remediation
 - [x] OPERATIONS - Placeholder
 
 ## Stage Decisions
@@ -208,6 +241,27 @@
 - **UOW-05 NFR Design Approval**: Approved by user on 2026-06-05T04:01:01Z.
 - **UOW-05 Code Generation Planning**: Plan generated on 2026-06-05T04:01:01Z. Awaiting explicit approval.
 - **UOW-06 Functional Design Approval**: Approved by user on 2026-06-05T05:15:38Z.
+- **V2-GAP-UOW-06 Code Generation Review Approval**: Approved by user on 2026-06-16T08:02:19Z.
+- **V2-GAP-UOW-07 Functional Design Planning**: Started on 2026-06-16T08:02:19Z to define generated Next.js/React install, build, lint, typecheck, deterministic fixer, and policy-controlled AI self-correction behavior.
+- **V2-GAP-UOW-07 Functional Design Artifacts**: User continued with the recommended all-A defaults on 2026-06-16T23:21:03Z. Generated functional design artifacts for validation command planning, safe command execution, deterministic fixers, local-first AI repair, quality artifacts, reporting, and CLI/Web review behavior.
+- **V2-GAP-UOW-07 Functional Design Approval**: Approved by user on 2026-06-16T23:30:58Z.
+- **V2-GAP-UOW-07 Code Generation Planning**: Created code generation plan on 2026-06-16T23:30:58Z for `packages/core-quality`, `packages/target-react`, `packages/cli`, `packages/core-reporting`, tests, and code summary artifacts.
+- **V2-GAP-UOW-07 Code Generation**: Implemented generated Next.js/React self-correction loop foundations on 2026-06-17T00:00:21Z. Added safe command planning, sanitized validation classification, deterministic fixer planning, local-first AI repair boundaries, generated quality artifact materialization, runtime parity self-correction signals, CLI/reporting exposure, tests, and code summary artifacts. Workspace `npm test` and `npm run build` passed.
+- **V2-GAP-UOW-07 Code Generation Review Approval**: Approved by user on 2026-06-17T00:02:10Z.
+- **V2 Gap Build and Test Closure**: Refreshed build/test summary and V2 requirements status on 2026-06-17T00:02:10Z using the latest successful workspace `npm test` and `npm run build` verification. V2 gap track is ready for real Angular repository conversion validation.
+- **V2-GAP-FR-009 Requirement Addition**: User identified enterprise parity needs on 2026-06-17T00:12:40Z for private Nexus/npm registry `.npmrc` handling, internal packages, source package scripts, and environment variable migration. Added V2-GAP-FR-009 and reopened the V2 track for V2-GAP-UOW-08.
+- **V2-GAP-UOW-08 Functional Design Planning**: Created private registry, environment, and script parity functional design question plan on 2026-06-17T00:15:05Z. Awaiting answers or approval.
+- **Documentation Language Preference**: User requested on 2026-06-17T00:17:29Z that current and future generated files be written in Korean. Future AIDLC artifacts should use Korean prose while preserving code identifiers, paths, package names, and required format markers in English.
+- **V2-GAP-UOW-08 Functional Design Artifacts**: User answered all questions with A on 2026-06-17T00:22:22Z. Generated Korean functional design artifacts for `.npmrc`/Nexus handling, internal package classification, script translation, environment variable contracts, target artifacts, reporting, and tests.
+- **V2-GAP-UOW-08 Code Generation Planning**: User approved continuation on 2026-06-17T00:28:34Z. Created Korean code generation plan for private registry `.npmrc` handling, source script translation, environment contract migration, target artifacts, CLI/reporting integration, quality gate signals, tests, and verification.
+- **V2-GAP-UOW-08 Code Generation**: User approved implementation on 2026-06-17T00:39:05Z. Implemented enterprise parity support for private registry `.npmrc` parsing/redaction, source script translation, environment contract artifact generation, CLI evidence collection, reporting view model fields, runtime parity quality signals, tests, and documentation. `npm test` and `npm run build` passed.
+- **V2-GAP-UOW-08 Build and Test Closure**: User approved continuation on 2026-06-17T00:41:23Z. Refreshed build/test instructions and summary for private registry, source script, and environment parity artifacts. Latest verification: `npm test` passed with 144 tests and `npm run build` passed.
+- **V2 Gap Brownfield Track Completion**: User approved continuation on 2026-06-17T00:44:20Z. V2 gap construction through V2-GAP-UOW-08 is complete. The next practical validation is running a real Angular repository conversion and checking generated Next.js install/dev behavior.
+- **V2 Package Manager Parity Enhancement**: User requested package manager parity on 2026-06-17T00:53:09Z after a real generated target hit npm peer dependency resolution differences. Implemented source package manager detection, generated `packageManager` preservation, package manager parity reports, Yarn/pnpm/npm self-correction command planning, and documentation updates. `npm run build` passed and `npm test` passed with 145 tests.
+- **V2 Generated Target Build Import and DAM Proxy Remediation**: User reported generated Next.js build failures from `.js` suffixes on local TS/TSX imports and missing DAM/proxy CSS asset evidence on 2026-06-17T05:31:24Z. Implemented extensionless local target imports, `.less`/`.sass` source style inventory support, CSS `url(...)` local asset copying, DAM/remote/dynamic CSS asset review artifacts, `proxy.*` metadata detection, CLI report warnings, and tests. `npm run build` and `npm test` passed with 145 tests.
+- **V2 Generated Target Less Style Build Remediation**: User reported generated Next.js webpack failures because Angular `.less` files were imported directly through `src/source-styles.ts` on 2026-06-17T07:01:59Z. Implemented `src/source-styles.css`, direct layout CSS import, CSS-compatible target style output, CLI `less` dependency for real Less compilation, build-safe fallback CSS, component placeholder `.css` output, and tests. `npm run build` and `npm test` passed with 145 tests.
+- **V2 Generated Target Start Serve Script Parity Remediation**: User reported a generated target error from running `next start` before `.next` existed on 2026-06-17T07:20:02Z. Adjusted generated Next.js scripts so Angular-style `start` maps to `next dev`, while production startup is available as `serve: next start`. `npm run build` and `npm test` passed with 145 tests.
+- **V2 Generated Target CSS Relative Asset Remediation**: User reported a generated target build error for `../../images/mapbox-popup-tip.svg` from compiled Angular CSS on 2026-06-17T07:52:17Z. Enhanced CSS asset resolution to scan compiled CSS output as well as source styles, resolve local references with source-tree suffix matching, and copy assets to the exact target-relative location expected by generated CSS. `npm run build` and `npm test` passed with 145 tests.
 - **UOW-06 NFR Requirements**: Planning started on 2026-06-05T05:15:38Z. NFR requirements question plan generated and awaiting user answers.
 - **UOW-06 NFR Requirements Artifacts**: User selected all A options and artifacts were generated on 2026-06-05T05:19:34Z. Awaiting explicit approval.
 - **UOW-06 NFR Requirements Approval**: Approved by user on 2026-06-05T05:22:19Z.
@@ -296,9 +350,15 @@
 - **V2-GAP-UOW-05 Functional Design Approval**: Approved by user on 2026-06-11T06:59:45Z.
 - **V2-GAP-UOW-05 Code Generation Planning**: Created NgRx conversion code generation plan on 2026-06-11T06:59:45Z. Awaiting explicit approval before implementation.
 - **V2-GAP-UOW-05 Code Generation**: Implemented NgRx conversion on 2026-06-11T07:03:36Z. Added source NgRx extraction, transformation carry-through, Redux Toolkit target materialization, component store usage rewrites, dependency manifest support, tests, documentation summaries, and workspace build/test verification.
+- **Next.js Target Default and Runtime Parity Quality Gate**: User requested the conversion direction prioritize runtime parity and switch the generated target from React/Vite to Next.js before continuing V2 work. Implemented `nextjs-typescript` as the default target strategy, preserved Vite as an explicit legacy strategy, added Next.js App Router scaffold generation, updated CLI/core defaults, added deterministic runtime parity quality scoring output at `src/review/runtime-parity-quality.json`, and verified workspace `npm run build` and `npm test` on 2026-06-16T07:13:49Z.
+- **V2-GAP-UOW-06 Functional Design Planning**: Started Animation Conversion functional design planning on 2026-06-16T07:30:51Z after user approved continuation. Created the functional design plan with runtime-parity oriented question options for Angular animations, third-party libraries, asset/style preservation, diagnostics, and tests.
+- **V2-GAP-UOW-06 Functional Design Artifacts**: User selected all A options on 2026-06-16T07:39:48Z. Generated animation conversion functional design artifacts covering structured Angular animation metadata extraction, template animation binding conversion, Next.js client-boundary rules, third-party animation library handling, asset preservation, diagnostics, and runtime parity scoring signals.
+- **V2-GAP-UOW-06 Functional Design Approval**: Approved by user on 2026-06-16T07:41:19Z.
+- **V2-GAP-UOW-06 Code Generation Planning**: Started code generation planning for animation extraction, transformation carry-through, Next.js target generation, quality scoring, and tests on 2026-06-16T07:41:19Z.
+- **V2-GAP-UOW-06 Code Generation**: Implemented animation conversion on 2026-06-16T07:59:24Z. Added Angular animation source models and extractor, transformation carry-through, component animation drafts, Next.js animation CSS/helper/review materialization, client-boundary handling, dependency compatibility rationale updates, runtime parity quality animation signals, tests, and code summary artifacts. Workspace `npm run build` and `npm test` passed.
 
 ## Execution Plan Summary
-- **Recommended Next Stage**: Approve V2-GAP-UOW-05 code generation review and continue to V2-GAP-UOW-06
-- **Stages to Execute**: V2 gap brownfield construction units V2-GAP-UOW-01 through V2-GAP-UOW-07
+- **Recommended Next Stage**: Run a real Angular repository conversion validation
+- **Stages to Execute**: V2 gap brownfield construction units V2-GAP-UOW-01 through V2-GAP-UOW-08
 - **Stages to Skip**: Reverse Engineering (no existing code)
 - **Risk Level**: Medium

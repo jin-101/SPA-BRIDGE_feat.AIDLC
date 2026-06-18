@@ -4,7 +4,7 @@
 
 This specification expands the `Remaining High-Priority Gaps` section of `requirements_v2.md` into implementable requirements.
 
-The goal is to move SPA-Bridge closer to React runtime parity: a generated React project should install, run, render, and behave as close as practical to the source Angular project.
+The goal is to move SPA-Bridge closer to Next.js/React runtime parity: a generated Next.js project should install, run, render, and behave as close as practical to the source Angular project.
 
 ## Scope
 
@@ -17,7 +17,9 @@ This document covers eight high-priority implementation areas:
 - Advanced Angular template conversion.
 - Angular animation conversion.
 - Dependency alias and path mapping.
-- Generated React self-correction loop.
+- Generated Next.js/React self-correction loop.
+- Next.js target default and runtime parity quality scoring.
+- Private Nexus/npm registry, environment variable, and source script parity.
 
 ## Global Acceptance Criteria
 
@@ -35,7 +37,7 @@ The V2 gap implementation is acceptable only when:
 
 ### Requirement
 
-SPA-Bridge must prevent Angular-only runtime packages from being copied into generated React projects when those packages cannot install or run in a React/Vite target.
+SPA-Bridge must prevent Angular-only runtime packages from being copied into generated Next.js/React projects when those packages cannot install or run in a Next.js target.
 
 The converter must classify source dependencies before writing target `package.json`:
 
@@ -328,7 +330,8 @@ The converter must detect:
 The converter should generate:
 
 - Target `tsconfig.json` path aliases where compatible.
-- Vite `resolve.alias` entries where needed.
+- Next.js `webpack.resolve.alias` entries where needed.
+- Legacy Vite `resolve.alias` entries only when the explicit Vite strategy is selected.
 - Package dependency carry-over for private/internal packages.
 - Asset copy or public path mappings.
 - Diagnostics for aliases that cannot be resolved.
@@ -338,20 +341,21 @@ The converter should generate:
 - Imports using source path aliases still resolve in the generated React project.
 - Internal package dependencies from source `package.json` are not dropped.
 - Workspace protocol dependencies are preserved or converted to documented target equivalents.
-- Asset aliases used by templates/styles are reflected in copy rules or Vite aliases.
+- Asset aliases used by templates/styles are reflected in copy rules or Next.js aliases.
 
 ### Implementation Artifacts
 
 - Dependency resolver analyzer.
 - Alias mapping model.
-- Vite config generator extension.
+- Next.js config generator extension.
+- Legacy Vite config generator compatibility where explicitly selected.
 - Package manifest merge policy.
 
-## V2-GAP-FR-007 Generated React Self-Correction Loop
+## V2-GAP-FR-007 Generated Next.js/React Self-Correction Loop
 
 ### Requirement
 
-SPA-Bridge must run a controlled validation and correction loop against the generated React project.
+SPA-Bridge must run a controlled validation and correction loop against the generated Next.js/React project.
 
 ### Validation Steps
 
@@ -388,6 +392,112 @@ The loop should:
 - AI-assisted repair adapter.
 - Safety policy for executable commands.
 
+## V2-GAP-FR-008 Next.js Target Default And Runtime Parity Quality Scoring
+
+### Requirement
+
+SPA-Bridge must generate a Next.js App Router project by default and score generated output against runtime parity readiness before reporting completion.
+
+### Target Behavior
+
+The converter should generate:
+
+- `package.json` with `next`, `react`, `react-dom`, `dev`, `build`, `start`, and `lint` support.
+- `next.config.mjs` with deterministic alias mapping.
+- `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/providers.tsx`, and `src/app/globals.css`.
+- `src/review/runtime-parity-quality.json` summarizing scaffold readiness, package install readiness, empty components, manual-review markers, TODO markers, and remaining Angular syntax residue.
+- Vite generation only when an explicit legacy target strategy is selected.
+
+### Acceptance Criteria
+
+- CLI conversion defaults to `nextjs-typescript`.
+- Generated projects are structured as installable Next.js projects.
+- Runtime parity scoring is deterministic for identical generated file plans.
+- Quality findings are safe and do not include raw sensitive source snippets.
+- Workspace-level `npm run build` and `npm test` pass after the target strategy change.
+
+### Implementation Artifacts
+
+- Next.js target strategy.
+- Target dependency manifest framework selection.
+- Runtime parity quality gate.
+- CLI/core application default strategy update.
+- Tests for Next.js default generation and legacy Vite strategy selection.
+
+## V2-GAP-FR-009 Private Registry, Environment, And Script Parity
+
+### Requirement
+
+SPA-Bridge must preserve install/runtime environment assumptions from the Angular source repository when generating a Next.js target, especially for enterprise repositories that use private Nexus/npm registries, `.npmrc` scope mappings, internal packages, environment variables, and project-specific package scripts.
+
+### Source Patterns
+
+The converter must detect:
+
+- Root and project-level `.npmrc` files.
+- Scoped registry entries such as `@scope:registry=https://nexus.example/repository/npm/`.
+- Safe npm config keys such as `registry`, `always-auth`, `strict-ssl`, and `legacy-peer-deps`.
+- Unsafe or secret-bearing npm config values such as `_authToken`, `_auth`, username/password, and token-like environment substitutions.
+- Internal package scopes from `package.json` dependencies and devDependencies.
+- Source `package.json` scripts such as `start`, `build`, `serve`, `test`, `lint`, `analyze`, environment setup scripts, and custom deployment/build wrappers.
+- Environment variable references from `.env*`, package scripts, Angular environment files, and source usage such as `process.env.*`.
+- Source package manager evidence from `package.json#packageManager`, `yarn.lock`, `pnpm-lock.yaml`, `package-lock.json`, `.yarnrc`, `.yarnrc.yml`, `.npmrc`, `pnpm-workspace.yaml`, and `.pnpmfile.cjs`.
+
+### Target Behavior
+
+The generated Next.js target should:
+
+- Generate a safe `.npmrc` when source registry configuration is required.
+- Preserve scoped Nexus registry routing without copying secret tokens directly.
+- Emit `.npmrc.example` or review diagnostics for secret-bearing registry values that require user-provided credentials.
+- Carry compatible internal packages from source `package.json` through the existing dependency compatibility classifier.
+- Flag internal packages with unknown React/Next.js API compatibility for manual review.
+- Translate source scripts into Next.js-safe scripts when possible.
+- Preserve useful source script intent through deterministic mappings, for example:
+  - Angular dev/serve scripts -> `next dev` with compatible env prefix handling.
+  - Angular production build scripts -> `next build`.
+  - Analyze scripts -> Next.js bundle analysis script only when required package support exists.
+  - Test/lint scripts -> compatible target scripts when safe.
+- Generate a script migration report that lists copied, translated, dropped, and review-required scripts.
+- Generate an environment contract report listing required variables, source locations, target variable name, exposure level, and whether manual review is needed.
+- Preserve package manager type and version in generated `package.json#packageManager` when source evidence is available.
+- Plan generated target validation commands with the detected package manager, for example Yarn repositories use `yarn install` and `yarn build` rather than npm commands.
+- Generate package manager parity evidence in enterprise parity reports so install instructions match source repository behavior.
+
+### Environment Variable Policy
+
+The converter must distinguish:
+
+- Server-only variables that should remain unprefixed and never be exposed to the browser.
+- Client-exposed variables that must use `NEXT_PUBLIC_` in Next.js.
+- Secret variables that must not be copied into generated `.env` files.
+- Placeholder variables that may be emitted into `.env.example`.
+
+Raw secret values must not be written to generated target files, reports, logs, or AI provider context.
+
+### Acceptance Criteria
+
+- Source scoped registry mappings are preserved in generated `.npmrc` or `.npmrc.example` without leaking tokens.
+- Internal package dependencies are not dropped unless classified as Angular-only or unsafe.
+- Secret-bearing npm config entries produce manual-review diagnostics instead of direct copying.
+- Generated Next.js `package.json` includes deterministic scripts derived from source script intent plus required Next.js defaults.
+- Angular-only scripts are not blindly copied.
+- Environment variable usage is summarized in a generated environment contract artifact.
+- Reports include registry/script/env migration summaries.
+- Reports include package manager parity summaries.
+- Workspace `npm run build` and `npm test` pass after implementation.
+
+### Implementation Artifacts
+
+- `.npmrc` parser and safe registry materializer.
+- Internal package scope classifier.
+- Source script classifier and Next.js script translator.
+- Environment variable inventory and target exposure classifier.
+- Registry/script/env migration report materializers.
+- Package manager detector and target package manager parity materializer.
+- Tests for Nexus scoped registries, secret redaction, script translation, env contract generation, and package manifest integration.
+- Tests for Yarn/pnpm/npm package manager detection, generated `packageManager` field preservation, and self-correction command planning.
+
 ## Prioritization
 
 Recommended implementation order:
@@ -399,6 +509,7 @@ Recommended implementation order:
 5. NgRx conversion.
 6. Animation conversion.
 7. Self-correction loop.
+8. Private registry, environment, and script parity.
 
 Rationale:
 - Alias/template/form correctness most directly affects whether the generated app renders.
@@ -417,6 +528,7 @@ Rationale:
 | V2-GAP-FR-005 Animation | Required | Optional | Required |
 | V2-GAP-FR-006 Alias/Paths | Required | Required | Required |
 | V2-GAP-FR-007 Self-Correction | Required | Optional | Required |
+| V2-GAP-FR-009 Registry/Env/Scripts | Required | Required | Required |
 
 ## Definition of Done
 
@@ -424,5 +536,6 @@ The V2 gap implementation is complete when:
 
 - Each V2-GAP-FR requirement has converter code, target materialization, diagnostics, and tests.
 - A representative Angular sample using routes, forms, RxJS, NgRx, styles, assets, aliases, custom components, and animations produces a React project that installs and starts.
+- A representative enterprise Angular sample using private registry `.npmrc`, internal packages, source scripts, and environment variables produces a generated Next.js project with safe registry config, translated scripts, env contract artifacts, and no leaked secrets.
 - Manual review output clearly lists only genuinely unresolved or unsafe mappings.
 - Build and test verification passes for the SPA-Bridge workspace.

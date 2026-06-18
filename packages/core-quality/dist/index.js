@@ -15,6 +15,12 @@ export * from './summary/run-summary-builder.js';
 export * from './traceability/quality-trace-builder.js';
 export * from './traceability/trace-coverage-validator.js';
 export * from './pbt/pbt-coordinator.js';
+export * from './runtime-parity/runtime-parity-quality-gate.js';
+export * from './self-correction/generated-target-command-planner.js';
+export * from './self-correction/validation-result-classifier.js';
+export * from './self-correction/deterministic-fixer-registry.js';
+export * from './self-correction/ai-repair-boundary.js';
+export * from './self-correction/generated-target-self-correction-service.js';
 export * from './testing/generators.js';
 export * from './generation/quality-orchestration-service.js';
 //# sourceMappingURL=index.js.map

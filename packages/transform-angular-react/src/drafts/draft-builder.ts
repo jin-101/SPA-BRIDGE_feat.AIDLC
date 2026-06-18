@@ -3,6 +3,7 @@ import type { ManualReviewItem, Diagnostic, GeneratedArtifactRef, TraceLink } fr
 import type {
   ReactComponentDraft,
   ReactHookDraft,
+  ReactAnimationDraft,
   ReactRouteDraft,
   ReactReduxToolkitDraft,
   ReactServiceDraft,
@@ -23,6 +24,7 @@ export class DraftBuilder {
   private readonly routes: ReactRouteDraft[] = [];
   private readonly state: ReactStateDraft[] = [];
   private readonly reduxToolkit: ReactReduxToolkitDraft[] = [];
+  private readonly animations: ReactAnimationDraft[] = [];
   private readonly diagnostics: Diagnostic[] = [];
   private readonly reviewItems: ManualReviewItem[] = [];
   private readonly traces: TraceLink[] = [];
@@ -49,6 +51,10 @@ export class DraftBuilder {
 
   addReduxToolkitDraft(draft: ReactReduxToolkitDraft): void {
     this.reduxToolkit.push(draft);
+  }
+
+  addAnimationDraft(draft: ReactAnimationDraft): void {
+    this.animations.push(draft);
   }
 
   addDiagnostic(diagnostic: Diagnostic): void {
@@ -79,6 +85,7 @@ export class DraftBuilder {
       routes: sortById(this.routes),
       state: sortById(this.state),
       reduxToolkit: sortById(this.reduxToolkit),
+      animations: sortById(this.animations),
       manualReviewItems: sortById(this.reviewItems),
       diagnostics: [...this.diagnostics].sort((left, right) => {
         if (left.severity !== right.severity) {

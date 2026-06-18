@@ -2,6 +2,7 @@ import type { TargetStateStrategy } from '../types.js';
 export declare const targetDependencyAllowlist: {
     readonly react: "18.2.0";
     readonly 'react-dom': "18.2.0";
+    readonly next: "14.2.30";
     readonly 'react-router-dom': "6.30.1";
     readonly '@types/react': "18.3.12";
     readonly '@types/react-dom': "18.3.1";

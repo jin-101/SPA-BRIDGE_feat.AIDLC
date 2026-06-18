@@ -4,6 +4,7 @@ export declare class SourceAngularAnalysisService {
     private readonly pathGuard;
     private readonly workspaceProfiler;
     private readonly aliasAnalyzer;
+    private readonly animationExtractor;
     private readonly formExtractor;
     private readonly rxjsExtractor;
     private readonly ngrxExtractor;

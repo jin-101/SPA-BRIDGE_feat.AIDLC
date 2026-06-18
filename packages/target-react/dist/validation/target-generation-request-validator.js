@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { createDiagnostic, err, ok } from '@spa-bridge/core-model';
 import { createTargetGenerationError } from '../shared-errors.js';
-const allowedStrategies = new Set(['vite-react-typescript', 'react-default']);
+const allowedStrategies = new Set(['nextjs-typescript', 'vite-react-typescript', 'react-default']);
 const allowedPolicies = new Set(['preserve', 'overwrite', 'fail']);
 const allowedStateStrategies = new Set(['service', 'signals', 'store', 'local', 'unknown']);
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;

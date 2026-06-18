@@ -1,5 +1,5 @@
 import fc from 'fast-check';
-import { createViteReactTypeScriptStrategy } from '../strategies/vite-react-typescript.js';
+import { createNextJsTypeScriptStrategy } from '../strategies/nextjs-typescript.js';
 const identifierArbitrary = fc
     .array(fc.constantFrom('a', 'b', 'c', 'd', 'e', 'f', '1', '2', '3', '4', '5'), { minLength: 4, maxLength: 12 })
     .map((characters) => characters.join(''));
@@ -26,7 +26,7 @@ const createDraftSetArbitrary = () => fc
     .record({
     schemaVersion: fc.constant(1),
     targetFramework: fc.constant('react'),
-    projectStrategy: fc.constantFrom('vite-react-typescript', 'react-default'),
+    projectStrategy: fc.constantFrom('nextjs-typescript', 'vite-react-typescript', 'react-default'),
     aliasModel: fc.constant({
         schemaVersion: 1,
         baseUrl: '/tmp/workspace/spa-bridge/src',
@@ -74,6 +74,7 @@ const createDraftSetArbitrary = () => fc
         templateExternalReferences: fc.array(fc.constantFrom('assets/logo.png', './local.png'), { maxLength: 2 }),
         forms: fc.constant([]),
         rxHooks: fc.constant([]),
+        animations: fc.constant([]),
         serviceRefs: fc.array(identifierArbitrary, { maxLength: 3 }),
         styleUrls: fc.array(fc.constantFrom('./component.less', './component.css'), { maxLength: 1 }),
         propertyInitializers: fc.array(fc.record({
@@ -166,6 +167,7 @@ const createDraftSetArbitrary = () => fc
     routes: [...draftSet.routes].sort((left, right) => left.id.localeCompare(right.id)),
     state: [...draftSet.state].sort((left, right) => left.id.localeCompare(right.id)),
     reduxToolkit: [],
+    animations: [],
     manualReviewItems: [...draftSet.manualReviewItems].sort((left, right) => left.id.localeCompare(right.id)),
     diagnostics: [...draftSet.diagnostics].sort((left, right) => left.code.localeCompare(right.code)),
     traces: [...draftSet.traces].sort((left, right) => left.id.localeCompare(right.id)),
@@ -175,7 +177,7 @@ export const targetGenerationRequestArbitrary = fc
     runId: identifierArbitrary,
     correlationId: identifierArbitrary,
     targetRoot: absolutePathArbitrary,
-    strategyId: fc.option(fc.constantFrom('vite-react-typescript', 'react-default'), { nil: undefined }),
+    strategyId: fc.option(fc.constantFrom('nextjs-typescript', 'vite-react-typescript', 'react-default'), { nil: undefined }),
     overwritePolicy: fc.constantFrom('preserve', 'overwrite'),
     projectName: fc.option(identifierArbitrary, { nil: undefined }),
     selectedStateStrategy: fc.option(fc.constantFrom('service', 'signals', 'store', 'local', 'unknown'), {
@@ -189,7 +191,7 @@ export const targetGenerationRequestArbitrary = fc
     correlationId: fields.correlationId,
     targetRoot: fields.targetRoot,
     draftSet,
-    strategyId: fields.strategyId ?? createViteReactTypeScriptStrategy().id,
+    strategyId: fields.strategyId ?? createNextJsTypeScriptStrategy().id,
     overwritePolicy: fields.overwritePolicy,
     projectName: fields.projectName,
     selectedStateStrategy: fields.selectedStateStrategy,

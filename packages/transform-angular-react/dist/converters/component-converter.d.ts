@@ -9,5 +9,6 @@ export declare class ComponentConverter {
     constructor(ids?: StableIdFactory, reviewBuilder?: SafeReviewDiagnosticBuilder, mappingBuilder?: ProviderNeutralMappingRequestBuilder);
     convert(context: TransformationContext): RuleContribution;
     private convertComponent;
+    private convertAnimations;
 }
 //# sourceMappingURL=component-converter.d.ts.map

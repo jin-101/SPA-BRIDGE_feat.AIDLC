@@ -21,7 +21,7 @@ const createRequest = (overrides: Partial<TransformationRequest> = {}): Transfor
     includeUnsupportedTemplate: false,
   }),
   targetFramework: 'react',
-  targetProjectStrategy: 'vite-react-typescript',
+  targetProjectStrategy: 'nextjs-typescript',
   stateStrategy: 'unknown',
   enabledRulePacks: ['core'],
   outputNamespace: '/workspace/spa-bridge/.spa-bridge/transformation',
@@ -146,6 +146,78 @@ describe('TransformationService', () => {
     expect(result.draftSet.components[0]?.reduxUsage?.selectorRefs).toContain('selectFlights');
     expect(result.draftSet.components[0]?.reduxUsage?.actionRefs).toContain('loadFlights');
   });
+
+  it('carries Angular animation IR into component and target animation drafts', () => {
+    const analysis = createBenchmarkAngularAnalysisFixture({
+      componentCount: 1,
+      includeUnsupportedTemplate: false,
+    });
+    const componentPath = analysis.typeScriptSummaries[0]?.sourcePath ?? '/workspace/spa-bridge/src/app/component-1.component.ts';
+    const componentId = analysis.typeScriptSummaries[0]?.symbols[0]?.id ?? 'component-source-1';
+    analysis.animationModel = {
+      schemaVersion: 1,
+      declarations: [
+        {
+          id: 'animation-declaration-panel',
+          sourceRef: { kind: 'source', path: componentPath, symbol: 'Component1' },
+          componentId,
+          rawConstructKinds: ['trigger', 'state', 'transition', 'query'],
+          diagnostics: [],
+          triggers: [
+            {
+              id: 'animation-trigger-open-close',
+              triggerName: 'openClose',
+              complexity: 'complex',
+              conversionEligibility: 'manual-review',
+              states: [
+                {
+                  id: 'animation-state-open',
+                  stateName: 'open',
+                  styleProperties: { opacity: '1' },
+                  sourceRef: { kind: 'source', path: componentPath, symbol: 'openClose' },
+                  requiresReview: false,
+                },
+              ],
+              transitions: [
+                {
+                  id: 'animation-transition-open-close',
+                  expression: 'open => closed',
+                  durationMs: 200,
+                  easing: 'ease-in-out',
+                  usesQuery: true,
+                  usesStagger: false,
+                  usesGroup: false,
+                  requiresRuntimeHelper: true,
+                  requiresManualReview: true,
+                },
+              ],
+              bindings: [
+                {
+                  id: 'animation-binding-open-close',
+                  triggerName: 'openClose',
+                  bindingExpression: 'state',
+                  targetElementRef: componentPath,
+                  sourceRef: { kind: 'source', path: componentPath, symbol: 'openClose' },
+                  conversionPlan: 'class-binding',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+      thirdPartyUsages: [],
+      assetRefs: [],
+      diagnostics: [],
+    };
+
+    const service = new TransformationService();
+    const result = expectOk(service.transform(createRequest({ analysis })));
+
+    expect(result.draftSet.animations[0]?.triggerName).toBe('openClose');
+    expect(result.draftSet.animations[0]?.conversionKind).toBe('manual-review');
+    expect(result.draftSet.animations[0]?.reviewComments.join('\n')).toContain('AIDLC_MANUAL_REVIEW_ANIMATION');
+    expect(result.draftSet.components[0]?.animations[0]?.triggerName).toBe('openClose');
+  });
 });
 
 describe('Registry and planner', () => {
@@ -206,6 +278,7 @@ describe('Property-based conversion properties', () => {
           ...result.draftSet.services,
           ...result.draftSet.routes,
           ...result.draftSet.state,
+          ...result.draftSet.animations,
         ]) {
           expect(draft.generatedRefs.every((ref) => traceTargets.has(ref.path))).toBe(true);
         }

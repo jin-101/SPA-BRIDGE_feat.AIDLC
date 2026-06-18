@@ -8,7 +8,7 @@ import type {
 import type { AngularAnalysisResult, SourceAliasModel, TemplateIr } from '@spa-bridge/source-angular';
 
 export type TransformationTargetFramework = 'react';
-export type TargetProjectStrategy = 'vite-react-typescript' | 'react-default';
+export type TargetProjectStrategy = 'nextjs-typescript' | 'vite-react-typescript' | 'react-default';
 export type StateStrategyKind = 'service' | 'signals' | 'store' | 'local' | 'unknown';
 export type TransformationAnalysis = AngularAnalysisResult;
 export type TransformationPhase = 'component' | 'template' | 'behavior' | 'service' | 'route' | 'state' | 'finalize';
@@ -310,6 +310,90 @@ export type ReactReduxUsageDraft = {
   reviewComments: string[];
 };
 
+export type NormalizedAnimationStateModel = {
+  id: string;
+  stateName: string;
+  styleProperties: Record<string, string>;
+  sourceRef?: SourceRef;
+  requiresReview: boolean;
+};
+
+export type NormalizedAnimationTransitionModel = {
+  id: string;
+  expression: string;
+  durationMs?: number;
+  easing?: string;
+  usesQuery: boolean;
+  usesStagger: boolean;
+  usesGroup: boolean;
+  requiresRuntimeHelper: boolean;
+  requiresManualReview: boolean;
+};
+
+export type NormalizedAnimationBindingModel = {
+  id: string;
+  triggerName: string;
+  bindingExpression?: string;
+  startHandler?: string;
+  doneHandler?: string;
+  targetElementRef: string;
+  sourceRef?: SourceRef;
+  conversionPlan: 'class-binding' | 'helper-binding' | 'event-callback' | 'manual-review';
+};
+
+export type NormalizedAnimationTriggerModel = {
+  id: string;
+  triggerName: string;
+  states: NormalizedAnimationStateModel[];
+  transitions: NormalizedAnimationTransitionModel[];
+  bindings: NormalizedAnimationBindingModel[];
+  complexity: 'simple' | 'moderate' | 'complex';
+  conversionEligibility: 'css-transition' | 'react-helper' | 'adapter-scaffold' | 'manual-review';
+};
+
+export type NormalizedAnimationDeclaration = {
+  id: string;
+  sourceRef?: SourceRef;
+  componentId: string;
+  triggers: NormalizedAnimationTriggerModel[];
+  rawConstructKinds: string[];
+  diagnostics: string[];
+};
+
+export type NormalizedThirdPartyAnimationUsage = {
+  id: string;
+  packageName: string;
+  usageKind: 'lottie' | 'gsap' | 'animejs' | 'angular-wrapper' | 'unknown';
+  importRefs: SourceRef[];
+  assetRefs: string[];
+  targetDependencyDecision: 'carry' | 'replace' | 'remove' | 'review';
+  targetAdapterPlan: 'react-effect-wrapper' | 'react-lottie-wrapper' | 'manual-review';
+};
+
+export type NormalizedAnimationAssetRef = {
+  id: string;
+  sourcePath: string;
+  targetPath: string;
+  assetKind: 'lottie-json' | 'image' | 'sprite' | 'style' | 'unknown';
+  copyStatus: 'planned' | 'copied' | 'missing' | 'review';
+};
+
+export type ReactAnimationDraft = {
+  id: string;
+  ownerComponentId: string;
+  sourceRef?: SourceRef;
+  triggerName: string;
+  conversionKind: 'css-transition' | 'react-helper' | 'adapter-scaffold' | 'manual-review';
+  cssClassPrefix: string;
+  stateClassNames: Record<string, string>;
+  bindings: NormalizedAnimationBindingModel[];
+  requiresClientComponent: boolean;
+  assetRefs: NormalizedAnimationAssetRef[];
+  reviewComments: string[];
+  reviewItemIds: string[];
+  generatedRefs: GeneratedArtifactRef[];
+};
+
 export type NormalizedService = {
   id: string;
   name: string;
@@ -370,6 +454,9 @@ export type TransformationContext = {
   ngrxEntityAdapters: NormalizedNgrxEntityAdapterModel[];
   ngrxComponentUsages: NormalizedNgrxComponentUsageModel[];
   hasNgrxRouterStore: boolean;
+  animationDeclarations: NormalizedAnimationDeclaration[];
+  thirdPartyAnimationUsages: NormalizedThirdPartyAnimationUsage[];
+  animationAssetRefs: NormalizedAnimationAssetRef[];
   services: NormalizedService[];
   routes: NormalizedRoute[];
   states: NormalizedState[];
@@ -402,6 +489,7 @@ export type ReactComponentDraft = {
   forms: NormalizedFormModel[];
   rxHooks: ReactRxHookDraft[];
   reduxUsage?: ReactReduxUsageDraft;
+  animations: ReactAnimationDraft[];
   serviceRefs: string[];
   styleUrls: string[];
   sourceRelativePath?: string;
@@ -474,6 +562,7 @@ export type ReactTargetDraftSet = {
   routes: ReactRouteDraft[];
   state: ReactStateDraft[];
   reduxToolkit: ReactReduxToolkitDraft[];
+  animations: ReactAnimationDraft[];
   manualReviewItems: ManualReviewItem[];
   diagnostics: Diagnostic[];
   traces: TraceLink[];
@@ -531,6 +620,7 @@ export type RuleContribution = {
   routeDrafts?: ReactRouteDraft[];
   stateDrafts?: ReactStateDraft[];
   reduxToolkitDrafts?: ReactReduxToolkitDraft[];
+  animationDrafts?: ReactAnimationDraft[];
   hooks?: ReactHookDraft[];
   diagnostics?: Diagnostic[];
   reviewItems?: ManualReviewItem[];

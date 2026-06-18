@@ -5,7 +5,7 @@ import { createDiagnostic, err, ok, type Diagnostic, type Result } from '@spa-br
 import { createTargetGenerationError } from '../shared-errors.js';
 import type { TargetGenerationRequest } from '../types.js';
 
-const allowedStrategies = new Set(['vite-react-typescript', 'react-default']);
+const allowedStrategies = new Set(['nextjs-typescript', 'vite-react-typescript', 'react-default']);
 const allowedPolicies = new Set(['preserve', 'overwrite', 'fail']);
 const allowedStateStrategies = new Set(['service', 'signals', 'store', 'local', 'unknown']);
 

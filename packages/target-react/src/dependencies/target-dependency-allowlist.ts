@@ -3,6 +3,7 @@ import type { TargetStateStrategy } from '../types.js';
 export const targetDependencyAllowlist = {
   react: '18.2.0',
   'react-dom': '18.2.0',
+  next: '14.2.30',
   'react-router-dom': '6.30.1',
   '@types/react': '18.3.12',
   '@types/react-dom': '18.3.1',

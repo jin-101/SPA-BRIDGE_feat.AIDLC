@@ -385,6 +385,13 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
             hasRouterStore: false,
             diagnostics: [],
         },
+        animationModel: {
+            schemaVersion: 1,
+            declarations: [],
+            thirdPartyUsages: [],
+            assetRefs: [],
+            diagnostics: [],
+        },
         routeSummaries,
         graph,
         diagnostics,
@@ -421,6 +428,11 @@ export const createBenchmarkAngularAnalysisFixture = (options = {}) => {
             totalNgrxEntityAdapters: 0,
             totalNgrxComponentUsages: 0,
             totalNgrxDiagnostics: 0,
+            totalAnimationDeclarations: 0,
+            totalAnimationTriggers: 0,
+            totalAnimationBindings: 0,
+            totalAnimationThirdPartyUsages: 0,
+            totalAnimationDiagnostics: 0,
         },
     };
 };

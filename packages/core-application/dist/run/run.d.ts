@@ -21,8 +21,8 @@ export declare const RunCheckpointSchema: z.ZodObject<{
         segment?: string | undefined;
     }>, "many">>;
 }, "strip", z.ZodTypeAny, {
-    stepId: string;
     id: string;
+    stepId: string;
     completedAt: string;
     artifactRefs: {
         path: string;
@@ -30,8 +30,8 @@ export declare const RunCheckpointSchema: z.ZodObject<{
         segment?: string | undefined;
     }[];
 }, {
-    stepId: string;
     id: string;
+    stepId: string;
     completedAt: string;
     artifactRefs?: {
         path: string;
@@ -80,8 +80,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
             segment?: string | undefined;
         }>, "many">>;
     }, "strip", z.ZodTypeAny, {
-        stepId: string;
         id: string;
+        stepId: string;
         completedAt: string;
         artifactRefs: {
             path: string;
@@ -89,8 +89,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
             segment?: string | undefined;
         }[];
     }, {
-        stepId: string;
         id: string;
+        stepId: string;
         completedAt: string;
         artifactRefs?: {
             path: string;
@@ -121,20 +121,20 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     status: "pending" | "running" | "completed" | "failed";
     outputPath: string;
-    schemaVersion: 1;
-    projectRoot: string;
-    inputPath: string;
-    runId: string;
     artifactRefs: {
         path: string;
         kind: "generated";
         segment?: string | undefined;
     }[];
+    schemaVersion: 1;
+    runId: string;
+    projectRoot: string;
+    inputPath: string;
     startedAt: string;
     updatedAt: string;
     checkpoints: {
-        stepId: string;
         id: string;
+        stepId: string;
         completedAt: string;
         artifactRefs: {
             path: string;
@@ -156,9 +156,9 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
     status: "pending" | "running" | "completed" | "failed";
     outputPath: string;
     schemaVersion: 1;
+    runId: string;
     projectRoot: string;
     inputPath: string;
-    runId: string;
     startedAt: string;
     updatedAt: string;
     artifactRefs?: {
@@ -167,8 +167,8 @@ export declare const RunWorkspaceManifestSchema: z.ZodObject<{
         segment?: string | undefined;
     }[] | undefined;
     checkpoints?: {
-        stepId: string;
         id: string;
+        stepId: string;
         completedAt: string;
         artifactRefs?: {
             path: string;

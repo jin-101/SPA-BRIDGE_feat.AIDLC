@@ -36,6 +36,7 @@ import type {
   ReactHookDraft,
   ReactRouteDraft,
   ReactReduxToolkitDraft,
+  ReactAnimationDraft,
   ReactServiceDraft,
   ReactStateDraft,
   ReactTargetDraftSet,
@@ -56,6 +57,7 @@ const collectDrafts = (draftSet: ReactTargetDraftSet): DraftSourceCarrier[] => [
   ...draftSet.services,
   ...draftSet.routes,
   ...draftSet.state,
+  ...draftSet.animations,
 ];
 
 const summarizeDraftSet = (draftSet: ReactTargetDraftSet): TransformationSummary => ({
@@ -155,6 +157,10 @@ export class TransformationPipeline {
 
       for (const reduxToolkit of contribution.reduxToolkitDrafts ?? []) {
         draftBuilder.addReduxToolkitDraft(reduxToolkit);
+      }
+
+      for (const animationDraft of contribution.animationDrafts ?? []) {
+        draftBuilder.addAnimationDraft(animationDraft);
       }
 
       for (const hook of contribution.hooks ?? []) {

@@ -63,7 +63,7 @@ Primary packages:
 - `packages/cli`
 
 Goal:
-- Preserve `tsconfig` paths, `baseUrl`, workspace/library references, package aliases, and Vite aliases so generated React imports resolve.
+- Preserve `tsconfig` paths, `baseUrl`, workspace/library references, package aliases, and Next.js/Vite aliases so generated React imports resolve.
 
 ### V2-GAP-UOW-02 Advanced Template Conversion
 
@@ -145,16 +145,49 @@ Primary packages:
 Goal:
 - Run install/typecheck/build/lint validation against generated React output, apply deterministic fixers, and optionally use policy-controlled AI refinement.
 
+### V2-GAP-UOW-08 Private Registry, Environment, and Script Parity
+
+Requirement coverage:
+- V2-GAP-FR-009
+
+Primary packages:
+- `packages/source-angular`
+- `packages/target-react`
+- `packages/cli`
+- `packages/core-reporting`
+- `packages/core-security`
+
+Goal:
+- Preserve safe `.npmrc`/Nexus registry routing, carry compatible internal packages, translate source package scripts into Next.js-safe scripts, generate environment variable contracts, and prevent secret leakage.
+
+### V2-GAP-UOW-QA Next.js Target Default and Runtime Parity Quality Gate
+
+Requirement coverage:
+- V2-GAP-FR-008
+- Supports V2-GAP-FR-007
+
+Primary packages:
+- `packages/core-application`
+- `packages/core-quality`
+- `packages/cli`
+- `packages/target-react`
+- `packages/transform-angular-react`
+
+Goal:
+- Make Next.js App Router the default generated target, keep Vite as an explicit legacy strategy, and add deterministic runtime parity quality scoring so generated output is judged by install/dev readiness rather than file generation alone.
+
 ## Recommended Order
 
 1. V2-GAP-UOW-01 Dependency Alias and Path Mapping
 2. V2-GAP-UOW-02 Advanced Template Conversion
 3. V2-GAP-UOW-03 Reactive Forms Conversion
 4. V2-GAP-UOW-00 Dependency Compatibility Filter and Replacement
-5. V2-GAP-UOW-04 RxJS Conversion
-6. V2-GAP-UOW-05 NgRx Conversion
-7. V2-GAP-UOW-06 Animation Conversion
-8. V2-GAP-UOW-07 Generated React Self-Correction Loop
+5. V2-GAP-UOW-QA Next.js Target Default and Runtime Parity Quality Gate
+6. V2-GAP-UOW-04 RxJS Conversion
+7. V2-GAP-UOW-05 NgRx Conversion
+8. V2-GAP-UOW-06 Animation Conversion
+9. V2-GAP-UOW-07 Generated React Self-Correction Loop
+10. V2-GAP-UOW-08 Private Registry, Environment, and Script Parity
 
 ## Verification Strategy
 
@@ -212,7 +245,38 @@ Each V2 gap unit should include:
 - [x] Create V2-GAP-UOW-05 code generation plan.
 - [x] Implement V2-GAP-UOW-05.
 - [x] Verify V2-GAP-UOW-05 build/test.
+- [x] Receive runtime parity direction change request.
+- [x] Switch default target strategy from Vite to Next.js App Router.
+- [x] Preserve Vite as an explicit legacy strategy.
+- [x] Add runtime parity quality scoring artifact generation.
+- [x] Verify Next.js target default build/test.
+- [x] Receive approval to continue to V2-GAP-UOW-06.
+- [x] Create V2-GAP-UOW-06 functional design plan.
+- [x] Collect V2-GAP-UOW-06 functional design answers.
+- [x] Generate V2-GAP-UOW-06 functional design artifacts.
+- [x] Receive V2-GAP-UOW-06 functional design approval.
+- [x] Create V2-GAP-UOW-06 code generation plan.
+- [x] Implement V2-GAP-UOW-06.
+- [x] Verify V2-GAP-UOW-06 build/test.
+- [x] Receive V2-GAP-UOW-06 code generation review approval.
+- [x] Create V2-GAP-UOW-07 functional design plan.
+- [x] Collect V2-GAP-UOW-07 functional design answers.
+- [x] Generate V2-GAP-UOW-07 functional design artifacts.
+- [x] Create V2-GAP-UOW-07 code generation plan.
+- [x] Implement V2-GAP-UOW-07.
+- [x] Verify V2-GAP-UOW-07 build/test.
+- [x] Receive V2-GAP-UOW-07 code generation review approval.
+- [x] Refresh V2 gap build/test closure documentation.
+- [x] Update V2 requirements status.
+- [x] Add V2-GAP-FR-009 private registry, environment, and script parity requirement.
+- [x] Create V2-GAP-UOW-08 functional design plan.
+- [x] Collect V2-GAP-UOW-08 functional design answers.
+- [x] Generate V2-GAP-UOW-08 functional design artifacts.
+- [x] Create V2-GAP-UOW-08 code generation plan.
+- [x] Implement V2-GAP-UOW-08.
+- [x] Verify V2-GAP-UOW-08 build/test.
+- [x] Close V2 gap brownfield construction track.
 
 ## Approval Gate
 
-Status: V2-GAP-UOW-05 code generation complete and awaiting review approval.
+Status: V2 gap brownfield construction track is complete. Next practical activity is real Angular repository conversion validation.

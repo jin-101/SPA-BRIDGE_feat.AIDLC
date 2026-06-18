@@ -1,6 +1,6 @@
 import { z } from 'zod';
 export const ProviderModeSchema = z.enum(['local-first', 'external-only', 'auto']);
-export const TargetStrategySchema = z.enum(['vite-react-typescript', 'user-selected', 'custom']);
+export const TargetStrategySchema = z.enum(['nextjs-typescript', 'vite-react-typescript', 'user-selected', 'custom']);
 export const ReportFormatSchema = z.enum(['json', 'markdown', 'html']);
 export const QualityOptionsSchema = z.object({
     typecheck: z.boolean().default(true),

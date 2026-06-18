@@ -36,7 +36,10 @@ const toReactEventName = (name: string): string => {
 };
 
 const needsReactImport = (component: ReactComponentDraft): boolean =>
-  component.propertyInitializers.length > 0 || component.hooks.length > 0 || component.forms.length > 0 || component.rxHooks.length > 0;
+  component.propertyInitializers.length > 0 || component.hooks.length > 0 || component.forms.length > 0 || component.rxHooks.length > 0 || component.animations.some((animation) => animation.requiresClientComponent);
+
+const needsClientComponent = (component: ReactComponentDraft): boolean =>
+  component.animations.some((animation) => animation.requiresClientComponent) || component.rxHooks.length > 0 || component.forms.length > 0 || Boolean(component.reduxUsage);
 
 const normalizeInitializer = (initializer: string | undefined): string => {
   if (!initializer || initializer.trim().length === 0) {
@@ -199,10 +202,15 @@ const toSourceRelativeComponentPath = (component: ReactComponentDraft): string =
   return `src/${safeRelative}/${toComponentName(component.name) || 'Component'}.tsx`;
 };
 
+const toTargetStyleExtension = (styleUrl: string): string => {
+  const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0]?.toLowerCase() ?? '.css';
+  return extension === '.css' ? '.css' : '.css';
+};
+
 const toRelativeImport = (fromPath: string, toPath: string): string => {
   const fromDir = fromPath.split('/').slice(0, -1).join('/');
   const fromParts = fromDir.split('/').filter(Boolean);
-  const toParts = toPath.replace(/\.tsx$/i, '.js').split('/').filter(Boolean);
+  const toParts = toPath.replace(/\.(tsx|ts)$/i, '').split('/').filter(Boolean);
   while (fromParts.length > 0 && toParts.length > 0 && fromParts[0] === toParts[0]) {
     fromParts.shift();
     toParts.shift();
@@ -340,6 +348,26 @@ const renderReduxUsageLines = (component: ReactComponentDraft): string[] => {
   return [...lines, ''];
 };
 
+const renderAnimationLines = (component: ReactComponentDraft): string[] => {
+  if (component.animations.length === 0) {
+    return [];
+  }
+
+  const lines: string[] = [];
+  for (const animation of component.animations) {
+    lines.push(...animation.reviewComments.map((comment) => `  /* ${comment.replace(/\*\//g, '* /')} */`));
+    const helperName = toIdentifier(`${animation.triggerName}AnimationClass`, 'animationClass');
+    const defaultClass = Object.values(animation.stateClassNames)[0] ?? animation.cssClassPrefix;
+    const bindingExpression = animation.bindings[0]?.bindingExpression;
+    if (bindingExpression) {
+      lines.push(`  const ${helperName} = ${JSON.stringify(defaultClass)}; // state source: ${bindingExpression.replace(/\*\//g, '* /')}`);
+    } else {
+      lines.push(`  const ${helperName} = ${JSON.stringify(defaultClass)};`);
+    }
+  }
+  return [...lines, ''];
+};
+
 export class ComponentMaterializer {
   constructor(private readonly templateRenderer = new TemplateJsxRenderer()) {}
 
@@ -354,14 +382,16 @@ export class ComponentMaterializer {
         }).join('\n')}\n};`
       : 'type Props = Record<string, never>;';
     const styleImports = component.styleUrls.map((styleUrl) => {
-      const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '.css';
+      const extension = toTargetStyleExtension(styleUrl);
       return `import '${toRelativeImport(componentPath, `src/styles/components/${safeName}${extension}`)}';`;
     });
     const imports = [
+      ...(needsClientComponent(component) ? ['"use client";', ''] : []),
       ...(needsReactImport(component) ? ["import { useEffect, useState } from 'react';"] : []),
       ...(component.forms.length > 0 ? [`import { useFormArray, useFormControl, useFormGroup, validators as formValidators } from '${toRelativeImport(componentPath, 'src/utils/forms/index')}';`] : []),
       ...(component.rxHooks.length > 0 ? [`import { useObservable, useSubjectValue, useSubscriptionEffect } from '${toRelativeImport(componentPath, 'src/utils/rxjs/index')}';`] : []),
       ...(component.reduxUsage ? [`import { useAppDispatch, useAppSelector } from '${toRelativeImport(componentPath, 'src/store/hooks')}';`] : []),
+      ...(component.animations.length > 0 ? [`import '${toRelativeImport(componentPath, 'src/animations/animations.css')}';`] : []),
       ...styleImports,
       ...(needsReactImport(component) || styleImports.length > 0 || component.forms.length > 0 || component.rxHooks.length > 0 || component.reduxUsage ? [''] : []),
     ];
@@ -473,6 +503,7 @@ export class ComponentMaterializer {
       ...renderFormLines(component),
       ...renderRxHookLines(component),
       ...renderReduxUsageLines(component),
+      ...renderAnimationLines(component),
       ...lifecycleLines,
       ...(lifecycleLines.length > 0 ? [''] : []),
       ...methodLines,
@@ -482,9 +513,10 @@ export class ComponentMaterializer {
         const actionName = toIdentifier(actionRef.split('.').pop() ?? actionRef, 'action');
         return `  void dispatch${actionName.charAt(0).toUpperCase()}${actionName.slice(1)};`;
       }),
+      ...component.animations.map((animation) => `  void ${toIdentifier(`${animation.triggerName}AnimationClass`, 'animationClass')};`),
       ...(usedIdentifiers.length > 0 ? [''] : []),
       '  return (',
-      `    <section data-component="${safeName}">`,
+      `    <section data-component="${safeName}"${component.animations.length > 0 ? ` className={${toIdentifier(`${component.animations[0]?.triggerName ?? 'animation'}AnimationClass`, 'animationClass')}}` : ''}>`,
       ...(template.lines.length > 0 ? template.lines : fallbackTemplateLines),
       '    </section>',
       '  );',
@@ -500,7 +532,7 @@ export class ComponentMaterializer {
         overwrite: true,
       });
     const styleFiles = component.styleUrls.map((styleUrl) => {
-      const extension = styleUrl.match(/\.[A-Za-z0-9]+$/)?.[0] ?? '.css';
+      const extension = toTargetStyleExtension(styleUrl);
       return createFileSpec({
         path: `src/styles/components/${safeName}${extension}`,
         kind: 'scaffold',

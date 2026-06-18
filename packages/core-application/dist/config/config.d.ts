@@ -8,7 +8,7 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
     projectRoot: z.ZodString;
     inputPath: z.ZodString;
     outputPath: z.ZodString;
-    targetStrategy: z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>;
+    targetStrategy: z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>;
     providerMode: z.ZodEnum<["local-first", "external-only", "auto"]>;
     reportFormats: z.ZodArray<z.ZodEnum<["json", "markdown", "html"]>, "many">;
     preservePartialArtifacts: z.ZodBoolean;
@@ -36,7 +36,7 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
-    targetStrategy: "vite-react-typescript" | "user-selected" | "custom";
+    targetStrategy: "nextjs-typescript" | "vite-react-typescript" | "user-selected" | "custom";
     providerMode: "local-first" | "external-only" | "auto";
     outputPath: string;
     reportFormats: ("json" | "markdown" | "html")[];
@@ -54,7 +54,7 @@ export declare const ResolvedConversionConfigSchema: z.ZodObject<{
     projectRoot: string;
     inputPath: string;
 }, {
-    targetStrategy: "vite-react-typescript" | "user-selected" | "custom";
+    targetStrategy: "nextjs-typescript" | "vite-react-typescript" | "user-selected" | "custom";
     providerMode: "local-first" | "external-only" | "auto";
     outputPath: string;
     reportFormats: ("json" | "markdown" | "html")[];

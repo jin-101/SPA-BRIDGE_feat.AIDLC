@@ -278,6 +278,7 @@ describe('cli package', () => {
         '@Component({',
         "  selector: 'app-root',",
         "  templateUrl: './app.component.html',",
+        "  styleUrls: ['./app.component.less'],",
         '})',
         'export class AppComponent {',
         '  @Input() title = "Fixture";',
@@ -287,6 +288,27 @@ describe('cli package', () => {
       'utf8',
     );
     await fs.writeFile(path.join(angularRoot, 'src', 'app', 'app.component.html'), '<h1>{{ title }}</h1>\n', 'utf8');
+    await fs.mkdir(path.join(angularRoot, 'src', 'assets'), { recursive: true });
+    await fs.writeFile(path.join(angularRoot, 'src', 'assets', 'local.png'), 'fixture-png', 'utf8');
+    await fs.mkdir(path.join(angularRoot, 'src', 'app', 'booking', 'flight-route-map'), { recursive: true });
+    await fs.mkdir(path.join(angularRoot, 'src', 'app', 'images'), { recursive: true });
+    await fs.writeFile(path.join(angularRoot, 'src', 'app', 'images', 'mapbox-popup-tip.svg'), '<svg />', 'utf8');
+    await fs.writeFile(
+      path.join(angularRoot, 'src', 'app', 'booking', 'flight-route-map', 'flight-route-map.component.less'),
+      ".mapbox-tip { background-image: url('../../images/mapbox-popup-tip.svg'); }\n",
+      'utf8',
+    );
+    await fs.writeFile(
+      path.join(angularRoot, 'src', 'app', 'app.component.less'),
+      [
+        ".hero { background-image: url('../assets/local.png'); }",
+        ".dam { background-image: url('/content/dam/ke/banner.png'); }",
+        "@font-face { src: url('$DAM_FONT/ke.woff2'); }",
+        '',
+      ].join('\n'),
+      'utf8',
+    );
+    await fs.writeFile(path.join(angularRoot, 'proxy.local.json'), JSON.stringify({ '/content/dam': { target: 'https://dam.example' } }, null, 2), 'utf8');
 
     const result = await runCli(
       [
@@ -318,11 +340,20 @@ describe('cli package', () => {
 
     expect(result.value.summary).toContain('Converted');
     await expect(fs.readFile(path.join(outputRoot, 'package.json'), 'utf8')).resolves.toContain('fixture-angular-app');
-    await expect(fs.readFile(path.join(outputRoot, 'src', 'App.tsx'), 'utf8')).resolves.toContain('Target React scaffold');
+    await expect(fs.readFile(path.join(outputRoot, 'next.config.mjs'), 'utf8')).resolves.toContain('NextConfig');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'app', 'page.tsx'), 'utf8')).resolves.toContain('Target Next.js scaffold');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'app', 'layout.tsx'), 'utf8')).resolves.toContain('RootLayout');
     await expect(fs.readFile(path.join(outputRoot, 'src', 'app', 'app', 'AppComponent.tsx'), 'utf8')).resolves.toContain('AppComponent');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'target-summary.json'), 'utf8')).resolves.toContain('totalFiles');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'ai-refinement-results.json'), 'utf8')).resolves.toContain('ollama-exaone3.5');
     await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'resource-copy-summary.json'), 'utf8')).resolves.toContain('styles');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'css-asset-resolution-summary.json'), 'utf8')).resolves.toContain('externalDamOrRemoteReferences');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'css-asset-resolution-summary.json'), 'utf8')).resolves.toContain('local-copied');
+    await expect(fs.readFile(path.join(outputRoot, '.spa-bridge', 'proxy-config-summary.json'), 'utf8')).resolves.toContain('proxy.local.json');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'styles', 'angular', 'app', 'app.component.css'), 'utf8')).resolves.toContain('content/dam');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'styles', 'angular', 'assets', 'local.png'), 'utf8')).resolves.toContain('fixture-png');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'styles', 'angular', 'app', 'images', 'mapbox-popup-tip.svg'), 'utf8')).resolves.toContain('<svg');
+    await expect(fs.readFile(path.join(outputRoot, 'src', 'source-styles.css'), 'utf8')).resolves.toContain("@import './styles/angular/app/app.component.css';");
     await expect(fs.readFile(path.join(outputRoot, 'report.json'), 'utf8')).resolves.toContain('Conversion Summary');
 
     if (previousTimeout === undefined) {

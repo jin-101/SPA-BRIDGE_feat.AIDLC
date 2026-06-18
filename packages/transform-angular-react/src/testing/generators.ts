@@ -33,7 +33,7 @@ export const transformationRequestArbitrary = benchmarkAnalysisOptionsArbitrary.
     .record({
       runId: identifierArbitrary,
       correlationId: identifierArbitrary,
-      targetProjectStrategy: fc.constantFrom('vite-react-typescript', 'react-default'),
+      targetProjectStrategy: fc.constantFrom('nextjs-typescript', 'vite-react-typescript', 'react-default'),
       stateStrategy: fc.constantFrom('service', 'signals', 'store', 'local', 'unknown'),
       outputNamespace: fc.option(namespaceArbitrary, { nil: undefined }),
     })

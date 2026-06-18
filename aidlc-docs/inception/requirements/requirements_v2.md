@@ -12,7 +12,7 @@ The generated React project should be usable as a replacement project:
 
 - A user provides a full Angular repository.
 - SPA-Bridge generates a full React repository.
-- The user runs `npm install` and `npm run dev` in the generated React repository.
+- The user runs the source-compatible package manager install command and dev command in the generated React repository, for example `yarn install`/`yarn dev`, `pnpm install`/`pnpm dev`, or `npm install`/`npm run dev`.
 - The generated React app should show and behave as close as possible to the original Angular app, with unresolved differences clearly reported.
 
 ## Change Request Summary
@@ -181,17 +181,74 @@ Implemented result:
 Remaining gap:
 - Route guards, resolvers, lazy loading, NgRx reducers/effects/selectors, RxJS streams, and Angular service semantics require deeper transformation rules.
 
+### CR-V2-012 Package Manager Parity
+
+Request:
+- Generated Next.js targets should not force npm when the source Angular repository uses Yarn or pnpm.
+- Package manager type and version should follow the source repository where practical.
+- Generated install/dev guidance and validation should avoid npm-only peer dependency failures when the source repository is Yarn-based or pnpm-based.
+- Generated scripts should avoid confusing Angular `start` semantics with Next.js production `next start`. Angular-style `start` should launch the development server unless the user explicitly chooses a production serve command.
+
+Implemented result:
+- Source package manager evidence is detected from `package.json#packageManager`, `yarn.lock`, `pnpm-lock.yaml`, `package-lock.json`, `.yarnrc`, `.yarnrc.yml`, `.npmrc`, `pnpm-workspace.yaml`, and `.pnpmfile.cjs`.
+- Generated Next.js `package.json` receives a compatible `packageManager` field when source evidence is available.
+- Generated target self-correction command planning uses the detected package manager instead of always using npm.
+- Package manager parity is summarized in generated enterprise parity artifacts.
+- Generated Next.js targets use `start: next dev` for Angular-style developer startup parity and expose production startup separately as `serve: next start`.
+
+Remaining gap:
+- The converter does not fetch private package peer metadata from Nexus during conversion. Peer conflicts between internal packages may still require manual dependency alignment or validation with the source-compatible package manager.
+- Production startup still requires `build` before `serve`, following Next.js semantics.
+
+### CR-V2-013 Generated Next.js Build Import and DAM/Proxy Asset Evidence
+
+요청:
+- 생성된 Next.js/TypeScript 소스가 로컬 `.ts`/`.tsx` 모듈을 import할 때 불필요하게 `.js` 확장자를 붙여 build가 깨지지 않아야 한다.
+- Angular 스타일 파일의 CSS `url(...)` 참조 중 로컬 이미지/폰트는 가능한 한 생성된 target에 함께 복사되어야 한다.
+- Angular `.less`/`.scss`/`.sass` 스타일을 생성된 Next.js target에서 직접 import하지 않아야 한다. Next.js build가 읽는 스타일 entry는 CSS-compatible artifact여야 한다.
+- DAM, CDN, proxy 기반 자산처럼 정적 변환 시 완전한 런타임 주소를 알 수 없는 항목은 조용히 누락하지 않고 미리 감지해 review artifact로 남겨야 한다.
+- 기존 Angular 레포지토리의 환경별 `proxy.*` 설정 파일은 내용 노출 없이 안전한 메타데이터로 탐지되어 Next.js rewrites, middleware, 배포 proxy 설정 검토에 활용되어야 한다.
+
+처리 결과:
+- 생성된 Next.js/Vite React target의 로컬 TS/TSX import는 확장자 없는 import로 생성된다.
+- component, route, provider, source style, RxJS runtime helper import에서 `.js` suffix를 제거했다.
+- Angular source inventory가 `.less`와 `.sass`를 style 파일로 분류하도록 보강했다.
+- Generated target scaffold는 `src/source-styles.ts` 대신 `src/source-styles.css`를 layout에서 직접 import한다.
+- CLI resource copy 단계는 `less` compiler를 사용해 source `.less`를 CSS로 컴파일 시도하고, 프로젝트 특화 Less import 실패 시 build-safe fallback CSS를 생성한다.
+- Generated component style placeholder는 `.less`가 아닌 `.css`로 생성되어 Next.js webpack loader 오류를 피한다.
+- CLI resource copy 단계가 style 파일의 CSS `url(...)`을 분석해 복사 가능한 로컬 자산을 target 내부로 복사한다.
+- CLI resource copy 단계는 Less 컴파일 결과 CSS의 `url(...)`도 다시 분석한다. Imported Less에서 유입된 이미지/폰트 상대 경로까지 복사 대상에 포함한다.
+- 상대 CSS asset 경로가 원본 style 파일 기준으로 바로 해석되지 않을 경우 source tree에서 안전한 suffix match로 후보 파일을 찾아, 생성된 CSS가 참조하는 target 상대 위치에 복사한다.
+- DAM/remote/dynamic/package 기반 CSS asset reference는 `.spa-bridge/css-asset-resolution-summary.json`에 남긴다.
+- source project 내 `proxy.*` 파일은 `.spa-bridge/proxy-config-summary.json`에 안전한 메타데이터로 남긴다.
+- CLI report warning과 React Target summary에 CSS asset/proxy 검토 지표가 표시된다.
+
+남은 gap:
+- DAM host, 인증 방식, 환경별 rewrite 정책은 조직별 proxy/deployment 설정에 의존하므로 자동 확정하지 않는다. 생성된 summary를 기준으로 Next.js `rewrites`, middleware, CDN/DAM 환경변수, 배포 proxy 설정을 검토해야 한다.
+- 원본 Less import chain이 private asset/mixin에 의존해 컴파일할 수 없으면 fallback CSS가 생성된다. 이 경우 build는 진행되지만 원본 스타일 parity는 review 대상이다.
+- 동일한 파일명을 가진 asset이 source tree 여러 위치에 존재하는 경우 suffix match는 가장 안정적인 정렬 순서의 후보를 사용한다. 충돌 가능성이 있는 프로젝트에서는 `.spa-bridge/css-asset-resolution-summary.json` 확인이 필요하다.
+
 ## Remaining High-Priority Gaps
 
-The following areas remain important for reaching the V2 product goal:
+The original high-priority V2 gap list has been converted into the V2 gap brownfield implementation track and implemented as focused units:
 
-- RxJS observable and subscription conversion to React hooks or async state utilities.
-- NgRx action/reducer/selector/effect conversion to Redux Toolkit or another selected state strategy.
-- Full Angular reactive forms conversion, including validators and form groups.
-- `*ngIf`, `*ngFor`, `ng-template`, content projection, and pipe conversion.
-- Angular animation conversion to React-compatible animation libraries or CSS transitions.
-- Full dependency alias/path mapping from `tsconfig`, webpack, and Angular build configuration.
-- Generated React project self-correction loop that runs install/build/typecheck and applies deterministic or AI-assisted fixes.
+- Dependency compatibility filtering and replacement.
+- Dependency alias/path mapping.
+- Advanced Angular template conversion.
+- Reactive forms conversion.
+- RxJS conversion.
+- NgRx conversion.
+- Next.js target default and runtime parity quality scoring.
+- Angular animation conversion.
+- Generated Next.js/React self-correction loop foundation.
+- Private Nexus/npm registry, `.npmrc`, environment variable, and source script parity.
+- Generated target build import cleanup, Less-to-CSS safe style output, and DAM/proxy CSS asset evidence capture.
+
+The main remaining product validation work is no longer a missing implementation unit. It is an end-to-end conversion validation task: run a representative Angular repository through SPA-Bridge, install the generated Next.js project with its source-compatible package manager, run the generated dev command, compare behavior, and use the generated review/quality artifacts to prioritize further converter rules.
+
+Current limitation: the self-correction loop now plans and records safe generated target validation/correction behavior, but SPA-Bridge does not yet automatically execute generated target package-manager install or `next build` during conversion. Those commands should be run manually or added later behind explicit command execution policy.
+
+Additional limitation: DAM/proxy runtime parity depends on deployment-specific infrastructure. SPA-Bridge now detects CSS DAM/remote references and `proxy.*` configuration evidence, but it does not automatically infer private DAM hosts, authentication headers, environment-specific rewrites, or CDN rules without explicit source evidence.
 
 ## Verification Status
 
@@ -202,5 +259,4 @@ npm run build
 npm test
 ```
 
-Both commands passed after the V2 changes listed above.
-
+Both commands passed after the V2 changes listed above. The latest verification passed `npm run build` and `npm test` with 145 tests passing.

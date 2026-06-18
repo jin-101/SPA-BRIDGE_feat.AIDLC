@@ -6,7 +6,7 @@ SPA-Bridge는 Angular SPA 프로젝트를 React 기반 프로젝트로 전환하
 
 ## 목표
 
-- Angular 15 기반 SPA 소스 전체를 분석해 React 18 + TypeScript 타깃 프로젝트로 변환합니다.
+- Angular 15 기반 SPA 소스 전체를 분석해 Next.js + React 18 + TypeScript 타깃 프로젝트로 변환합니다.
 - 컴포넌트, 서비스, 라우팅, 상태, 폼, i18n, 애니메이션, 지도, 미디어, QR/barcode, service worker 관련 변환을 추적 가능한 산출물로 남깁니다.
 - 변환이 불확실하거나 손실 가능성이 있는 부분은 임의로 추측하지 않고 manual-review 항목으로 기록합니다.
 - 외부 AI provider는 disabled-by-default 정책, masking, context minimization, validation gate를 통과한 경우에만 사용하도록 설계합니다.
@@ -18,8 +18,8 @@ SPA-Bridge는 Angular SPA 프로젝트를 React 기반 프로젝트로 전환하
 2. SPA-Bridge가 workspace path, policy, provider 사용 가능 여부를 검증합니다.
 3. Angular 소스 분석기가 컴포넌트, 템플릿, 서비스, 라우팅, 상태, 의존성 그래프를 수집합니다.
 4. 변환 엔진이 Angular 모델을 React-oriented draft와 traceable artifact로 변환합니다.
-5. React target generator가 Vite + React 18 + TypeScript 프로젝트 구조와 소스 파일 write plan을 생성합니다.
-6. Quality gate와 self-correction 단계가 산출물의 안정성, 경로 안전성, trace coverage, manual-review 항목을 평가합니다.
+5. React target generator가 Next.js App Router + React 18 + TypeScript 프로젝트 구조와 소스 파일 write plan을 생성합니다.
+6. Quality gate와 self-correction 단계가 산출물의 안정성, 경로 안전성, trace coverage, manual-review 항목, package-manager install/dev readiness를 평가합니다.
 7. Reporting 패키지가 JSON/Markdown/HTML 리포트를 생성합니다.
 8. CLI 또는 Web review workflow에서 진행 상황, 품질 결과, 검토 항목, export 결과를 확인합니다.
 
@@ -89,7 +89,27 @@ npx spa-bridge convert \
   --confirm
 ```
 
-위 예시에서 `/path/to/workspace/angular-app`은 Angular 프로젝트 루트여야 하며, `angular.json`, `package.json`, `src/main.ts` 또는 `src/app/app.component.ts` 같은 Angular entry 파일을 포함해야 합니다. 출력 폴더에는 Vite + React 18 + TypeScript 프로젝트 파일과 `.spa-bridge` 변환 요약, `report.json`이 함께 생성됩니다.
+위 예시에서 `/path/to/workspace/angular-app`은 Angular 프로젝트 루트여야 하며, `angular.json`, `package.json`, `src/main.ts` 또는 `src/app/app.component.ts` 같은 Angular entry 파일을 포함해야 합니다. 출력 폴더에는 Next.js App Router + React 18 + TypeScript 프로젝트 파일과 `.spa-bridge` 변환 요약, `report.json`, `src/review/runtime-parity-quality.json`이 함께 생성됩니다.
+
+생성된 출력 폴더에서는 일반적인 Next.js 프로젝트처럼 실행합니다. 이때 설치와 실행 명령은 생성된 `package.json`의 `packageManager`와 `.spa-bridge/package-manager-parity-summary.json`을 우선합니다.
+
+```bash
+cd /path/to/workspace/react-output
+npm install
+npm run dev
+```
+
+source Angular repository가 Yarn 또는 pnpm 기반이면 생성된 target도 같은 package manager를 따릅니다.
+
+```bash
+# Yarn 기반 source repository 예시
+yarn install
+yarn dev
+
+# pnpm 기반 source repository 예시
+pnpm install
+pnpm dev
+```
 
 ### AI refinement 설정
 
@@ -162,7 +182,7 @@ if (!result.ok) {
 | `@spa-bridge/transform-angular-react` | Angular IR을 React-oriented draft로 변환하는 rule engine과 converters |
 | `@spa-bridge/core-security` | masking, provider policy, safe context, provider boundary enforcement |
 | `@spa-bridge/adapters-ai` | AI provider registry, context minimizer, response validator, refinement orchestration |
-| `@spa-bridge/target-react` | Vite + React 18 + TypeScript target project generation과 file materializer |
+| `@spa-bridge/target-react` | Next.js App Router + React 18 + TypeScript target project generation과 file materializer. Vite strategy는 명시적으로 선택할 수 있는 legacy strategy로 유지 |
 | `@spa-bridge/core-quality` | quality gates, self-correction, PBT/fixture 기반 검증 모델 |
 | `@spa-bridge/core-reporting` | JSON/Markdown/HTML 리포트와 export artifact 생성 |
 | `@spa-bridge/cli` | convert/validate/report/help CLI command flow, option/path validation, output formatting |
@@ -178,7 +198,7 @@ if (!result.ok) {
 | UOW-04 | Angular-to-React Transformation | Angular 분석 결과를 React-oriented draft, 변환 trace, manual-review diagnostic으로 바꿉니다. |
 | UOW-05 | Security, Masking, and Provider Policy | 민감 정보 노출을 막고, 외부 provider 사용 가능 여부를 정책적으로 통제합니다. |
 | UOW-06 | AI Provider Adapters and Refinement | 필요한 경우 안전한 provider context와 response validation을 통해 변환 보강을 수행합니다. |
-| UOW-07 | React Target Generation | 변환 draft를 바탕으로 React 18 + TypeScript 프로젝트 구조와 파일 생성 계획을 만듭니다. |
+| UOW-07 | React Target Generation | 변환 draft를 바탕으로 Next.js App Router + React 18 + TypeScript 프로젝트 구조와 파일 생성 계획을 만듭니다. |
 | UOW-08 | Quality Gates, Self-Correction, and PBT Integration | 변환 결과의 결정성, 경로 안전성, trace coverage, 품질 조건을 검증합니다. |
 | UOW-09 | Reporting and Exports | 변환 결과, 품질 결과, 검토 항목을 JSON/Markdown/HTML 리포트로 내보냅니다. |
 | UOW-10 | CLI Interface | 사용자가 terminal에서 convert, validate, report 흐름을 실행할 수 있는 명령 계층을 제공합니다. |
@@ -198,3 +218,5 @@ if (!result.ok) {
 - Web UI 패키지는 현재 review workflow의 TypeScript render model과 상태/interaction 계층 중심으로 구현되어 있습니다.
 - 외부 AI provider 호출은 기본 비활성화이며, policy readiness와 masking/context minimization을 통과해야 합니다.
 - 변환 불확실성이 있는 항목은 자동으로 숨기지 않고 manual-review diagnostic으로 남기는 방향입니다.
+- 기본 출력 target은 Next.js입니다. 생성물에는 `next.config.mjs`, `src/app/layout.tsx`, `src/app/page.tsx`, `src/app/providers.tsx`, `src/app/globals.css`가 포함됩니다.
+- Runtime parity quality 결과는 `src/review/runtime-parity-quality.json`에 생성되며, 필수 scaffold 파일, package install readiness, 빈 컴포넌트, TODO/manual-review marker, 남은 Angular syntax 흔적을 점수화합니다.

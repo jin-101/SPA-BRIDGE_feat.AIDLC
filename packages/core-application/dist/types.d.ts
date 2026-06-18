@@ -2,7 +2,7 @@ import { z } from 'zod';
 import type { ReportFormat } from '@spa-bridge/core-model';
 export declare const ProviderModeSchema: z.ZodEnum<["local-first", "external-only", "auto"]>;
 export type ProviderMode = z.infer<typeof ProviderModeSchema>;
-export declare const TargetStrategySchema: z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>;
+export declare const TargetStrategySchema: z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>;
 export type TargetStrategy = z.infer<typeof TargetStrategySchema>;
 export declare const ReportFormatSchema: z.ZodEnum<["json", "markdown", "html"]>;
 export type AppReportFormat = z.infer<typeof ReportFormatSchema>;
@@ -30,7 +30,7 @@ export declare const QualityOptionsSchema: z.ZodObject<{
 }>;
 export type QualityOptions = z.infer<typeof QualityOptionsSchema>;
 export declare const RawProjectConfigSchema: z.ZodObject<{
-    targetStrategy: z.ZodOptional<z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>>;
+    targetStrategy: z.ZodOptional<z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>>;
     providerMode: z.ZodOptional<z.ZodEnum<["local-first", "external-only", "auto"]>>;
     outputPath: z.ZodOptional<z.ZodString>;
     reportFormats: z.ZodOptional<z.ZodArray<z.ZodEnum<["json", "markdown", "html"]>, "many">>;
@@ -59,7 +59,7 @@ export declare const RawProjectConfigSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>>;
 }, "passthrough", z.ZodTypeAny, z.objectOutputType<{
-    targetStrategy: z.ZodOptional<z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>>;
+    targetStrategy: z.ZodOptional<z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>>;
     providerMode: z.ZodOptional<z.ZodEnum<["local-first", "external-only", "auto"]>>;
     outputPath: z.ZodOptional<z.ZodString>;
     reportFormats: z.ZodOptional<z.ZodArray<z.ZodEnum<["json", "markdown", "html"]>, "many">>;
@@ -88,7 +88,7 @@ export declare const RawProjectConfigSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>>;
 }, z.ZodTypeAny, "passthrough">, z.objectInputType<{
-    targetStrategy: z.ZodOptional<z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>>;
+    targetStrategy: z.ZodOptional<z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>>;
     providerMode: z.ZodOptional<z.ZodEnum<["local-first", "external-only", "auto"]>>;
     outputPath: z.ZodOptional<z.ZodString>;
     reportFormats: z.ZodOptional<z.ZodArray<z.ZodEnum<["json", "markdown", "html"]>, "many">>;
@@ -119,7 +119,7 @@ export declare const RawProjectConfigSchema: z.ZodObject<{
 }, z.ZodTypeAny, "passthrough">>;
 export type RawProjectConfig = z.infer<typeof RawProjectConfigSchema>;
 export declare const ConversionOverridesSchema: z.ZodObject<{
-    targetStrategy: z.ZodOptional<z.ZodEnum<["vite-react-typescript", "user-selected", "custom"]>>;
+    targetStrategy: z.ZodOptional<z.ZodEnum<["nextjs-typescript", "vite-react-typescript", "user-selected", "custom"]>>;
     providerMode: z.ZodOptional<z.ZodEnum<["local-first", "external-only", "auto"]>>;
     outputPath: z.ZodOptional<z.ZodString>;
     reportFormats: z.ZodOptional<z.ZodArray<z.ZodEnum<["json", "markdown", "html"]>, "many">>;
@@ -148,7 +148,7 @@ export declare const ConversionOverridesSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    targetStrategy?: "vite-react-typescript" | "user-selected" | "custom" | undefined;
+    targetStrategy?: "nextjs-typescript" | "vite-react-typescript" | "user-selected" | "custom" | undefined;
     providerMode?: "local-first" | "external-only" | "auto" | undefined;
     outputPath?: string | undefined;
     reportFormats?: ("json" | "markdown" | "html")[] | undefined;
@@ -163,7 +163,7 @@ export declare const ConversionOverridesSchema: z.ZodObject<{
         propertyTests?: boolean | undefined;
     } | undefined;
 }, {
-    targetStrategy?: "vite-react-typescript" | "user-selected" | "custom" | undefined;
+    targetStrategy?: "nextjs-typescript" | "vite-react-typescript" | "user-selected" | "custom" | undefined;
     providerMode?: "local-first" | "external-only" | "auto" | undefined;
     outputPath?: string | undefined;
     reportFormats?: ("json" | "markdown" | "html")[] | undefined;

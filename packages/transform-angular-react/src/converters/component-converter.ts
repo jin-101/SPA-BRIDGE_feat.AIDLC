@@ -1,7 +1,7 @@
 import type { Diagnostic } from '@spa-bridge/core-model';
 
 import { StableIdFactory } from '../model/stable-id-factory.js';
-import type { NormalizedComponent, NormalizedTemplate, ProviderNeutralMappingRequest, RuleContribution, TransformationContext, ReactComponentDraft, ReactHookDraft } from '../types.js';
+import type { NormalizedAnimationDeclaration, NormalizedComponent, NormalizedTemplate, ProviderNeutralMappingRequest, RuleContribution, TransformationContext, ReactAnimationDraft, ReactComponentDraft, ReactHookDraft } from '../types.js';
 import { SafeReviewDiagnosticBuilder } from '../diagnostics/safe-review-diagnostic-builder.js';
 import { ProviderNeutralMappingRequestBuilder } from '../ai-handoff/provider-neutral-mapping-request-builder.js';
 
@@ -14,6 +14,7 @@ export class ComponentConverter {
 
   convert(context: TransformationContext): RuleContribution {
     const componentDrafts = context.components.map((component) => this.convertComponent(component, context));
+    const animationDrafts = componentDrafts.flatMap((component) => component.animations);
     const diagnostics: Diagnostic[] = [];
     const reviewItems = [];
     const traces: RuleContribution['traces'] = [];
@@ -59,7 +60,7 @@ export class ComponentConverter {
       }
     }
 
-    return { componentDrafts, diagnostics, reviewItems, traces, mappingRequests };
+    return { componentDrafts, animationDrafts, diagnostics, reviewItems, traces, mappingRequests };
   }
 
   private convertComponent(component: NormalizedComponent, context: TransformationContext): ReactComponentDraft {
@@ -68,6 +69,7 @@ export class ComponentConverter {
     const matchingStreams = context.rxStreams.filter((stream) => stream.ownerId === component.id || stream.sourceRef?.path === component.sourceRef?.path);
     const matchingSubscriptions = context.rxSubscriptions.filter((subscription) => subscription.ownerId === component.id);
     const matchingReduxUsage = context.ngrxComponentUsages.find((usage) => usage.ownerComponentPath === component.sourceRef?.path || usage.ownerComponentName === component.name);
+    const matchingAnimationDeclarations = context.animationDeclarations.filter((declaration) => declaration.sourceRef?.path === component.sourceRef?.path);
     const templateDraftId = matchingTemplates[0]?.id;
     const primaryTemplate = matchingTemplates[0];
     const hooks: ReactHookDraft[] = component.lifecycleHooks.map((hookName, index) => ({
@@ -141,8 +143,9 @@ export class ComponentConverter {
             selectorRefs: [...matchingReduxUsage.selectedSelectors],
             actionRefs: [...matchingReduxUsage.dispatchedActions],
             reviewComments: matchingReduxUsage.reviewRequired ? [`AIDLC_MANUAL_REVIEW_NGRX: Store usage in '${component.name}' needs manual review.`] : [],
-          }
+        }
         : undefined,
+      animations: this.convertAnimations(component, matchingAnimationDeclarations, context),
       serviceRefs: [...component.serviceRefs],
       styleUrls: [...component.styleUrls],
       sourceRelativePath: component.sourceRef?.path,
@@ -151,5 +154,42 @@ export class ComponentConverter {
       reviewItemIds: [],
       generatedRefs: [this.ids.artifactRef(`${component.name}/component.json`, 'component')],
     };
+  }
+
+  private convertAnimations(component: NormalizedComponent, declarations: NormalizedAnimationDeclaration[], context: TransformationContext): ReactAnimationDraft[] {
+    const componentKey = component.name.replace(/[^A-Za-z0-9]+/g, '-').toLowerCase() || component.id;
+    return declarations
+      .flatMap((declaration) =>
+        declaration.triggers.map((trigger, index): ReactAnimationDraft => {
+          const cssClassPrefix = `aidlc-${componentKey}-${trigger.triggerName.replace(/[^A-Za-z0-9]+/g, '-').toLowerCase()}`;
+          const reviewComments = [
+            ...trigger.states.filter((state) => state.requiresReview).map((state) => `AIDLC_MANUAL_REVIEW_ANIMATION: state '${state.stateName}' has dynamic style values.`),
+            ...trigger.transitions.filter((transition) => transition.requiresManualReview).map((transition) => `AIDLC_MANUAL_REVIEW_ANIMATION: transition '${transition.expression}' uses complex Angular animation behavior.`),
+            ...trigger.bindings.filter((binding) => binding.conversionPlan === 'event-callback').map((binding) => `AIDLC_MANUAL_REVIEW_ANIMATION: animation event callback '${binding.startHandler ?? binding.doneHandler ?? binding.triggerName}' needs React event parity review.`),
+            ...context.thirdPartyAnimationUsages
+              .filter((usage) => usage.targetDependencyDecision !== 'carry')
+              .map((usage) => `AIDLC_MANUAL_REVIEW_ANIMATION: package '${usage.packageName}' requires adapter/API review.`),
+          ];
+          const conversionKind = reviewComments.length > 0 && trigger.conversionEligibility !== 'css-transition'
+            ? 'manual-review'
+            : trigger.conversionEligibility;
+          return {
+            id: this.ids.draftId('animation', `${component.name}-${trigger.triggerName}`, index + 1),
+            ownerComponentId: component.id,
+            sourceRef: declaration.sourceRef,
+            triggerName: trigger.triggerName,
+            conversionKind,
+            cssClassPrefix,
+            stateClassNames: Object.fromEntries(trigger.states.map((state) => [state.stateName, `${cssClassPrefix}-${state.stateName.replace(/[^A-Za-z0-9]+/g, '-').toLowerCase()}`]).sort(([left], [right]) => left.localeCompare(right))),
+            bindings: [...trigger.bindings],
+            requiresClientComponent: conversionKind === 'react-helper' || context.thirdPartyAnimationUsages.length > 0 || trigger.bindings.some((binding) => binding.startHandler || binding.doneHandler),
+            assetRefs: [...context.animationAssetRefs],
+            reviewComments,
+            reviewItemIds: [],
+            generatedRefs: [this.ids.artifactRef(`src/animations/${componentKey}-${trigger.triggerName}.ts`, trigger.triggerName)],
+          };
+        }),
+      )
+      .sort((left, right) => left.id.localeCompare(right.id));
   }
 }

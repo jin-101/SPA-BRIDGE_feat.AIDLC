@@ -5,7 +5,7 @@ import type { ReportFormat } from '@spa-bridge/core-model';
 export const ProviderModeSchema = z.enum(['local-first', 'external-only', 'auto']);
 export type ProviderMode = z.infer<typeof ProviderModeSchema>;
 
-export const TargetStrategySchema = z.enum(['vite-react-typescript', 'user-selected', 'custom']);
+export const TargetStrategySchema = z.enum(['nextjs-typescript', 'vite-react-typescript', 'user-selected', 'custom']);
 export type TargetStrategy = z.infer<typeof TargetStrategySchema>;
 
 export const ReportFormatSchema = z.enum(['json', 'markdown', 'html']);

@@ -30,6 +30,58 @@ npm run build
 - **Build Artifacts**: `packages/core-model/dist/`, `packages/core-security/dist/`, `packages/core-application/dist/`, `packages/core-quality/dist/`, `packages/core-reporting/dist/`, `packages/source-angular/dist/`, `packages/adapters-ai/dist/`, `packages/transform-angular-react/dist/`, `packages/target-react/dist/`, `packages/cli/dist/`, `packages/web/dist/`, generated declaration files, source maps, and `tsconfig.tsbuildinfo`
 - **Common Warnings**: npm workspace notices are acceptable if build output succeeds
 
+## V2 Gap Generated Target Validation
+
+After building SPA-Bridge, use the CLI to generate a Next.js target from an Angular repository and then validate the output:
+
+```bash
+node packages/cli/dist/bin/spa-bridge.js convert \
+  --workspace /path/to/workspace \
+  --input frontend-app \
+  --output react-output \
+  --report-format json \
+  --non-interactive \
+  --confirm
+```
+
+Expected generated quality artifacts:
+- `.spa-bridge/quality-gate-results.json`
+- `.spa-bridge/self-correction-summary.json`
+- `src/review/runtime-parity-quality.json`
+
+Expected generated enterprise parity artifacts:
+- `.npmrc`
+- `.npmrc.example`
+- `.env.example`
+- `.spa-bridge/registry-migration-summary.json`
+- `.spa-bridge/script-migration-summary.json`
+- `.spa-bridge/environment-contract-summary.json`
+- `.spa-bridge/package-manager-parity-summary.json`
+- `src/review/registry-migration-report.json`
+- `src/review/script-migration-report.json`
+- `src/review/environment-contract-report.json`
+- `src/review/package-manager-parity-report.json`
+
+Manual generated target validation:
+
+```bash
+cd /path/to/workspace/react-output
+npm install
+npm run dev
+```
+
+Use the generated package manager parity report when the source repository is not npm-based:
+
+```bash
+yarn install
+yarn dev
+
+pnpm install
+pnpm dev
+```
+
+If the source project uses private Nexus/npm registries, fill the placeholders from `.npmrc.example` through local or CI secret management before running `npm install`. Do not commit raw registry credentials.
+
 ## Troubleshooting
 
 ### Build Fails with Dependency Errors

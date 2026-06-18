@@ -1,0 +1,1 @@
+{"version":3,"file":"npmrc-parser.d.ts","sourceRoot":"","sources":["../../src/enterprise/npmrc-parser.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,oBAAoB,EAAE,MAAM,aAAa,CAAC;AAgC1E,qBAAa,WAAW;IACtB,KAAK,CAAC,KAAK,GAAE,oBAAoB,EAAO,GAAG,gBAAgB,EAAE;CA8C9D"}

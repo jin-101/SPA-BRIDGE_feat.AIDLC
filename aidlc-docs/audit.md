@@ -18,6 +18,38 @@
 
 ---
 
+## Target Strategy Change Request
+**Timestamp**: 2026-06-16T07:13:49Z
+**User Input**: "지금 얘기한 방향으로 수정해서 진행해줘. 그리고 진행하기에 앞서서 react가 아니고 nextjs로 변환되도록 전체를 변경해줘."
+**AI Response**: "User requested a brownfield direction shift toward runtime parity quality gates and a global target strategy change from React/Vite to Next.js. Proceeding with implementation."
+**Context**: Brownfield V2 quality strategy and target generation strategy change
+
+---
+
+## Quality Strategy Question
+**Timestamp**: 2026-06-16T07:11:05Z
+**User Input**: "그럼 어떻게 하면 될까?"
+**AI Response**: "Recommended shifting the brownfield workflow toward executable parity gates, representative fixture conversion, and gap-driven implementation instead of continuing feature coverage blindly."
+**Context**: V2 gap brownfield construction, conversion quality strategy
+
+---
+
+## Quality Concern
+**Timestamp**: 2026-06-16T07:09:24Z
+**User Input**: "근데 지금 브라운필드 진행중이긴한데, 변환시켜보면 너무 품질 수준이 낮은거 같아서 걱정이 돼."
+**AI Response**: "Acknowledged the quality concern and explained that the brownfield work should shift from feature coverage to executable parity and quality gates."
+**Context**: V2 gap brownfield construction, quality and runtime parity concern
+
+---
+
+## Technical Research Question
+**Timestamp**: 2026-06-16T07:07:56Z
+**User Input**: "개발중에 갑자기 궁금한 것이 있는데, [https://github.com/ng2react](https://github.com/ng2react) 여기에 converter 하는 툴이 있던데 이거는 어느정도 수준으로 변환되는거야?"
+**AI Response**: "Reviewed the ng2react project and explained its conversion scope compared with SPA-Bridge."
+**Context**: User asked for assessment of an external Angular-to-React converter tool.
+
+---
+
 ## UOW-01 NFR Design Approval
 **Timestamp**: 2026-06-04T05:12:03Z
 **User Input**: "Continue to Next Stage"
@@ -3105,5 +3137,429 @@ Check that --workspace is a real directory and --input points to an Angular proj
 **User Input**: ""
 **AI Response**: "Completed V2-GAP-UOW-05 NgRx Conversion implementation, tests, documentation, state updates, and review prompt. Affected package tests, workspace build, and workspace tests passed."
 **Context**: V2-GAP-UOW-05 Code Generation, completion prompt
+
+---
+
+## V2 Runtime Parity Target Update Complete
+**Timestamp**: 2026-06-16T07:26:39Z
+**User Input**: "지금 얘기한 방향으로 수정해서 진행해줘. 그리고 진행하기에 앞서서 react가 아니고 nextjs로 변환되도록 전체를 변경해줘."
+**AI Response**: "Implemented Next.js App Router as the default generated target before continuing V2 work. Added `nextjs-typescript` target strategy, preserved Vite as an explicit legacy strategy, updated CLI/core defaults, added Next.js dependency manifest handling, generated runtime parity quality scoring at `src/review/runtime-parity-quality.json`, refreshed README and V2 planning/state docs, and verified `npm run build` plus `npm test`."
+**Context**: V2 runtime parity direction change and target generation strategy update
+
+---
+
+## V2-GAP-UOW-06 Functional Design Start
+**Timestamp**: 2026-06-16T07:30:51Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved continuation after the Next.js target default and runtime parity quality gate update. Starting V2-GAP-UOW-06 Animation Conversion functional design planning."
+**Context**: V2 gap brownfield construction - transition to animation conversion functional design
+
+---
+
+## V2-GAP-UOW-06 Functional Design Artifacts
+**Timestamp**: 2026-06-16T07:39:48Z
+**User Input**: "모두 A로 해줘."
+**AI Response**: "Applied all A answers to the V2-GAP-UOW-06 Animation Conversion functional design plan and generated functional design artifacts for domain entities, business rules, business logic model, and frontend component behavior."
+**Context**: V2 gap brownfield construction - animation conversion functional design artifacts
+
+---
+
+## V2-GAP-UOW-06 Code Generation Planning Start
+**Timestamp**: 2026-06-16T07:41:19Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved V2-GAP-UOW-06 Animation Conversion functional design. Starting code generation planning for animation extraction, transformation carry-through, Next.js target generation, quality scoring, and tests."
+**Context**: V2 gap brownfield construction - animation conversion code generation planning
+
+---
+
+## V2-GAP-UOW-06 Code Generation Complete
+**Timestamp**: 2026-06-16T07:59:24Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved the V2-GAP-UOW-06 Animation Conversion code generation plan. Implemented animation source extraction, transformation carry-through, Next.js animation materialization, dependency compatibility support, runtime parity quality animation signals, tests, code summary documentation, and workspace build/test verification."
+**Context**: V2 gap brownfield construction - animation conversion implementation completion
+
+---
+
+## V2-GAP-UOW-06 Code Generation Review Approval
+**Timestamp**: 2026-06-16T08:02:19Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved continuation after V2-GAP-UOW-06 Animation Conversion code generation. Starting V2-GAP-UOW-07 Generated Next.js/React Self-Correction Loop functional design planning."
+**Context**: V2 gap brownfield construction - transition to generated Next.js/React self-correction loop functional design
+
+---
+
+## V2-GAP-UOW-07 Functional Design Artifacts
+**Timestamp**: 2026-06-16T23:21:03Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "Applied the recommended all-A answers for V2-GAP-UOW-07 Generated Next.js/React Self-Correction Loop and generated functional design artifacts for domain entities, business rules, business logic model, and frontend/user-facing behavior."
+**Context**: V2 gap brownfield construction - generated Next.js/React self-correction loop functional design artifacts
+
+---
+
+## V2-GAP-UOW-07 Code Generation Planning Start
+**Timestamp**: 2026-06-16T23:30:58Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved V2-GAP-UOW-07 functional design and requested continuation to the next stage. Creating the code generation plan for generated Next.js/React validation, deterministic self-correction, local-first AI repair policy hooks, quality artifacts, CLI output, reporting, and tests."
+**Context**: V2 gap brownfield construction - generated Next.js/React self-correction loop code generation planning
+
+---
+
+## V2-GAP-UOW-07 Code Generation Approval Prompt
+**Timestamp**: 2026-06-16T23:30:58Z
+**User Input**: ""
+**AI Response**: "Created `aidlc-docs/construction/plans/v2-gap-uow-07-generated-nextjs-react-self-correction-loop-code-generation-plan.md` and requested explicit approval before implementation."
+**Context**: V2 gap brownfield construction - V2-GAP-UOW-07 code generation planning review
+
+---
+
+## V2-GAP-UOW-07 Code Generation Complete
+**Timestamp**: 2026-06-17T00:00:21Z
+**User Input**: "다음 단계를 진행해줘."
+**AI Response**: "User approved the V2-GAP-UOW-07 Generated Next.js/React Self-Correction Loop code generation plan. Implemented safe generated target command planning, sanitized validation classification, deterministic fixer planning, local-first AI repair boundaries, target quality artifact materialization, runtime parity self-correction signals, CLI/reporting integration, tests, and code summary documentation. Workspace `npm test` and `npm run build` passed."
+**Context**: V2 gap brownfield construction - generated Next.js/React self-correction loop implementation completion
+
+---
+
+## V2 Gap Build And Test Closure
+**Timestamp**: 2026-06-17T00:02:10Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved V2-GAP-UOW-07 code generation review. Refreshed V2 gap build/test closure documentation, updated V2 requirements status, and moved workflow state to V2 gap completion review using the latest successful `npm test` and `npm run build` verification results."
+**Context**: V2 gap brownfield construction - build/test closure and completion review
+
+---
+
+## V2 Private Registry And Environment Parity Requirement
+**Timestamp**: 2026-06-17T00:12:40Z
+**User Input**: "v2 내용에 하나 더 추가가 되어야 할 내용이 있는데, 내부에서 자체적으로 추가한 라이브러리 같은 경우는 넥서스에 코드젠 된 관련 소스를 올려 놓고 기존 레포에서 .npmrc에 경로를 지정해서 가져오는 방식을 따르고 있어. 이 경우는 현재 적용이 안될텐데 적용가능한 방법이 있을까? 그리고 기존 package.json에 스크립트를 참고해서 새로운 spa(nextjs)에 맞춰서 짜줄 수는 없어?\n\n결국 환경변수와 기존 패키지에 대한 내용을 그대로 가져와야 한다는 내용이야."
+**AI Response**: "Analyzed current dependency and target generation behavior. Identified that dependency carry-over exists, but .npmrc/Nexus registry propagation, environment variable contract migration, and source package script translation into Next.js-safe scripts are not yet implemented. Added this as a new V2 requirement area for private registry, environment, and script parity."
+**Context**: V2 gap brownfield requirements extension - private registry, environment, and script parity
+
+---
+
+## V2-GAP-UOW-08 Functional Design Planning
+**Timestamp**: 2026-06-17T00:15:05Z
+**User Input**: "계속 진행해줘."
+**AI Response**: "Created the V2-GAP-UOW-08 Private Registry, Environment, and Script Parity functional design plan with clarification questions focused on .npmrc/Nexus safety, internal package compatibility, source script translation, environment variable exposure, artifact generation, reporting, and tests."
+**Context**: V2 gap brownfield construction - private registry, environment, and script parity functional design planning
+
+---
+
+## AIDLC Korean Artifact Preference
+**Timestamp**: 2026-06-17T00:17:29Z
+**User Input**: "현재 생성된 파일과 앞으로 생성될 파일들을 모두 한국말로 생성해줄래?"
+**AI Response**: "Updated the current V2-GAP-UOW-08 functional design plan into Korean and recorded the preference that future generated AIDLC artifacts should be written in Korean unless a technical identifier, code symbol, or required format must remain in English."
+**Context**: Documentation language preference - Korean generated artifacts
+
+---
+
+## V2-GAP-UOW-08 Functional Design Artifacts
+**Timestamp**: 2026-06-17T00:22:22Z
+**User Input**: "답변완료"
+**AI Response**: "Validated all V2-GAP-UOW-08 functional design answers as A and generated Korean functional design artifacts for domain entities, business rules, business logic model, and user-facing review behavior."
+**Context**: V2 gap brownfield construction - private registry, environment, and script parity functional design artifacts
+
+---
+
+## V2-GAP-UOW-08 Code Generation Planning
+**Timestamp**: 2026-06-17T00:28:34Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved V2-GAP-UOW-08 functional design review and requested continuation. Created Korean code generation plan for private registry .npmrc handling, source script translation, environment contract migration, target artifacts, CLI/reporting integration, quality gate signals, tests, and verification."
+**Context**: V2 gap brownfield construction - private registry, environment, and script parity code generation planning
+
+---
+
+## V2-GAP-UOW-08 Code Generation Approval Prompt
+**Timestamp**: 2026-06-17T00:28:34Z
+**User Input**: ""
+**AI Response**: "Created `aidlc-docs/construction/plans/v2-gap-uow-08-private-registry-environment-and-script-parity-code-generation-plan.md` and requested explicit approval before implementation."
+**Context**: V2 gap brownfield construction - V2-GAP-UOW-08 code generation planning review
+
+---
+
+## V2-GAP-UOW-08 Code Generation Complete
+**Timestamp**: 2026-06-17T00:39:05Z
+**User Input**: "Continue to Next Stage"
+**AI Response**: "User approved the V2-GAP-UOW-08 code generation plan. Implemented private registry .npmrc parsing and redaction, source script translation into Next.js-safe scripts, environment variable contract generation, target enterprise parity artifacts, CLI evidence collection, reporting view model fields, runtime parity quality signals, example tests, property-style tests, and code summary artifacts. `npm test` and `npm run build` passed."
+**Context**: V2 gap brownfield construction - private registry, environment, and script parity implementation completion
+
+---
+
+## V2-GAP-UOW-08 Build and Test Closure
+**Timestamp**: 2026-06-17T00:41:23Z
+**User Input**: " Continue to Next Stage "
+**AI Response**: "User approved V2-GAP-UOW-08 code generation review. Refreshed build/test documentation for private registry, source script, and environment parity artifacts. Recorded latest verification results: `npm test` passed with 144 tests and `npm run build` passed."
+**Context**: V2 gap brownfield construction - private registry, environment, and script parity build/test closure
+
+---
+
+## V2 Gap Brownfield Track Completion
+**Timestamp**: 2026-06-17T00:44:20Z
+**User Input**: "다음 단계를 진행해줘."
+**AI Response**: "User approved continuation after V2-GAP-UOW-08 build/test closure. Marked the V2 gap brownfield construction track as complete and set the next practical activity to real Angular repository conversion validation."
+**Context**: V2 gap brownfield construction - completion and transition to real repository validation
+
+---
+
+## Generated Target Install Dependency Conflict Question
+**Timestamp**: 2026-06-17T00:48:07Z
+**User Input**: "npm install 단계에서 아래의 오류가 나는데, .npmrc는 제대로 들언간거 같아 보이고 뭐가 문제일까?\n\nr code ERESOLVE\nnpm error ERESOLVE unable to resolve dependency tree\nnpm error\nnpm error While resolving: ke-frontend-app@0.0.0\nnpm error Found: @ke/common@1.0.12\nnpm error node_modules/@ke/common\nnpm error   @ke/common@\"1.0.12\" from the root project\nnpm error\nnpm error Could not resolve dependency:\nnpm error peer @ke/common@\"1.0.7\" from @ke/ap-new@1.15.5\nnpm error node_modules/@ke/ap-new\nnpm error   @ke/ap-new@\"1.15.5\" from the root project\nnpm error\nnpm error Fix the upstream dependency conflict, or retry\nnpm error this command with --force or --legacy-peer-deps\nnpm error to accept an incorrect (and potentially broken) dependency resolution.\nnpm error\nnpm error\nnpm error For a full report see:\nnpm error /Users/jhan/.npm/_logs/2026-06-17T00_46_56_851Z-eresolve-report.txt\nnpm error A complete log of this run can be found in: /Users/jhan/.npm/_logs/2026-06-17T00_46_56_851Z-debug-0.log"
+**AI Response**: "Explained that the failure is an npm peer dependency conflict between @ke/common@1.0.12 and @ke/ap-new@1.15.5 requiring peer @ke/common@1.0.7, not a private registry .npmrc resolution failure."
+**Context**: Real generated Next.js target validation - npm install ERESOLVE troubleshooting
+
+---
+
+## V2 Package Manager Parity Requirement
+**Timestamp**: 2026-06-17T00:53:09Z
+**User Input**: "방금 얘기한것을 토대로 v2에 내용을 추가해주고 개발해줘."
+**AI Response**: "Added V2 package manager parity requirement and started implementation so generated Next.js targets follow the source repository package manager type, version, lockfile/config signals, packageManager field, install/dev command guidance, and self-correction command planning."
+**Context**: V2 gap brownfield enhancement - package manager parity
+
+---
+
+## V2 Package Manager Parity Complete
+**Timestamp**: 2026-06-17T00:53:09Z
+**User Input**: "방금 얘기한것을 토대로 v2에 내용을 추가해주고 개발해줘."
+**AI Response**: "Implemented package manager parity. SPA-Bridge now detects source package manager evidence, writes target packageManager metadata, emits package-manager parity reports, plans generated target validation with npm/yarn/pnpm appropriately, updates README/build-test documentation, and passes `npm run build` and `npm test` with 145 tests."
+**Context**: V2 gap brownfield enhancement - package manager parity implementation complete
+
+---
+
+## Generated Target Build Import and DAM Proxy Issue
+**Timestamp**: 2026-06-17T05:31:24Z
+**User Input**: "install 과정에서는 문제가 없었지만, build과정에서 오류가 나는데 오류가 나는 이유를 살펴보면 import 경로가 제대로 되지 않아서야. 관련된 이슈는 아래와 같아.
+첫번째는 ts, tsx파일을 js 확장자로 찾거나 확장자 없이 import 해도 될 것 같은데 괜히 확장자를 js로 붙여서 오류가 나는것이야.
+두번째는 css에서 선언된 일부 이미지, 폰트 등은 dam이라는 시스템에 올려놓고 쓰는데, 이것과 관련해서 불러올 수 있는 정보가 누락된 것 같아.  기존 레포지토리에서 proxy. 로 시작하는 파일들이 환경별로 구분되어 있는데 이것과 관련된 부분도 적용되는 건지 확인해주고, 만약 이런 셋팅환경과 관련된 부분을 미리 알 수 없어서 적용할 수 없다면 미리 캐치해서 적용할 수 있는 방안이 있을지 생각해보고 알려줘."
+**AI Response**: "Started investigation and implementation for generated target build failures caused by `.js` suffixes in local TypeScript/TSX imports, plus missing DAM/proxy asset evidence from CSS and source proxy configuration files."
+**Context**: Real generated Next.js target validation - build failure remediation
+
+---
+
+## Generated Target Build Import and DAM Proxy Remediation Complete
+**Timestamp**: 2026-06-17T05:36:05Z
+**User Input**: "install 과정에서는 문제가 없었지만, build과정에서 오류가 나는데 오류가 나는 이유를 살펴보면 import 경로가 제대로 되지 않아서야. 관련된 이슈는 아래와 같아.
+첫번째는 ts, tsx파일을 js 확장자로 찾거나 확장자 없이 import 해도 될 것 같은데 괜히 확장자를 js로 붙여서 오류가 나는것이야.
+두번째는 css에서 선언된 일부 이미지, 폰트 등은 dam이라는 시스템에 올려놓고 쓰는데, 이것과 관련해서 불러올 수 있는 정보가 누락된 것 같아.  기존 레포지토리에서 proxy. 로 시작하는 파일들이 환경별로 구분되어 있는데 이것과 관련된 부분도 적용되는 건지 확인해주고, 만약 이런 셋팅환경과 관련된 부분을 미리 알 수 없어서 적용할 수 있는 방안이 있을지 생각해보고 알려줘."
+**AI Response**: "Implemented generated target build remediation. Local TS/TSX target imports are now extensionless, Angular `.less`/`.sass` files are classified as styles, CSS `url(...)` local assets are copied when resolvable, DAM/remote/dynamic CSS references are reported, `proxy.*` source config metadata is reported safely, CLI output includes the review artifacts, and workspace `npm run build` plus `npm test` passed."
+**Context**: Real generated Next.js target validation - implementation completion
+
+---
+
+## Generated Target Less Build Failure
+**Timestamp**: 2026-06-17T07:01:59Z
+**User Input**: "빌드를 시켰더니 아래와 같이 오류가 나던데 무슨 이유 때문이야?
+
+Failed to compile.
+
+./src/styles/angular/app/angular-main/angular-main.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../assets/less/common/mixins';
+| @import '../../assets/less/pages/seatclass';
+| //
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/angular-main.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/affiliate/presenter/affiliate-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/affiliate/presenter/affiliate-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/app-install-popup/app-install-popup.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../assets/less/common/mixins';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/app-install-popup/app-install-popup.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/goodbye-banner/presenter/goodbye-banner-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| @import '../../../../../assets/less/pages/main-banner';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/goodbye-banner/presenter/goodbye-banner-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/key-visual/presenter/key-visual-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| @import \"../../../../../assets/less/pages/core.less\";
+| @import '../../../../../assets/less/pages/main-mris';
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/key-visual/presenter/key-visual-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+
+> Build failed because of webpack errors
+error Command failed with exit code 1."
+**AI Response**: "Explained that generated Next.js output was importing Angular `.less` files directly, which Next webpack cannot parse by default. Started implementation to generate/import CSS-compatible source style artifacts instead of importing Less files directly."
+**Context**: Real generated Next.js target validation - Less build failure remediation
+
+---
+
+## Generated Target Less Build Remediation Complete
+**Timestamp**: 2026-06-17T07:09:02Z
+**User Input**: "빌드를 시켰더니 아래와 같이 오류가 나던데 무슨 이유 때문이야?
+
+Failed to compile.
+
+./src/styles/angular/app/angular-main/angular-main.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../assets/less/common/mixins';
+| @import '../../assets/less/pages/seatclass';
+| //
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/angular-main.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/affiliate/presenter/affiliate-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/affiliate/presenter/affiliate-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/app-install-popup/app-install-popup.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../assets/less/common/mixins';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/app-install-popup/app-install-popup.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/goodbye-banner/presenter/goodbye-banner-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| @import '../../../../../assets/less/pages/main-banner';
+| 
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/goodbye-banner/presenter/goodbye-banner-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+./src/styles/angular/app/angular-main/components/key-visual/presenter/key-visual-pres.component.less
+Module parse failed: Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type, currently no loaders are configured to process this file. See https://webpack.js.org/concepts#loaders
+> @import '../../../../../assets/less/common/mixins';
+| @import \"../../../../../assets/less/pages/core.less\";
+| @import '../../../../../assets/less/pages/main-mris';
+
+Import trace for requested module:
+./src/styles/angular/app/angular-main/components/key-visual/presenter/key-visual-pres.component.less
+./src/source-styles.ts
+./src/app/layout.tsx
+
+
+> Build failed because of webpack errors
+error Command failed with exit code 1."
+**AI Response**: "Implemented Less build remediation. Generated targets now import `src/source-styles.css` directly from layout/main, Angular source styles are written as CSS-compatible target artifacts, Less compilation is attempted when a Less renderer is available, fallback CSS is generated when compilation is unavailable or unsafe, component style placeholders use `.css`, and `npm run build` plus `npm test` passed."
+**Context**: Real generated Next.js target validation - Less build remediation complete
+
+---
+
+## Generated Target Less Compiler Dependency Added
+**Timestamp**: 2026-06-17T07:12:49Z
+**User Input**: "빌드를 시켰더니 아래와 같이 오류가 나던데 무슨 이유 때문이야?"
+**AI Response**: "Added `less@4.2.0` to the `@spa-bridge/cli` workspace so source Angular `.less` files can be compiled to CSS during conversion instead of only falling back to build-safe commented CSS. Re-ran `npm run build` and `npm test`; both passed with 145 tests."
+**Context**: Real generated Next.js target validation - Less compiler dependency completion
+
+---
+
+## Generated Target Next Start Without Build Issue
+**Timestamp**: 2026-06-17T07:20:02Z
+**User Input**: "이번에는 빌드를 돌리니까 이런 오류가 났어.
+
+Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id
+    at setupFsCheck (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/router-utils/filesystem.js:151:19)
+    at async initialize (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/router-server.js:64:23)
+    at async Server.<anonymous> (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/start-server.js:249:36)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command."
+**AI Response**: "Started investigation into generated package scripts. The error indicates `next start` was run before `.next` was created by `next build`, which is likely caused by Angular-style `yarn start` expectations conflicting with Next.js production `start` semantics."
+**Context**: Real generated Next.js target validation - script parity troubleshooting
+
+---
+
+## Generated Target Start Serve Script Parity Complete
+**Timestamp**: 2026-06-17T07:21:31Z
+**User Input**: "이번에는 빌드를 돌리니까 이런 오류가 났어.
+
+Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id
+    at setupFsCheck (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/router-utils/filesystem.js:151:19)
+    at async initialize (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/router-server.js:64:23)
+    at async Server.<anonymous> (/Users/jhan/Desktop/test/react-output-v3/node_modules/next/dist/server/lib/start-server.js:249:36)
+error Command failed with exit code 1.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command."
+**AI Response**: "Adjusted generated Next.js scripts so Angular-style `start` now maps to `next dev` and production startup is available as `serve: next start`. Added test coverage for `start` and `serve` script generation. Re-ran `npm run build` and `npm test`; both passed with 145 tests."
+**Context**: Real generated Next.js target validation - script parity remediation complete
+
+---
+
+## Generated Target CSS Relative Asset Missing
+**Timestamp**: 2026-06-17T07:52:17Z
+**User Input**: "start는 되었는데 화면에서 이런 오류가나.
+Build Error
+Failed to compile
+
+Next.js (14.2.30) is outdated [(learn more)](https://nextjs.org/docs/messages/version-staleness)
+./src/styles/angular/app/booking/flight-route-map/flight-route-map.component.css:4:1
+Module not found: Can't resolve '../../images/mapbox-popup-tip.svg'
+
+[https://nextjs.org/docs/messages/module-not-found](https://nextjs.org/docs/messages/module-not-found)
+
+Import trace for requested module:
+./src/source-styles.css"
+**AI Response**: "Started remediation for generated CSS relative asset references that remain after Less compilation. The issue is a missing local asset copy for CSS `url(...)` paths such as `../../images/mapbox-popup-tip.svg`."
+**Context**: Real generated Next.js target validation - CSS asset copy remediation
+
+---
+
+## Generated Target CSS Relative Asset Remediation Complete
+**Timestamp**: 2026-06-17T07:55:32Z
+**User Input**: "start는 되었는데 화면에서 이런 오류가나.
+Build Error
+Failed to compile
+
+Next.js (14.2.30) is outdated [(learn more)](https://nextjs.org/docs/messages/version-staleness)
+./src/styles/angular/app/booking/flight-route-map/flight-route-map.component.css:4:1
+Module not found: Can't resolve '../../images/mapbox-popup-tip.svg'
+
+[https://nextjs.org/docs/messages/module-not-found](https://nextjs.org/docs/messages/module-not-found)
+
+Import trace for requested module:
+./src/source-styles.css"
+**AI Response**: "Implemented CSS relative asset remediation. The CLI now scans compiled CSS output as well as source style content, resolves relative CSS asset references through direct source paths and safe source-tree suffix matching, copies matched local assets to the target-relative path expected by generated CSS, and verifies this with CLI e2e coverage. `npm run build` and `npm test` passed with 145 tests."
+**Context**: Real generated Next.js target validation - CSS asset copy remediation complete
 
 ---
